@@ -1,0 +1,86 @@
+﻿@model Dumpwinkel.Web.Models.EventListViewModel
+
+@{
+    ViewBag.Title = "Evenementen";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Evenementen</h2>
+
+<p>
+    @Html.ActionLink("Nieuw evenement", "Create")
+</p>
+
+<div class="btn-toolbar mb-2" role="toolbar">
+    <div class="col-md-2">
+        <input type="date" class="form-control" id="Date" name="Date" value="@Model.Date" />
+    </div>
+</div>
+
+<table id="events-table" class="table">
+    <thead>
+    <tr>
+        <th>
+            Start
+        </th>
+        <th>
+            Eind
+        </th>
+        <th>
+            Maximum aantal
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+        <tr class="prototype d-none">
+            <td class="startTime">
+                
+            </td>
+            <td class="endTime">
+               
+            </td>
+            <td class="maxPersons">
+                
+            </td>
+        </tr>
+
+    </tbody>
+
+
+</table>
+
+@section scripts
+{
+<script type="text/javascript">
+
+    function refreshSlots(date) {
+        $('#events-table tbody').empty();
+
+        $.getJSON('/api/event', { date: date }, function (result) {
+            $.each(result, function (index, event) {
+                var row = $('<tr />');
+                var startTime = $('<td />').text(event.StartTime);
+                var endTime = $('<td />').text(event.EndTime);
+                var registrationsLink = $('<a />').attr('href', '/admin/registration?eventId=' + event.Id).text(event.MaxPersons);
+                var maxPersons = $('<td />').append(registrationsLink);
+                
+                row.append(startTime);
+                row.append(endTime);
+                row.append(maxPersons);
+                $('#events-table tbody').append(row);
+            });
+
+        });
+    }
+
+    $(function () {
+
+        $("#Date").change(function (e) {
+            refreshSlots($(this).val());
+        });
+
+        refreshSlots($('#Date').val());
+    });
+</script>
+}

@@ -1,0 +1,75 @@
+﻿@{ 
+    var culture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.ToLowerInvariant();
+
+    var mainClass = "col-md-12";
+    if (Request.IsAuthenticated)
+    {
+        mainClass = "col-md-9 ml-sm-auto col-lg-10 px-4";
+    }
+}
+
+@helper selected(string c, string culture)
+{
+    if (c == culture)
+    {
+        @:checked="checked"
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>@ViewBag.Title - Dumpwinkel Beheer</title>
+    
+    @Styles.Render("~/Admin/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/bootstrap")
+
+
+</head>
+<body>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Dumpwinkel Beheer</a>
+        @Html.Partial("_LoginPartial")
+    </nav>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            @if (Request.IsAuthenticated)
+            {
+                <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">
+                                    <i class="fa fa-home"></i>
+                                    Dashboard <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Domain Admins"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/event">
+                                        <i class="fa fa-cloud"></i>
+                                        Gebeurtenissen
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </nav>
+            }
+            <main role="main" class="@mainClass">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -25,6 +25,11 @@ namespace Dumpwinkel.Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Admin/css").Include(
+                      "~/Content/bootstrap.css",
+                      "~/Content/font-awesome.css",
+                      "~/Content/admin.css"));
         }
     }
 }

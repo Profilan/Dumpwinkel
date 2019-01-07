@@ -1,31 +1,115 @@
-﻿@{
+﻿@model Dumpwinkel.Web.Models.CalendarViewModel
+
+@{
     ViewBag.Title = "Home Page";
+
+    var getDate = DateTime.Now;
+
+    var firstDayOfTheMonth = new DateTime(getDate.Year, getDate.Month, 1);
+
+    DateTime startDate = firstDayOfTheMonth.AddDays(-(int)firstDayOfTheMonth.DayOfWeek + 1);
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+
+<div class="container">
+    <div class="row">
+        @foreach (var month in Model.CalendarMonths)
+        {
+            <div class="col">
+                <table class="booking-calendar">
+                    <caption>@month.Title</caption>
+                    <thead>
+                        <tr>
+                            <th>MA</th>
+                            <th>DI</th>
+                            <th>WO</th>
+                            <th>DO</th>
+                            <th>VR</th>
+                            <th>ZA</th>
+                            <th>ZO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @for (int i = 0; i < 42; i++)
+                            {
+
+                                if (i % 7 == 0 && i > 0)
+                                {
+                                @:</tr><tr>
+                                }
+                                if (month.CalendarDays[i].IsAvailable)
+                                {
+                                    <td><a href="#" class="available" data-id="@month.CalendarDays[i].Date">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</a></td>
+                                }
+                                else
+                                {
+                                    <td>@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</td>
+                                }
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+<!-- Evetnts Dialog -->
+<div class="modal fade" id="dlg-events" tabindex="-1" role="dialog"
+     aria-labelledby="dlg-events-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dlg-events-label"></h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Afsluiten">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <table id="events-table" class="table table-sm table-hover">
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Afsluiten</button>
+                
+            </div>
+        </div>
     </div>
 </div>
+
+@section scripts
+{
+<script type="text/javascript">
+    $(function () {
+        $('a.available').click(function (e) {
+
+            $('#events-table tbody').empty();
+
+            var date = $(this).attr('data-id');
+
+            $('#dlg-events-label').text(date);
+            $.getJSON('/api/event', { date: date }, function (result) {
+                $.each(result, function (index, event) {
+                    var row = $('<tr />').attr('data-id', event.Id).click(function (e) {
+                        window.location.href = '/registration/Create/' + event.Id;
+                    });
+                    var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
+                    var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.MaxPersons + " plaatsen");
+                    row.append(timeRange);
+                    row.append(maxPersons);
+                    $('#events-table tbody').append(row);
+
+                    $('#dlg-events').modal('show');
+                });
+               
+            });
+        });
+    });
+</script>
+}
