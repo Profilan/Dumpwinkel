@@ -11,6 +11,7 @@ namespace Dumpwinkel.Web.Models
         public bool IsVisible { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsToday { get; set; }
+        public bool IsPast { get; set; }
         public int MaxPersons { get; set; }
 
         public CalendarDay()
@@ -18,7 +19,7 @@ namespace Dumpwinkel.Web.Models
             IsVisible = true;
             IsAvailable = false;
             IsToday = false;
-            
+            IsPast = false;
         }
     }
 }

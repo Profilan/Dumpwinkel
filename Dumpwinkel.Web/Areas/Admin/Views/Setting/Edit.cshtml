@@ -1,0 +1,38 @@
+﻿@model Dumpwinkel.Web.Areas.Admin.Models.SettingViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Instellingen</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+
+    <p>
+        <input type="submit" value="Opslaan" class="btn btn-primary" />
+    </p>
+
+    <hr />
+
+    <ul class="nav nav-tabs mt-md-4" id="settingsTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">Algemeen</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="background-tab" data-toggle="tab" href="#background" role="tab" aria-controls="background" aria-selected="false">Achtergrond</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="settingsTabContent">
+        <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+            @{Html.RenderPartial("_GeneralPartial", Model); }
+        </div>
+        <div class="tab-pane fade show" id="background" role="tabpanel" aria-labelledby="background-tab">
+            @{Html.RenderPartial("_BackgroundPartial", Model); }
+        </div>
+    </div>
+}

@@ -1,0 +1,108 @@
+﻿@model Dumpwinkel.Web.Models.EventListViewModel
+
+@{
+    ViewBag.Title = "Evenementen";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Evenementen</h2>
+
+<p>
+    @Html.ActionLink("Nieuw evenement", "Create")
+</p>
+
+<div class="btn-toolbar mb-2" role="toolbar">
+    <div class="col-md-3">
+        <div class="input-group date" id="Date" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="Date" data-target="#Date" />
+            <div class="input-group-append" data-target="#Date" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="events-table" class="table">
+    <thead>
+        <tr>
+            <th>
+                Start
+            </th>
+            <th>
+                Eind
+            </th>
+            <th>
+                Maximum aantal
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr class="prototype d-none">
+            <td class="startTime"></td>
+            <td class="endTime"></td>
+            <td class="maxPersons"></td>
+        </tr>
+
+    </tbody>
+
+
+</table>
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/nl.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript">
+
+        
+
+        function refreshSlots(date) {
+            $('#events-table tbody').empty();
+
+            $.getJSON('/api/event', { date: date }, function (result) {
+                $.each(result, function (index, event) {
+                    var row = $('<tr />');
+                    var startTime = $('<td />').text(event.StartTime);
+                    var endTime = $('<td />').text(event.EndTime);
+                    var registrationsLink = $('<a />').attr('href', '/admin/registration?eventId=' + event.Id).text(event.MaxPersons);
+                    var maxPersons = $('<td />').append(registrationsLink);
+
+                    row.append(startTime);
+                    row.append(endTime);
+                    row.append(maxPersons);
+                    $('#events-table tbody').append(row);
+                });
+
+            });
+        }
+
+        function refreshCalendar(date) {
+            var disabledDates = [];
+             $.getJSON('/api/calendar', { currentDate: date }, function (result) {
+                $.each(result, function (index, day) {
+                    disabledDates.push(day.Date);
+                });
+                console.log(disabledDates);
+                $('#Date').datetimepicker('disabledDates', disabledDates);
+            });
+        }
+
+        $(function () {
+
+            $('#Date').datetimepicker({
+                locale: 'nl',
+                date: "@Model.Date",
+                format: 'L'
+            });
+
+            $('#Date').datetimepicker('disabledDates', ["2019-01-29T00:00:00"]);
+
+            $("#Date").on("change.datetimepicker", function (e) {
+                
+                refreshSlots(e.date.format('YYYY-MM-DD'));
+            });
+        });
+    </script>
+}

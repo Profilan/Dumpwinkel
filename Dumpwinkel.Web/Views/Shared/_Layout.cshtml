@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    var backgroundImageUrl = ViewBag.BackgroundImageUrl;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -11,18 +15,17 @@
     @Scripts.Render("~/bundles/bootstrap")
 
 </head>
-<body class="top">
+<body class="top" style="background-image: url('@backgroundImageUrl') !important;">
 
-    <!--
     <nav class="navbar fixed-top navbar-eekhoorn">
         <a class="navbar-brand" href="#">
             <img src="~/img/Logo_De_Eekhoorn_homepageNW_2.png" height="75" />
-            <span class="navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: white; font-size: 48px; margin-left: 1em;">Dumpwinkel</span>
         </a>
-
     </nav>
-    -->
-    
+
+    <div class="container text-center">
+        <span style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px");">@ViewBag.SiteTitle</span>
+    </div>
 
     @RenderBody()
 

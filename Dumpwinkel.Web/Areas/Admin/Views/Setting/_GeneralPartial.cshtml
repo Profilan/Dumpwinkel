@@ -1,0 +1,49 @@
+﻿@model Dumpwinkel.Web.Areas.Admin.Models.SettingViewModel
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Website titelkleur</label>
+            @Html.EditorFor(model => model.TitleColor, new { htmlAttributes = new { @class = "form-control" } })
+            <div id="TitleColorPicker"></div>
+            @Html.ValidationMessageFor(model => model.TitleColor, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Website titelgrootte (px)</label>
+            @Html.EditorFor(model => model.TitleSize, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.TitleSize, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Website titel</label>
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Introtekst kleur</label>
+            @Html.EditorFor(model => model.IntroTextColor, new { htmlAttributes = new { @class = "form-control" } })
+            <div id="IntroTextColorPicker"></div>
+            @Html.ValidationMessageFor(model => model.IntroTextColor, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label> Introtekst grootte (px)</label>
+            @Html.EditorFor(model => model.IntroTextSize, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.IntroTextSize, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Introtekst</label>
+            @Html.TextAreaFor(model => model.IntroText, new { @class = "form-control", @rows = 6 })
+            @Html.ValidationMessageFor(model => model.IntroText, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/farbtastic.js"></script>
+<script>
+    $(function () {
+        $('#TitleColorPicker').farbtastic('#TitleColor');
+        $('#IntroTextColorPicker').farbtastic('#IntroTextColor');
+    });
+</script>
+

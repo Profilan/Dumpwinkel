@@ -1,0 +1,89 @@
+﻿@model Dumpwinkel.Web.Models.EventViewModel
+
+@{
+    ViewBag.Title = "Nieuw Evenement";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Nieuw evenement</h2>
+
+@using (Html.BeginForm("Create", "Event", FormMethod.Post, new { id = "eventForm" }))
+{
+    @Html.AntiForgeryToken()
+
+ 
+<div class="col-md-4">
+
+    <div class="form-group">
+        <label>Start</label>
+        <div class="input-group date" id="StartTime" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="StartTime" data-target="#StartTime" />
+            <div class="input-group-append" data-target="#StartTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Eind</label>
+        <div class="input-group date" id="EndTime" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="EndTime" data-target="#EndTime" />
+            <div class="input-group-append" data-target="#EndTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Interval</label>
+        @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.EnumDropDownListFor(model => model.Unit, "- Select unit -", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label>Max aantal personen (per uur)</label>
+        @Html.EditorFor(model => model.MaxPersons, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+    <div class="form-group">
+        <button id="createButton" class="btn btn-primary" type="submit">Opslaan</button>
+    </div>
+
+</div>
+}
+
+<div>
+    @Html.ActionLink("Terug naar de lijst", "Index")
+</div>
+
+
+@section Scripts {
+    
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/nl.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#StartTime').datetimepicker({
+                locale: 'nl',
+                date: "@Model.StartTime",
+                stepping: 15,
+                keepOpen: false
+            });
+            $('#EndTime').datetimepicker({
+                locale: 'nl',
+                date: "@Model.EndTime",
+                stepping: 15,
+                keepOpen: false
+            });
+            $("#StartTime").on("change.datetimepicker", function (e) {
+                $('#EndTime').datetimepicker('minDate', e.date);
+            });
+            $("#EndTime").on("change.datetimepicker", function (e) {
+                $('#StartTime').datetimepicker('maxDate', e.date);
+            });
+
+            $('#datetimepicker1').datetimepicker();
+        });
+    </script>
+}

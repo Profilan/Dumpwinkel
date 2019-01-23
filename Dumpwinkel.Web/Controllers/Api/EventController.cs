@@ -34,5 +34,7 @@ namespace Dumpwinkel.Web.Controllers.Api
 
             return Ok(events);
         }
+
+
     }
 }

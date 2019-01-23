@@ -11,12 +11,13 @@ using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Controllers
 {
-    public class RegistrationController : Controller
+    public class RegistrationController : BaseController
     {
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly VisitorRepository _visitorRepository = new VisitorRepository();
 
+        [AllowAnonymous]
         public ActionResult Create(Guid id)
         {
             try
@@ -40,6 +41,7 @@ namespace Dumpwinkel.Web.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Create(FormCollection collection)
         {
             try
@@ -49,7 +51,7 @@ namespace Dumpwinkel.Web.Controllers
                 var visitor = _visitorRepository.GetByEmail(collection["Email"]);
                 if (visitor == null)
                 {
-                    visitor = Visitor.Create(collection["Name"], collection["City"], collection["Email"]);
+                    visitor = Visitor.Create(collection["Name"], collection["City"], collection["Email"], collection["Postcode"]);
                     _visitorRepository.Insert(visitor);
                 }
 
@@ -70,9 +72,10 @@ namespace Dumpwinkel.Web.Controllers
                 _registrationRepository.Insert(registration);
 
                 var mailService = new EmailService();
+                var confirmUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/confirm/" + registration.Id;
                 var message = "Beste " + collection["Name"] + ",<br /><br />";
                 message += "Bedankt voor je aanvraag. Door op de volgende link te klikken kun je de registratie bevestigen.<br /><br />";
-                message += Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/confirm/" + registration.Id + "<br /><br />";
+                message += "<a href=\"" + confirmUrl + "\">" + confirmUrl + "</a>" + "<br /><br />";
                 message += "Met vriendelijke groet,<br />";
                 message += "De Eekhoorn Dumpwinkel";
                 mailService.SendMail("beheerder@deeekhoorn.com", collection["Email"], "Dumpwinkel registratie aanvraag", message);
@@ -86,6 +89,7 @@ namespace Dumpwinkel.Web.Controllers
             }
         }
 
+        [AllowAnonymous]
         public ActionResult Confirm(Guid id)
         {
             try
@@ -113,7 +117,7 @@ namespace Dumpwinkel.Web.Controllers
                 mailService.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
                 mailService.SendMail("beheerder@deeekhoorn.com", visitor.Email, "Dumpwinkel registratie bevestiging", message, path);
 
-                return RedirectToAction("Confirm");
+                return RedirectToAction("Confirmed");
             }
             catch (Exception e)
             {
@@ -122,17 +126,20 @@ namespace Dumpwinkel.Web.Controllers
             }
         }
 
+        [AllowAnonymous]
         public ActionResult ThankYou()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public ActionResult AlreadyRegistered()
         {
             return View();
         }
 
-        public ActionResult Confirm()
+        [AllowAnonymous]
+        public ActionResult Confirmed()
         {
             return View();
         }

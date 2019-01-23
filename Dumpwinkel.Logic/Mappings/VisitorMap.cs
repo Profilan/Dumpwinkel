@@ -17,6 +17,7 @@ namespace Dumpwinkel.Logic.Mappings
             Id(x => x.Id).GeneratedBy.Guid();
 
             Map(x => x.Name);
+            Map(x => x.Postcode);
             Map(x => x.City);
             Map(x => x.Email);
         }

@@ -10,12 +10,15 @@
     DateTime startDate = firstDayOfTheMonth.AddDays(-(int)firstDayOfTheMonth.DayOfWeek + 1);
 }
 
+<div class="container text-center">
+    <p style="color: @ViewBag.IntroTextColor; font-size: @(ViewBag.IntroTextSize + "px"); margin-bottom: 2rem;">@ViewBag.IntroText</p>
+</div>
 
 <div class="container">
     <div class="row">
         @foreach (var month in Model.CalendarMonths)
         {
-            <div class="col">
+            <div class="col-md-4 mb-2">
                 <table class="booking-calendar">
                     <caption>@month.Title</caption>
                     <thead>
@@ -38,13 +41,21 @@
                                 {
                                 @:</tr><tr>
                                 }
-                                if (month.CalendarDays[i].IsAvailable)
+                                if (month.CalendarDays[i].IsAvailable && !month.CalendarDays[i].IsPast)
                                 {
-                                    <td><a href="#" class="available" data-id="@month.CalendarDays[i].Date">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</a></td>
+                                    <td class="available"><a href="#" data-id="@month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</a></td>
                                 }
                                 else
                                 {
-                                    <td>@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</td>
+                                    if (month.CalendarDays[i].IsAvailable && month.CalendarDays[i].IsPast)
+                                    {
+                                        <td class="past">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</td>
+                                    }
+
                                 }
                             }
                         </tr>
@@ -61,7 +72,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="dlg-events-label"></h5>
+                <h6 class="modal-title" id="dlg-events-label"></h6>
                 <button type="button" class="close" data-dismiss="modal"
                         aria-label="Afsluiten">
                     <span aria-hidden="true">&times;</span>
@@ -70,14 +81,12 @@
             </div>
             <div class="modal-body">
                 <table id="events-table" class="table table-sm table-hover">
-                    <tbody>
-                        
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Afsluiten</button>
-                
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Afsluiten</button>
+
             </div>
         </div>
     </div>
@@ -85,31 +94,40 @@
 
 @section scripts
 {
-<script type="text/javascript">
-    $(function () {
-        $('a.available').click(function (e) {
+    <script type="text/javascript">
 
-            $('#events-table tbody').empty();
+        function capitalize(s) {
+            if (typeof s !== 'string') return '';
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
 
-            var date = $(this).attr('data-id');
+        $(function () {
 
-            $('#dlg-events-label').text(date);
-            $.getJSON('/api/event', { date: date }, function (result) {
-                $.each(result, function (index, event) {
-                    var row = $('<tr />').attr('data-id', event.Id).click(function (e) {
-                        window.location.href = '/registration/Create/' + event.Id;
+            $('td.available a').click(function (e) {
+
+                $('#events-table tbody').empty();
+
+                var dateOptions = { weekday: 'long', year: 'numeric', day: 'numeric', month: 'long' };
+                var date = $(this).attr('data-id');
+                var objDate = new Date(date);
+
+                $('#dlg-events-label').text("Timeslots Dumpverkoop " + capitalize(objDate.toLocaleDateString("nl-NL", dateOptions)));
+                $.getJSON('/api/event', { date: date }, function (result) {
+                    $.each(result, function (index, event) {
+                        var row = $('<tr />').attr('data-id', event.Id).click(function (e) {
+                            window.location.href = '/registration/Create/' + event.Id;
+                        });
+                        var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
+                        var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.MaxPersons + " plaatsen");
+                        row.append(timeRange);
+                        row.append(maxPersons);
+                        $('#events-table tbody').append(row);
+
+                        $('#dlg-events').modal('show');
                     });
-                    var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
-                    var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.MaxPersons + " plaatsen");
-                    row.append(timeRange);
-                    row.append(maxPersons);
-                    $('#events-table tbody').append(row);
 
-                    $('#dlg-events').modal('show');
                 });
-               
             });
         });
-    });
-</script>
+    </script>
 }

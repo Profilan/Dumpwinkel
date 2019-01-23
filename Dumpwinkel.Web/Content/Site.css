@@ -15,7 +15,7 @@
 }
 
 body {
-    padding-top: 150px;
+    padding-top: 100px;
     padding-bottom: 20px;
     color: #575757;
 }
@@ -42,8 +42,14 @@ textarea {
 }
 
 /* Bootstrap overrides */
+
+h6.modal-title {
+    font-weight: bold;
+}
+
 .navbar-eekhoorn {
-    background-color: #00618b;
+    background-color: transparent;
+    text-transform: uppercase;
 }
 
 .btn {
@@ -59,6 +65,16 @@ textarea {
         background-color: #004766;
         border-color: #004766;
     }
+
+/*
+ * Tables
+ */
+.table-hover tbody tr:hover {
+    background-color: deepskyblue !important;
+    color: white !important;
+    cursor: pointer;
+}
+
 
 /* Styling */
 .top {
@@ -99,7 +115,7 @@ textarea {
 }
 
 .booking-calendar tbody td {
-    position: relative;
+    
     padding: 0.125rem;
     text-align: center;
     border: 1px solid #ccc;
@@ -107,16 +123,20 @@ textarea {
     height: 2rem;
 }
 
-.booking-calendar tbody td.pad {
-    opacity: 0.7;
-}
+    .booking-calendar tbody td.pad {
+        opacity: 0.7;
+    }
 
-.booking-calendar tbody td.today {
-    font-weight: bold;
-}
+    .booking-calendar tbody td.today {
+        font-weight: bold;
+    }
 
-.booking-calendar tbody td.available {
-    background: lightgreen;
+    .booking-calendar tbody td.available {
+        background: deepskyblue;
+    }
+
+.booking-calendar tbody td.past {
+    background-color: lightgray;
 }
 
 .booking-calendar tbody td.today:after {
@@ -132,7 +152,6 @@ textarea {
 
 .booking-calendar tbody td a {
     display: block;
-    background-color: deepskyblue;
     color: #fff;
 }
 

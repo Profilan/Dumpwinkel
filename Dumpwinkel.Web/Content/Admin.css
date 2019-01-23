@@ -100,9 +100,15 @@
 }
 
 /*
+    Cards
+*/
+.card-img-top {
+    max-height: 95px;
+}
+
+/*
  * Login Page
  */
-
 .form-signin {
     width: 100%;
     max-width: 330px;

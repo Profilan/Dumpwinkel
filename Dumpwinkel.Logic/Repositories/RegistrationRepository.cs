@@ -70,7 +70,15 @@ namespace Dumpwinkel.Logic.Repositories
 
         public IEnumerable<Registration> List()
         {
-            throw new NotImplementedException();
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = from x in session.Query<Registration>()
+                            select x;
+
+                query = query.OrderByDescending(x => x.Created);
+
+                return query.ToList();
+            }
         }
 
         public void Update(Registration entity)

@@ -18,14 +18,7 @@ namespace Dumpwinkel.Web
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
                 namespaces: new[] { "Dumpwinkel.Web.Controllers" }
-            );
-
-            routes.MapRoute(
-                name: "Admin_Default",
-                url: "admin/{controller}/{action}/{id}",
-                defaults: new { controller = "Dashboard", action = "Index", id = UrlParameter.Optional },
-                namespaces: new[] { "Dumpwinkel.Web.Controllers.Admin" }
-            );
+                );
         }
     }
 }

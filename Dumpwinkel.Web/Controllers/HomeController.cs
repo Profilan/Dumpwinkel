@@ -9,12 +9,14 @@ using System.Web.UI.WebControls;
 
 namespace Dumpwinkel.Web.Controllers
 {
-    public class HomeController : Controller
+   
+    public class HomeController : BaseController
     {
         protected string[] Months = { "Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December" };
 
         private readonly EventRepository _eventRepository = new EventRepository();
 
+        [AllowAnonymous]
         public ActionResult Index()
         {
             var currentDate = DateTime.Now;
@@ -32,13 +34,15 @@ namespace Dumpwinkel.Web.Controllers
                 for (int j = 0; j < 42; j++)
                 {
                     DateTime date = startDate.AddDays(j);
+                    
                     var maxPersons = _eventRepository.GetMaxPersonsByDate(date);
                     days.Add(new Models.CalendarDay()
                     {
                         Date = date,
                         IsVisible = date < firstDayOfTheMonth || date > lastDayOfTheMonth ? false : true,
                         MaxPersons = _eventRepository.GetMaxPersonsByDate(date),
-                        IsAvailable = maxPersons > 0 ? true : false
+                        IsAvailable = maxPersons > 0 ? true : false,
+                        IsPast = date < currentDate ? true : false
                     });
 
                 }

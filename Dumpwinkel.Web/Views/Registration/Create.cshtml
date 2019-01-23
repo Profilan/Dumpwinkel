@@ -10,50 +10,93 @@
             <h2>Registreer</h2>
 
 
-            @using (Html.BeginForm()) 
+            @using (Html.BeginForm("Create", "Registration", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate"  }))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(model => model.EventId);
-    
-                <div class="form-horizontal">
-                    <h4>@Model.Title</h4>
-                    <hr />
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+            <div class="form-horizontal">
+                <h5>@Model.Title</h5>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
 
-                        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
-
-                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.NumberOfVisitors, htmlAttributes: new { @class = "control-label" })
-
-                        @Html.EditorFor(model => model.NumberOfVisitors, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.NumberOfVisitors, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-                        <input type="submit" value="Registreer" class="btn btn-primary" />
+                    <input type="text" class="form-control" id="Name" name="Name" placeholder="Naam" required />
+                    <div class="invalid-feedback">
+                        Naam is verplicht
                     </div>
                 </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Postcode, htmlAttributes: new { @class = "control-label" })
+
+                    <input type="text" class="form-control" id="Postcode" name="Postcode" placeholder="Postcode" pattern="[1-9][0-9]{3}[a-zA-Z]{2}" required />
+                    <div class="invalid-feedback">
+                        Postcode is ongeldig (Formaat: 1234AA, zonder spatie)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label" })
+
+                    <input type="text" class="form-control" id="City" name="City" placeholder="Woonplaats" required />
+                    <div class="invalid-feedback">
+                        Woonplaats is verplicht
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+
+                    <input type="email" class="form-control" id="Email" name="Email" placeholder="E-mail adres" required />
+                    <div class="invalid-feedback">
+                        Ongeldig E-mail adres
+                    </div>
+                </div>
+                <div class="">
+                    @Html.LabelFor(model => model.NumberOfVisitors, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="NumberOfVisitors" id="NumberOfVisitors1" value="1" checked>
+                    <label class="form-check-label" for="NumberOfVisitors1">1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="NumberOfVisitors" id="NumberOfVisitors2" value="2">
+                    <label class="form-check-label" for="NumberOfVisitors2">2</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="NumberOfVisitors" id="NumberOfVisitors3" value="3">
+                    <label class="form-check-label" for="NumberOfVisitors3">3</label>
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Registreer" class="btn btn-primary" />
+                    <a href="/home" class="btn btn-secondary float-right">Annuleer</a>
+                </div>
+            </div>
             }
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 }

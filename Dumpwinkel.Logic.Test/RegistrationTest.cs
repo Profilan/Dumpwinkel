@@ -8,28 +8,7 @@ namespace Dumpwinkel.Logic.Test
     [TestClass]
     public class RegistrationTest
     {
-        [TestMethod]
-        public void CreateSlots()
-        {
-            var dumpstoreRep = new DumpstoreRepository();
-            var eventRep = new EventRepository();
-
-            var dumpstore = dumpstoreRep.GetById(new Guid("B980E94C-4436-4966-B291-2B377080E6E3"));
-
-            var startDate = DateTime.Parse("2019-01-10 08:30:00");
-            var endDate = DateTime.Parse("2019-01-10 18:00:00");
-
-            var maxPersonsPerHour = 100;
-
-            var events = Event.CreateRange(dumpstore, startDate, endDate, 30, maxPersonsPerHour);
-            
-            foreach (var newEvent in events)
-            {
-                eventRep.Insert(newEvent);
-            }
-        }
-
-        [TestMethod]
+         [TestMethod]
         public void CreateDumpstore()
         {
             var rep = new DumpstoreRepository();
@@ -43,7 +22,7 @@ namespace Dumpwinkel.Logic.Test
         {
             var rep = new EventRepository();
 
-            var total = rep.getMaxPersonsByDate(DateTime.Parse("2018-12-27"));
+            var total = rep.GetMaxPersonsByDate(DateTime.Parse("2018-12-27"));
         }
 
         [TestMethod]
