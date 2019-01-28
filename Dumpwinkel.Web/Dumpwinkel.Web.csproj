@@ -52,6 +52,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AI.DependencyCollector, Version=2.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.DependencyCollector.2.8.1\lib\net45\Microsoft.AI.DependencyCollector.dll</HintPath>
     </Reference>
@@ -219,7 +222,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActivationEmail.cs" />
     <Compile Include="Models\BaseViewModel.cs" />
+    <Compile Include="Models\ConfirmationEmail.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\EventListViewModel.cs" />
     <Compile Include="Models\EventViewModel.cs" />
@@ -306,6 +311,9 @@
     <Content Include="Backload\Client\blueimp\templates\js\tmpl.js" />
     <Content Include="Backload\Client\blueimp\templates\js\tmpl.min.js" />
     <Content Include="Content\Admin.css" />
+    <Content Include="Content\bootstrap-datetimepicker-standalone.css" />
+    <Content Include="Content\bootstrap-datetimepicker.css" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -317,8 +325,10 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\images\dump-pand.jpg" />
     <Content Include="Content\images\zevenhuis.jpg" />
-    <Content Include="Content\marker.png" />
-    <Content Include="Content\mask.png" />
+    <Content Include="fonts\Code39.svg" />
+    <Content Include="img\logo_eekhoorn_staand.png" />
+    <Content Include="img\marker.png" />
+    <Content Include="img\mask.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -360,7 +370,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
-    <Content Include="Content\wheel.png" />
+    <Content Include="img\wheel.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
@@ -372,6 +382,7 @@
     <Content Include="img\Logo_De_Eekhoorn_homepageNW_2.png" />
     <Content Include="img\upload-spinner.gif" />
     <Content Include="img\zevenhuis.jpg" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -415,6 +426,9 @@
     <Content Include="Backload\Client\blueimp\blob\package.json" />
     <Content Include="Areas\Admin\Views\Setting\_BackgroundPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Setting\_GeneralPartial.cshtml" />
+    <Content Include="fonts\Code39.eot" />
+    <Content Include="fonts\Code39.ttf" />
+    <Content Include="fonts\Code39.woff" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\farbtastic.js" />
@@ -479,6 +493,9 @@
     <Content Include="Views\Registration\Index.cshtml" />
     <Content Include="Views\Emails\_ViewStart.cshtml" />
     <Content Include="Views\Emails\Web.config" />
+    <Content Include="Views\Emails\Confirmation.Html.cshtml" />
+    <Content Include="Views\Emails\Confirmation.cshtml" />
+    <Content Include="Views\Emails\Activation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

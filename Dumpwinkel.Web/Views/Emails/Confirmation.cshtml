@@ -1,0 +1,181 @@
+﻿@model Dumpwinkel.Web.Models.ConfirmationEmail
+
+To: @Model.To
+From: noreply@deeekhoorn.com
+Subject: Jouw aanvraag is geactiveerd en hiermee bevestigd
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <style type="text/css">
+        /* FONTS */
+        @@media screen {
+            @@import url('https://fonts.googleapis.com/css?family=Libre+Barcode+39');
+        }
+
+
+        /* CLIENT-SPECIFIC STYLES */
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+
+        /* RESET STYLES */
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+
+        table {
+            border-collapse: collapse !important;
+        }
+
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        /* iOS BLUE LINKS */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* MOBILE STYLES */
+        @@media screen and (max-width:600px) {
+            h1 {
+                font-size: 32px !important;
+                line-height: 32px !important;
+            }
+        }
+
+        /* ANDROID CENTER FIX */
+        div[style*="margin: 16px 0;"] {
+            margin: 0 !important;
+        }
+    </style>
+</head>
+
+<body style="background-color: lightgray; margin: 0 !important; padding: 0 !important; font-family: Arial, Helvetica, sans-serif !important; font-size: 14px !important;">
+    <!--[if mso]-->
+    <style type="text/css">
+        body, table, td {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+    </style>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center">
+                <!--[if (gte mso 9)|(IE)]>
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+                <tr>
+                <td align="center" valign="top" width="600">
+                <![endif]-->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; margin: 15px;">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr style="background-color: #00618b; color: #ffffff;">
+                                    <td style="padding: 0 15px; font-size: 15px;">
+                                        DUMPWINKEL: jouw aanvraag is geactiveerd
+                                    </td>
+                                    <td style="padding: 10px 15px;">
+                                        <img src="@Model.LogoUrl" alt="https://dumpwinkel.deeekhoorn.com" height="100" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding: 0 15px; font-size: 15px;">
+                                        <p>
+                                            Beste @Model.Name,<br /><br />
+
+                                            Jouw aanvraag voor het bezoeken van de dumpwinkel is geactiveerd:<br />
+
+                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <td style="padding-left: 15px;">
+                                                        Datum
+                                                    </td>
+                                                    <td>
+                                                        : <b>@Model.Date</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 15px;">
+                                                        Tijdslot
+                                                    </td>
+                                                    <td>
+                                                        : <b>@Model.TimeFrom t/m @Model.TimeTill</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 15px;">
+                                                        Aantal personen
+                                                    </td>
+                                                    <td>
+                                                        : <b>@Model.NumberOfVisitors</b>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <br /><br />
+                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <td align="center">
+                                                        Jouw toegangscode:<br />
+
+
+                                                        <img src="@Model.BarcodeUrl" border="0" style="width: 200px">
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <br />
+                                            Print deze bevestiging en neem deze mee als jij op de aangegeven datum en tijdstip de
+                                            dumpwinkel bezoekt. Zonder toegangscode word je helaas niet toegelaten
+                                            <br /><br />
+                                            Met vriendelijke groet,<br />
+                                            <a href="https://dumpwinkel.deeekhoorn.com">dumpwinkel.deeekhoorn.com</a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,11 +1,12 @@
 ﻿using Dumpwinkel.Logic.Models;
 using Dumpwinkel.Logic.Repositories;
-using Dumpwinkel.Logic.Services;
 using Dumpwinkel.Web.Models;
+using Postal;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -67,18 +68,24 @@ namespace Dumpwinkel.Web.Controllers
 
                 var numberOfVisitors = Convert.ToInt32(collection["NumberOfVisitors"]);
 
-                var registration = Registration.Create(visitor, eventItem, numberOfVisitors);
+                var registration = Registration.Create(visitor, eventItem, numberOfVisitors, false);
 
                 _registrationRepository.Insert(registration);
 
-                var mailService = new EmailService();
-                var confirmUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/confirm/" + registration.Id;
-                var message = "Beste " + collection["Name"] + ",<br /><br />";
-                message += "Bedankt voor je aanvraag. Door op de volgende link te klikken kun je de registratie bevestigen.<br /><br />";
-                message += "<a href=\"" + confirmUrl + "\">" + confirmUrl + "</a>" + "<br /><br />";
-                message += "Met vriendelijke groet,<br />";
-                message += "De Eekhoorn Dumpwinkel";
-                mailService.SendMail("beheerder@deeekhoorn.com", collection["Email"], "Dumpwinkel registratie aanvraag", message);
+                var activationUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/confirm/" + registration.Id;
+                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img/logo_eekhoorn_staand.png";
+                ActivationEmail email = new ActivationEmail()
+                {
+                    To = collection["Email"],
+                    ActivationUrl = activationUrl,
+                    Name = collection["Name"],
+                    Date = eventItem.TimeRange.Start.ToString("dd-MM-yyyy"),
+                    TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
+                    TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
+                    NumberOfVisitors = numberOfVisitors,
+                    LogoUrl = logoUrl
+                };
+                email.Send();
 
                 return RedirectToAction("ThankYou");
             }
@@ -99,23 +106,35 @@ namespace Dumpwinkel.Web.Controllers
                 _registrationRepository.Update(registration);
 
                 var eventItem = _eventRepository.GetById(registration.Event.Id);
-                eventItem.UpdateMaximumNumberOfVisitors(eventItem.MaximumNumberOfVisitors - registration.NumberOfVisitors);
-                _eventRepository.Update(eventItem);
+                //eventItem.UpdateMaximumNumberOfVisitors(eventItem.MaximumNumberOfVisitors - registration.NumberOfVisitors);
+                //_eventRepository.Update(eventItem);
 
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
+
+                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img/logo_eekhoorn_staand.png";
+                //var barcodeUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/fonts/Code39.woff";
+                //var barcodeUrl = @"https://www.barcodesinc.com/generator/image.php?code=" + registration.Id.ToString().ToUpper() + "&style=197&type=C39&width=590&height=100&xres=1&font=4";
+                var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + registration.Id.ToString() + @"&chs=200x200&cht=qr&chld=H%7C0";
 
                 var fileName = eventItem.Id + ".pdf";
                 var temp = Path.GetTempPath();
                 var path = Path.Combine(temp, fileName);
 
-                var mailService = new EmailService();
-                var message = "Beste " + visitor.Name + ",<br /><br />";
-                message += "Uw aanvraag is gelukt. Bijgevoegd vindt u de registratie. Deze moet u meenemen bij uw bezoek aan de dumpwinkel.<br /><br />";
-                message += "Met vriendelijke groet,<br />";
-                message += "De Eekhoorn Dumpwinkel";
-
-                mailService.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
-                mailService.SendMail("beheerder@deeekhoorn.com", visitor.Email, "Dumpwinkel registratie bevestiging", message, path);
+                ConfirmationEmail email = new ConfirmationEmail()
+                {
+                    To = visitor.Email,
+                    Name = visitor.Name,
+                    Date = eventItem.TimeRange.Start.ToString("dd-MM-yyyy"),
+                    TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
+                    TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
+                    NumberOfVisitors = registration.NumberOfVisitors,
+                    LogoUrl = logoUrl,
+                    BarcodeUrl = barcodeUrl,
+                    RegistrationId = registration.Id.ToString()
+                };
+                //email.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
+                //email.Attach(new Attachment(path));
+                email.Send();
 
                 return RedirectToAction("Confirmed");
             }

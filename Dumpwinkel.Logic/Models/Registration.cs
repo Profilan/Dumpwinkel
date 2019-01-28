@@ -17,6 +17,7 @@ namespace Dumpwinkel.Logic.Models
         public virtual DateTime Modified { get; protected set; }
 
         public virtual bool Confirmed { get; set; }
+        public virtual bool Visited { get; set; }
 
         #region Not Persisted
         public virtual int CreatedBy { get; set; }
@@ -37,7 +38,8 @@ namespace Dumpwinkel.Logic.Models
         public static Registration Create(Visitor visitor,
             Event eventItem,
             int numberOfVisitors,
-            bool confirmed = false)
+            bool confirmed = false,
+            bool visited = false)
         {
             Guard.ForNull(visitor, "visitor");
             Guard.ForNull(eventItem, "eventItem");
@@ -49,6 +51,7 @@ namespace Dumpwinkel.Logic.Models
             registration.Created = DateTime.Now;
             registration.Modified = registration.Created;
             registration.Confirmed = confirmed;
+            registration.Visited = visited;
 
             return registration;
         }

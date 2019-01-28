@@ -41,7 +41,7 @@
                                 {
                                 @:</tr><tr>
                                 }
-                                if (month.CalendarDays[i].IsAvailable && !month.CalendarDays[i].IsPast)
+                                if (month.CalendarDays[i].IsAvailable && !month.CalendarDays[i].IsPast && month.CalendarDays[i].IsVisible)
                                 {
                                     <td class="available"><a href="#" data-id="@month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</a></td>
                                 }
@@ -118,7 +118,7 @@
                             window.location.href = '/registration/Create/' + event.Id;
                         });
                         var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
-                        var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.MaxPersons + " plaatsen");
+                        var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.Available + " plaatsen");
                         row.append(timeRange);
                         row.append(maxPersons);
                         $('#events-table tbody').append(row);

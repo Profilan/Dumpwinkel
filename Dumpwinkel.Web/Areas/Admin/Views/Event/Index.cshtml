@@ -13,12 +13,7 @@
 
 <div class="btn-toolbar mb-2" role="toolbar">
     <div class="col-md-3">
-        <div class="input-group date" id="Date" data-target-input="nearest">
-            <input type="text" class="form-control datetimepicker-input" name="Date" data-target="#Date" />
-            <div class="input-group-append" data-target="#Date" data-toggle="datetimepicker">
-                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-            </div>
-        </div>
+        <input type="text" class="form-control" id="Date" name="Date" />
     </div>
 </div>
 
@@ -34,6 +29,15 @@
             <th>
                 Maximum aantal
             </th>
+            <th>
+                #Geregistreerd
+            </th>
+            <th>
+                #Beschikbaar
+            </th>
+            <th>
+                #Pending
+            </th>
         </tr>
     </thead>
 
@@ -42,6 +46,9 @@
             <td class="startTime"></td>
             <td class="endTime"></td>
             <td class="maxPersons"></td>
+            <td class="registered"></td>
+            <td class="available"></td>
+            <td class="pending"></td>
         </tr>
 
     </tbody>
@@ -49,14 +56,16 @@
 
 </table>
 
+
+
 @section scripts
 {
     <script type="text/javascript" src="~/Scripts/moment.js"></script>
     <script type="text/javascript" src="~/Scripts/nl.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript">
 
-        
+
 
         function refreshSlots(date) {
             $('#events-table tbody').empty();
@@ -68,10 +77,16 @@
                     var endTime = $('<td />').text(event.EndTime);
                     var registrationsLink = $('<a />').attr('href', '/admin/registration?eventId=' + event.Id).text(event.MaxPersons);
                     var maxPersons = $('<td />').append(registrationsLink);
+                    var pending = $('<td />').text(event.Pending);
+                    var registered = $('<td />').text(event.Registered);
+                    var available = $('<td />').text(event.Available);
 
                     row.append(startTime);
                     row.append(endTime);
                     row.append(maxPersons);
+                    row.append(registered);
+                    row.append(available);
+                    row.append(pending);
                     $('#events-table tbody').append(row);
                 });
 
@@ -82,27 +97,30 @@
             var disabledDates = [];
              $.getJSON('/api/calendar', { currentDate: date }, function (result) {
                 $.each(result, function (index, day) {
-                    disabledDates.push(day.Date);
+                    disabledDates.push(moment(day.Date));
                 });
-                console.log(disabledDates);
-                $('#Date').datetimepicker('disabledDates', disabledDates);
+
+                 $('#Date').data("DateTimePicker").disabledDates(disabledDates);
             });
         }
 
         $(function () {
 
             $('#Date').datetimepicker({
-                locale: 'nl',
-                date: "@Model.Date",
-                format: 'L'
+                format: 'L',
+                date: "@Model.Date"
             });
 
-            $('#Date').datetimepicker('disabledDates', ["2019-01-29T00:00:00"]);
-
-            $("#Date").on("change.datetimepicker", function (e) {
-                
+            $('#Date').on("dp.change", function (e) {
                 refreshSlots(e.date.format('YYYY-MM-DD'));
             });
+
+            $('#Date').on("dp.update", function (e) {
+                refreshCalendar(e.viewDate.format('YYYY-MM-DD'));
+            });
+
+            refreshCalendar("@Model.Date");
+            refreshSlots("@Model.Date");
         });
     </script>
 }

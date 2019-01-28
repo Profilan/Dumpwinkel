@@ -35,7 +35,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                     StartTime = eventItem.TimeRange.Start.ToString("hh:mm"),
                     EndTime = eventItem.TimeRange.End.ToString("hh:mm"),
                     MaxPersons = eventItem.MaximumNumberOfVisitors
-
+            
                 });
             }
 

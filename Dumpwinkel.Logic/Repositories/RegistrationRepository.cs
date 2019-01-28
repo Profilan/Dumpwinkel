@@ -1,6 +1,7 @@
 ﻿using Dumpwinkel.Logic.Data;
 using Dumpwinkel.Logic.Models;
 using NHibernate;
+using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +91,46 @@ namespace Dumpwinkel.Logic.Repositories
                     session.SaveOrUpdate(entity);
                     transaction.Commit();
                 }
+            }
+        }
+
+        public int GetRegisteredCount(Event eventItem)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+               Registration registration = null;
+                var total = session.QueryOver<Registration>(() => registration)
+                    .Select(Projections.Sum<Registration>(x => x.NumberOfVisitors))
+                    .Where(x => x.Confirmed == true)
+                    .Where(x => x.Event == eventItem)
+
+                    .UnderlyingCriteria.UniqueResult();
+
+                if (total != null)
+                {
+                    return (int)total;
+                }
+                return 0;
+            }
+        }
+
+        public int GetPendingCount(Event eventItem)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                Registration registration = null;
+                var total = session.QueryOver<Registration>(() => registration)
+                    .Select(Projections.Sum<Registration>(x => x.NumberOfVisitors))
+                    .Where(x => x.Confirmed == false)
+                    .Where(x => x.Event == eventItem)
+
+                    .UnderlyingCriteria.UniqueResult();
+
+                if (total != null)
+                {
+                    return (int)total;
+                }
+                return 0;
             }
         }
     }
