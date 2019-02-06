@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "GRolDumpwinkelBeheerder")]
     public class SettingController : Controller
     {
 
@@ -33,7 +34,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 Title = settings.Title,
                 TitleColor = settings.TitleColor,
                 TitleSize = settings.TitleSize,
-                IntroText = settings.IntroText,
+                IntroText = settings.IntroText.Replace("<br />", System.Environment.NewLine),
                 IntroTextColor = settings.IntroTextColor,
                 IntroTextSize = settings.IntroTextSize,
                 BackgroundImageUrl = settings.BackgroundImageUrl,
@@ -56,7 +57,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 settings.Title = collection["Title"];
                 settings.TitleColor = collection["TitleColor"];
                 settings.TitleSize = Convert.ToInt32(collection["TitleSize"]);
-                settings.IntroText = collection["IntroText"];
+                settings.IntroText = collection["IntroText"].Replace(System.Environment.NewLine, "<br />");
                 settings.IntroTextColor = collection["IntrotextColor"];
                 settings.IntroTextSize = Convert.ToInt32(collection["IntroTextSize"]);
                 settings.BackgroundImageUrl = collection["ImageUrl"];

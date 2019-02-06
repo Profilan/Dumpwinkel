@@ -35,7 +35,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             if (authenticationResult.IsSuccess)
             {
                 // we are in!
-                return RedirectToLocal(returnUrl);
+                return Redirect(returnUrl);
             }
 
             ModelState.AddModelError("", authenticationResult.ErrorMessage);

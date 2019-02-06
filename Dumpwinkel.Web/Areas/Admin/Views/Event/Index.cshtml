@@ -7,55 +7,131 @@
 
 <h2>Evenementen</h2>
 
-<p>
-    @Html.ActionLink("Nieuw evenement", "Create")
-</p>
+<h4 class="current-date">@Model.Date.ToLongDateString()</h4>
 
-<div class="btn-toolbar mb-2" role="toolbar">
-    <div class="col-md-3">
-        <input type="text" class="form-control" id="Date" name="Date" />
+<div class="row">
+    <div class="col-md-12">
+        <a id="btn-start" data-date="@Model.Date.ToString("yyyy-MM-dd")" href="#" class="btn btn-primary mb-2 @(Model.Events.Count() > 0 ? "" : "disabled")">+Timeslot AANVANG</a>
     </div>
 </div>
 
-<table id="events-table" class="table">
-    <thead>
-        <tr>
-            <th>
-                Start
-            </th>
-            <th>
-                Eind
-            </th>
-            <th>
-                Maximum aantal
-            </th>
-            <th>
-                #Geregistreerd
-            </th>
-            <th>
-                #Beschikbaar
-            </th>
-            <th>
-                #Pending
-            </th>
-        </tr>
-    </thead>
+<div class="row">
+    <div class="col-md-3 order-md-2">
+        <table class="booking-calendar">
+            <caption><a class="float-left ml-2" id="btn-prev-month" href="/Admin/Event?date=@Model.Date.AddMonths(-1).ToString("yyyy-MM-dd")" style="color: #fff; text-decoration: none;"><i class="fa fa-chevron-left"></i></a>@Model.Month.Title<a class="float-right mr-2" id="btn-next-month" href="/Admin/Event?date=@Model.Date.AddMonths(1).ToString("yyyy-MM-dd")" style="color: #fff; text-decoration: none;"><i class="fa fa-chevron-right"></i></a></caption>
+            <thead>
+                <tr>
+                    <th>MA</th>
+                    <th>DI</th>
+                    <th>WO</th>
+                    <th>DO</th>
+                    <th>VR</th>
+                    <th>ZA</th>
+                    <th>ZO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @for (int i = 0; i < 42; i++)
+                    {
+                        if (i % 7 == 0 && i > 0)
+                        {
+                        @:</tr><tr>
+                        }
+                        if (Model.Month.CalendarDays[i].IsVisible)
+                        {
+                            if (Model.Month.CalendarDays[i].IsAvailable)
+                            {
+                                <td class="available existing-event @(Model.Month.CalendarDays[i].IsToday ? "today" : "")"><a href="/Admin/Event?date=@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")" data-date="@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@Model.Month.CalendarDays[i].Date.Day.ToString()</a></td>
+                            }
+                            else
+                            {
+                                <td class="new-event @(Model.Month.CalendarDays[i].IsToday ? "today" : "")"><a href="/Admin/Event/Create?date=@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")" data-date="@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@Model.Month.CalendarDays[i].Date.Day.ToString()</a></td>
+                            }
+                        }
+                        else
+                        {
+                            <td class="hidden"></td>
+                        }
+                    }
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-9 order-md-1">
 
-    <tbody>
-        <tr class="prototype d-none">
-            <td class="startTime"></td>
-            <td class="endTime"></td>
-            <td class="maxPersons"></td>
-            <td class="registered"></td>
-            <td class="available"></td>
-            <td class="pending"></td>
-        </tr>
+        <table id="events-table" class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Start
+                    </th>
+                    <th>
+                        Eind
+                    </th>
+                    <th>
+                        Maximum aantal
+                    </th>
+                    <th>
+                        #Geregistreerd
+                    </th>
+                    <th>
+                        #Beschikbaar
+                    </th>
+                    <th>
+                        #Pending
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
 
-    </tbody>
+            <tbody>
+                <tr class="prototype d-none">
+                    <td class="startTime"></td>
+                    <td class="endTime"></td>
+                    <td class="maxPersons"></td>
+                    <td class="registered"></td>
+                    <td class="available"></td>
+                    <td class="pending"></td>
+                    <td class="actions"><a class="btn btn-sm btn-link" href="#">Wijzigen</a><a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Verwijderen</a></td>
+                </tr>
+
+            </tbody>
 
 
-</table>
+        </table>
 
+
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a id="btn-end" data-date="@Model.Date.ToString("yyyy-MM-dd")" href="#" class="btn btn-primary mt-2 @(Model.Events.Count() > 0 ? "" : "disabled")">+Timeslot EINDE</a>
+    </div>
+</div>
+
+
+<div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Verwijder <span id="titleName"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Weet je het zeker?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                <button id="okBtn" type="button" class="btn btn-primary">Ja</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section scripts
@@ -68,40 +144,62 @@
 
 
         function refreshSlots(date) {
+
+            console.log(date);
+
             $('#events-table tbody').empty();
 
             $.getJSON('/api/event', { date: date }, function (result) {
-                $.each(result, function (index, event) {
-                    var row = $('<tr />');
-                    var startTime = $('<td />').text(event.StartTime);
-                    var endTime = $('<td />').text(event.EndTime);
-                    var registrationsLink = $('<a />').attr('href', '/admin/registration?eventId=' + event.Id).text(event.MaxPersons);
-                    var maxPersons = $('<td />').append(registrationsLink);
-                    var pending = $('<td />').text(event.Pending);
-                    var registered = $('<td />').text(event.Registered);
-                    var available = $('<td />').text(event.Available);
+                if (result.length > 0) {
+                    $.each(result, function (index, event) {
+                        var row = $('<tr />').attr('data-id', event.Id);
+                        var startTime = $('<td />').text(event.StartTime);
+                        var endTime = $('<td />').text(event.EndTime);
 
-                    row.append(startTime);
-                    row.append(endTime);
-                    row.append(maxPersons);
-                    row.append(registered);
-                    row.append(available);
-                    row.append(pending);
-                    $('#events-table tbody').append(row);
-                });
+                        var maxPersons = $('<td />').text(event.MaxPersons);
+                        var pending = $('<td />').text(event.Pending);
+                        var registered = $('<td />')
+                        if (event.Registered > 0) {
+                            var registrationsLink = $('<a />').attr('href', '/admin/registration?eventId=' + event.Id).text(event.Registered);
+                            registered.append(registrationsLink);
 
+                        } else {
+                            registered.text(event.Registered);
+                        }
+
+                        var available = $('<td />').text(event.Available);
+                        var actions = $('<td />');
+                        var deleteLink = $('<a />').addClass('btn btn-sm btn-link').attr('data-id', event.Id).attr('data-title', event.StartTime + ' - ' + event.EndTime).attr('href', '#').attr('data-toggle', 'modal').attr('data-target', '#deleteModal').text('Verwijderen');
+                        if (event.Registered > 0) {
+                            deleteLink.addClass('disabled');
+                        }
+                        actions.append(deleteLink);
+                        var editLink = $('<a />').addClass('btn btn-sm btn-link').attr('href', '/admin/event/edit/' + event.Id + '?returnurl=' + '/admin/event?date=' + '@Model.Date.ToString("yyyy-MM-dd")').text('Wijzigen');
+                        actions.append(editLink);
+
+                        row.append(startTime);
+                        row.append(endTime);
+                        row.append(maxPersons);
+                        row.append(registered);
+                        row.append(available);
+                        row.append(pending);
+                        row.append(actions);
+                        $('#events-table tbody').append(row);
+                    });
+                }
+                var dateOptions = { weekday: 'long', year: 'numeric', day: 'numeric', month: 'long' };
+
+                var objDate = new Date(date);
+                $('.current-date').text(objDate.toLocaleDateString("nl-NL", dateOptions));
+
+
+                $('#btn-start').attr('data-date', objDate.toISOString().split('T')[0]);
+                $('#btn-end').attr('data-date', objDate.toISOString().split('T')[0]);
             });
         }
 
         function refreshCalendar(date) {
-            var disabledDates = [];
-             $.getJSON('/api/calendar', { currentDate: date }, function (result) {
-                $.each(result, function (index, day) {
-                    disabledDates.push(moment(day.Date));
-                });
 
-                 $('#Date').data("DateTimePicker").disabledDates(disabledDates);
-            });
         }
 
         $(function () {
@@ -119,8 +217,53 @@
                 refreshCalendar(e.viewDate.format('YYYY-MM-DD'));
             });
 
-            refreshCalendar("@Model.Date");
-            refreshSlots("@Model.Date");
+            $('.new-event').click(function (e) {
+                console.log("new event");
+            });
+
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var title = button.data('title');
+                var id = button.data('id');
+                
+                $('#titleName').text(title);
+                $('#okBtn').attr('data-id', id);
+            });
+
+
+            $('#okBtn').click(function (event) {
+                event.preventDefault();
+
+                var id = $(this).data('id');
+                $.post('/api/Event/Delete/' + id, function () {
+                    $('tr[data-id="' + id + '"]').remove();
+                    $('#deleteModal').modal('hide');
+                });
+
+            });
+
+
+            $('#btn-start').click(function (e) {
+                e.preventDefault();
+
+                $.post('/api/event/before/' + $(this).attr('data-date'), function (response) {
+                    console.log(response.EventDate);
+                    refreshSlots(response.EventDate);
+
+                });
+            });
+
+            $('#btn-end').click(function (e) {
+                e.preventDefault();
+
+                $.post('/api/event/after/' + $(this).attr('data-date'), function (response) {
+                    console.log(response.EventDate);
+                    refreshSlots(response.EventDate);
+                });
+            });
+
+            refreshCalendar("@Model.Date.ToString("yyyy-MM-dd")");
+            refreshSlots("@Model.Date.ToString("yyyy-MM-dd")");
         });
     </script>
 }

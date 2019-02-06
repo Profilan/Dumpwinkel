@@ -29,27 +29,29 @@
 
     @foreach (var image in Model.Images)
     {
-        <div class="video col-md-2 mb-3" style="text-align: center;">
-            <div class="card">
+        <div class="image col-md-2 mb-3" style="text-align: center;" data-url="@image">
+            <div class="card" style="min-height: 280px;">
                 <img src="@Url.Content(image)" class="card-img-top" />
                 <div class="card-body">
 
                     <input type="radio" name="ImageUrl" value="@image" @(Model.BackgroundImageUrl == image ? "checked" : "") />
                 </div>
                 <div class="card-footer">
-                    <small class="text-muted">@image</small>
+                    <small class="text-muted">@image</small><br /><br />
+                    <button data-url="@image" class="btn btn-dark btn-sm btn-delete">Verwijderen</button>
                 </div>
             </div>
         </div>
     }
-    <div class="image-prototype col-md-2 mb-3 d-none" style="text-align: center;">
-        <div class="card">
+    <div class="image image-prototype col-md-2 mb-3 d-none" style="text-align: center;">
+        <div class="card" style="min-height: 280px;">
             <img class="card-img-top" />
             <div class="card-body">
                 <input type="radio" name="ImageUrl" />
             </div>
             <div class="card-footer">
                 <small class="text-muted"></small>
+                <button class="btn btn-dark btn-sm btn-delete">Verwijderen</button>
             </div>
         </div>
     </div>
@@ -60,46 +62,68 @@
 <script src="~/Backload/Client/blueimp/fileupload/js/jquery.fileupload.js"></script>
 <script src="~/Backload/Client/blueimp/fileupload/js/jquery.fileupload-process.js"></script>
 <script>
-$(function () {
-    var fileCount = @Model.Images.Count();
 
-    $("#fileupload").fileupload({
-        url: "@Model.UploadUrl",
-        dataType: "json",
-        // acceptFileTypes: @Model.AcceptFileTypes,
-        maxFileSize: @Model.MaxFileSize * 1024 * 1024,
-        dropZone: $("#uploader-dropzone"),
-        fail: function (e, data) {
-            console.log(data);
-        }
-    });
+    function deleteImage(url) {
+        $.post('/api/image/delete/' + url, function (result) {
+            var image = $("div[data-url='" + result + "']");
+            image.remove();
+        });
+    }
 
-    $("#fileupload").bind("fileuploadadd", function (e, data) {
+    $(function () {
+        var fileCount = @Model.Images.Count();
+
+    
+
+        $("#fileupload").fileupload({
+            url: "@Model.UploadUrl",
+            dataType: "json",
+            // acceptFileTypes: @Model.AcceptFileTypes,
+            maxFileSize: @Model.MaxFileSize * 1024 * 1024,
+            dropZone: $("#uploader-dropzone"),
+            fail: function (e, data) {
+                console.log(data);
+            }
+        });
+
+        $('.btn-delete').click(function (e) {
+            e.preventDefault();
+            console.log(btoa($(this).attr('data-url')));
+            deleteImage(btoa($(this).attr('data-url')));
+        });
+
+        $("#fileupload").bind("fileuploadadd", function (e, data) {
         
-        var proto = $("#images .image-prototype").clone();
-        proto.attr("data-filename", data.files[0].name);
+            var proto = $("#images .image-prototype").clone();
+            proto.attr("data-filename", data.files[0].name);
+        
 
-        var spinner = proto.find(".card-img-top").attr("src", "/img/upload-spinner.gif").attr("width", 64).addClass("upload-spinner");
+            var spinner = proto.find(".card-img-top").attr("src", "/img/upload-spinner.gif").attr("width", 64).addClass("upload-spinner");
 
-        proto.removeClass("image-prototype d-none").addClass("image");
+            proto.removeClass("image-prototype d-none").addClass("image");
 
-        $("#images").prepend(proto);
+            $("#images").prepend(proto);
+        });
+
+        $("#fileupload").bind("fileuploaddone", function (e, data) {
+
+            var image = $("<img />").attr("src", data.result.path).addClass("card-img-top");
+
+            var proto = $("div[data-filename='" + data.result.name + "']");
+            var spinner = proto.find(".card-img-top");
+
+            spinner.replaceWith(image);
+
+            proto.attr('data-url', data.result.path);
+            proto.find('input[type="radio"]').val(data.result.path);
+            proto.find('.text-muted').text(data.result.path);
+            proto.find(".btn-delete").attr('data-url', data.result.path).click(function (e) {
+                e.preventDefault();
+                deleteImage(btoa(data.result.path));
+            });
+
+        });
     });
-
-    $("#fileupload").bind("fileuploaddone", function (e, data) {
-
-        var image = $("<img />").attr("src", data.result.path).addClass("card-img-top");
-
-        var proto = $("div[data-filename='" + data.result.name + "']");
-        var spinner = proto.find(".card-img-top");
-
-        spinner.replaceWith(image);
-
-        proto.find('input[type="radio"]').val(data.result.path);
-        proto.find('.text-muted').text(data.result.path);
-
-    });
-});
 </script>
 
 

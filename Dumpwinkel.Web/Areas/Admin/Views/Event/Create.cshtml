@@ -10,7 +10,7 @@
 @using (Html.BeginForm("Create", "Event", FormMethod.Post, new { id = "eventForm" }))
 {
     @Html.AntiForgeryToken()
-
+    
  
 <div class="col-md-4">
 
@@ -42,7 +42,7 @@
         @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        <label>Max aantal personen (per uur)</label>
+        <label>Max aantal personen (per interval)</label>
         @Html.EditorFor(model => model.MaxPersons, new { htmlAttributes = new { @class = "form-control" } })
     </div>
     <div class="form-group">

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace Dumpwinkel.Logic.Repositories
 {
@@ -67,6 +68,63 @@ namespace Dumpwinkel.Logic.Repositories
         public IEnumerable<Registration> List(string sortOrder, string searchString, int pageSize, int pageNumber)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<Registration> List(string sortOrder, string searchString, int pageSize, int pageNumber, DateTime startDate, DateTime endDate, string eventId = null, string state = "all")
+        {
+
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = from r in session.Query<Registration>()
+                            select r;
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(r => r.Visitor.Name.Contains(searchString)
+                                           || r.Visitor.Postcode.Contains(searchString)
+                                           || r.Visitor.City.Contains(searchString)
+                                           || r.Visitor.Email.Contains(searchString));
+                }
+
+                query = query.Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate);
+                switch (state)
+                {
+                     case "visited":
+                        query = query.Where(r => r.Visited == true);
+                        break;
+                    case "confirmed":
+                        query = query.Where(r => r.Confirmed == true);
+                        break;
+                }
+
+                if (!String.IsNullOrEmpty(eventId))
+                {
+                    query = query.Where(r => r.Event.Id == new Guid(eventId));
+                }
+                
+
+                switch (sortOrder)
+                {
+                    case "postcode":
+                        query = query.OrderByDescending(r => r.Visitor.Postcode);
+                        break;
+                    case "name":
+                        query = query.OrderBy(r => r.Visitor.Name);
+                        break;
+                    case "email":
+                        query = query.OrderBy(r => r.Visitor.Email);
+                        break;
+                    case "city":
+                        query = query.OrderBy(r => r.Visitor.City);
+                        break;
+                    case "timerange":
+                    default:
+                        query = query.OrderByDescending(r => r.Event.TimeRange.Start);
+                        break;
+                }
+
+                return query.ToPagedList(pageNumber, pageSize);
+            }
         }
 
         public IEnumerable<Registration> List()

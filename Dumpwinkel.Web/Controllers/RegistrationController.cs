@@ -73,7 +73,7 @@ namespace Dumpwinkel.Web.Controllers
                 _registrationRepository.Insert(registration);
 
                 var activationUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/confirm/" + registration.Id;
-                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img/logo_eekhoorn_staand.png";
+                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
                 ActivationEmail email = new ActivationEmail()
                 {
                     To = collection["Email"],
@@ -111,10 +111,10 @@ namespace Dumpwinkel.Web.Controllers
 
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
 
-                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img/logo_eekhoorn_staand.png";
+                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
                 //var barcodeUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/fonts/Code39.woff";
                 //var barcodeUrl = @"https://www.barcodesinc.com/generator/image.php?code=" + registration.Id.ToString().ToUpper() + "&style=197&type=C39&width=590&height=100&xres=1&font=4";
-                var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + registration.Id.ToString() + @"&chs=200x200&cht=qr&chld=H%7C0";
+                var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + Uri.EscapeUriString(registration.Id.ToString()) + @"&chs=200x200&cht=qr&chld=H%7C0";
 
                 var fileName = eventItem.Id + ".pdf";
                 var temp = Path.GetTempPath();

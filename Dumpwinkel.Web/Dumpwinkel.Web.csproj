@@ -183,6 +183,15 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="X.PagedList, Version=7.5.0.0, Culture=neutral, PublicKeyToken=00b6c4f97602e5e8, processorArchitecture=MSIL">
+      <HintPath>..\packages\X.PagedList.7.5.0\lib\net461\X.PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="X.PagedList.Mvc, Version=7.5.0.0, Culture=neutral, PublicKeyToken=c6e0b5b21f916f4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\X.PagedList.Mvc.7.5.0\lib\net461\X.PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="X.PagedList.Mvc.Bootstrap4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\X.PagedList.Mvc.Bootstrap4.7.5.0\lib\net452\X.PagedList.Mvc.Bootstrap4.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -202,6 +211,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\Api\CalendarController.cs" />
+    <Compile Include="Areas\Admin\Controllers\Api\ImageController.cs" />
     <Compile Include="Areas\Admin\Controllers\Api\UploadController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventController.cs" />
@@ -211,7 +221,9 @@
     <Compile Include="Areas\Admin\Models\ADAuthenticationService.cs" />
     <Compile Include="Areas\Admin\Models\SettingViewModel.cs" />
     <Compile Include="Controllers\Api\EventController.cs" />
+    <Compile Include="Controllers\Api\RegistrationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CheckinController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RegistrationController.cs" />
     <Compile Include="DependencyResolution\ControllerConvention.cs" />
@@ -223,7 +235,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ActivationEmail.cs" />
+    <Compile Include="Models\Api\CheckinBody.cs" />
+    <Compile Include="Models\Api\CheckinMessage.cs" />
+    <Compile Include="Models\Api\CheckinResponse.cs" />
     <Compile Include="Models\BaseViewModel.cs" />
+    <Compile Include="Models\CheckinViewModel.cs" />
     <Compile Include="Models\ConfirmationEmail.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\EventListViewModel.cs" />
@@ -321,11 +337,14 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\farbtastic.css" />
+    <Content Include="Content\favicon.ico" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
-    <Content Include="Content\images\dump-pand.jpg" />
     <Content Include="Content\images\zevenhuis.jpg" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="fonts\Code39.svg" />
+    <Content Include="img\favicon.ico" />
+    <Content Include="img\icon-map.png" />
     <Content Include="img\logo_eekhoorn_staand.png" />
     <Content Include="img\marker.png" />
     <Content Include="img\mask.png" />
@@ -429,9 +448,12 @@
     <Content Include="fonts\Code39.eot" />
     <Content Include="fonts\Code39.ttf" />
     <Content Include="fonts\Code39.woff" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <Content Include="Areas\Admin\Views\Event\Edit.cshtml" />
+    <None Include="Properties\PublishProfiles\Produktie.pubxml" />
+    <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\farbtastic.js" />
+    <Content Include="Scripts\handlebars-v4.0.12.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -496,6 +518,8 @@
     <Content Include="Views\Emails\Confirmation.Html.cshtml" />
     <Content Include="Views\Emails\Confirmation.cshtml" />
     <Content Include="Views\Emails\Activation.cshtml" />
+    <Content Include="Views\Checkin\Index.cshtml" />
+    <Content Include="Views\Checkin\Checkin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

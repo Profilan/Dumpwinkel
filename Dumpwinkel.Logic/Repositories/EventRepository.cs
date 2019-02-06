@@ -14,7 +14,16 @@ namespace Dumpwinkel.Logic.Repositories
     {
         public void Delete(Guid id)
         {
-            throw new NotImplementedException();
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var item = session.Load<Event>(id);
+
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    session.Delete(item);
+                    transaction.Commit();
+                }
+            }
         }
 
         public Event GetById(Guid id)

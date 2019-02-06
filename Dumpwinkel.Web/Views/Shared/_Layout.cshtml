@@ -8,6 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - De Eekhoorn Dumpwinkel</title>
+    <link rel="shortcut icon" href="~/img/favicon.ico">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
@@ -17,15 +18,16 @@
 </head>
 <body class="top" style="background-image: url('@backgroundImageUrl') !important;">
 
-    <nav class="navbar fixed-top navbar-eekhoorn">
-        <a class="navbar-brand" href="#">
-            <img src="~/img/logo_eekhoorn_staand.png" height="175" />
-        </a>
+    <nav class="navbar navbar-eekhoorn">
+        <div class="container-fluid justify-content-center">
+            <a class="navbar-brand" href="#">
+                <img class="d-none d-sm-block" src="~/img/logo_eekhoorn_staand.png" height="175" />
+                <img class="d-block d-sm-none" src="~/img/logo_eekhoorn_staand.png" height="75" />
+            </a>
+            <span class="d-none d-sm-block" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px");">@ViewBag.SiteTitle</span>
+            <span class="d-block d-sm-none" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px");">@ViewBag.SiteTitle</span>
+        </div>
     </nav>
-
-    <div class="container text-center">
-        <span style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px");">@ViewBag.SiteTitle</span>
-    </div>
 
     @RenderBody()
 

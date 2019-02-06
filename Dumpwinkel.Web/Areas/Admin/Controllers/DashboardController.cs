@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Areas.Admin.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "GRolDumpwinkelBeheerder")]
     public class DashboardController : Controller
     {
         

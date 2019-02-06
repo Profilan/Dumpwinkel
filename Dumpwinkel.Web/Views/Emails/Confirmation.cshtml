@@ -100,10 +100,10 @@ Subject: Jouw aanvraag is geactiveerd en hiermee bevestigd
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr style="background-color: #00618b; color: #ffffff;">
                                     <td style="padding: 0 15px; font-size: 15px;">
-                                        DUMPWINKEL: jouw aanvraag is geactiveerd
+                                        <b>DUMPWINKEL</b>: jouw aanvraag is geactiveerd
                                     </td>
                                     <td style="padding: 10px 15px;">
-                                        <img src="@Model.LogoUrl" alt="https://dumpwinkel.deeekhoorn.com" height="100" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
+                                        <img src="@(Model.LogoUrl + "/logo_eekhoorn_staand.png")" alt="https://dumpwinkel.deeekhoorn.com" height="100" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
                                     </td>
                                 </tr>
                             </table>
@@ -121,7 +121,7 @@ Subject: Jouw aanvraag is geactiveerd en hiermee bevestigd
 
                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                 <tr>
-                                                    <td style="padding-left: 15px;">
+                                                    <td style="padding-left: 15px;" width="30%">
                                                         Datum
                                                     </td>
                                                     <td>
@@ -129,7 +129,7 @@ Subject: Jouw aanvraag is geactiveerd en hiermee bevestigd
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-left: 15px;">
+                                                    <td style="padding-left: 15px;" width="30%">
                                                         Tijdslot
                                                     </td>
                                                     <td>
@@ -137,7 +137,7 @@ Subject: Jouw aanvraag is geactiveerd en hiermee bevestigd
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-left: 15px;">
+                                                    <td style="padding-left: 15px;" width="30%">
                                                         Aantal personen
                                                     </td>
                                                     <td>
@@ -157,17 +157,55 @@ Subject: Jouw aanvraag is geactiveerd en hiermee bevestigd
                                                 </tr>
                                             </table>
                                             <br />
-                                            Print deze bevestiging en neem deze mee als jij op de aangegeven datum en tijdstip de
-                                            dumpwinkel bezoekt. Zonder toegangscode word je helaas niet toegelaten
+                                            Neem deze bevestiging mee als jij op de aangegeven datum en tijdstip de
+                                            dumpwinkel bezoekt. Zonder toegangscode word je helaas niet toegelaten.
                                             <br /><br />
-                                            Met vriendelijke groet,<br />
-                                            <a href="https://dumpwinkel.deeekhoorn.com">dumpwinkel.deeekhoorn.com</a>
+                                            Locatie van de dumpwinkel:
+                                            <br /><br />
+                                            <table border="0" cellpadding="0" width="100%">
+                                                <tr>
+                                                    <td>
+                                                        <img src="@(Model.LogoUrl + "/icon-map.png")" width="24" />
+                                                    </td>
+                                                    <td>
+                                                        Groothandelsmarkt 17, 1681 NN Zwaagdijk<br />
+                                                        <a href="https://goo.gl/maps/DvVrweTDGxn">https://goo.gl/maps/DvVrweTDGxn</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
                                         </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0 15px; font-size: 15px;">
+                                        VOORWAARDEN
+                                        <ul>
+                                            <li>
+                                                De kwaliteit van artikelen in de dumpwinkel kan afwijken van de kwaliteit
+                                                van reguliere collecties.
+                                            </li>
+                                            <li>
+                                                Dumpwinkel artikelen kunnen niet worden geruild en garantie is niet van
+                                                toepassing - <i>What you see is what you get.</i>
+                                            </li>
+                                            <li>
+                                                Artikelen moeten direct meegenomen worden; er is geen ruimte voor het
+                                                opslaan van goederen.
+                                            </li>
+                                            <li>
+                                                Er kan gepind worden.
+                                            </li>
+                                        </ul>
+                                        <br /><br />
+                                        Met vriendelijke groet,<br />
+                                        Team De Eekhoorn
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
+                    
                 </table>
                 <!--[if (gte mso 9)|(IE)]>
                 </td>

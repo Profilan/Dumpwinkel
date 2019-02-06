@@ -30,6 +30,11 @@ namespace Dumpwinkel.Web.Models
         [Display(Name = "Postcode")]
         public string Postcode { get; set; }
 
+        [Display(Name = "Bevestigd")]
+        public bool Confirmed { get; set; }
+
+        [Display(Name = "Bezocht")]
+        public bool Visited { get; set; }
 
         [Required]
         [Display(Name = "Aantal personen (max 3)")]

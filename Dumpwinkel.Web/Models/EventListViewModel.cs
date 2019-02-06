@@ -8,9 +8,11 @@ namespace Dumpwinkel.Web.Models
 {
     public class EventListViewModel
     {
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         public int MaxPersons { get; set; }
+
+        public CalendarMonth Month { get; set; }
 
         public IEnumerable<EventViewModel> Events;
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 
 namespace Dumpwinkel.Web.Controllers.Api
@@ -15,6 +16,7 @@ namespace Dumpwinkel.Web.Controllers.Api
     {
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
+        private readonly DumpstoreRepository _dumpstoreRepository = new DumpstoreRepository();
 
         [Route("api/event")]
         [HttpGet]
@@ -55,6 +57,60 @@ namespace Dumpwinkel.Web.Controllers.Api
             var registrations = _registrationRepository.GetByEvent(eventItem).Where(x => x.Confirmed = false);
 
             return registrations.Count();
+        }
+
+        [Route("api/event/before/{date}")]
+        [HttpPost]
+        public HttpResponseMessage Before(string date)
+        {
+            IEnumerable<Event> events = _eventRepository.ListByDate(DateTime.Parse(date));
+
+            var dumpstore = _dumpstoreRepository.GetById(new Guid("B980E94C-4436-4966-B291-2B377080E6E3"));
+
+            var firstEvent = events.First();
+
+            var startTime = firstEvent.TimeRange.Start.Subtract(firstEvent.TimeRange.Duration);
+
+            var eventItem = Event.Create(dumpstore, startTime, firstEvent.TimeRange.Start, firstEvent.MaximumNumberOfVisitors);
+            _eventRepository.Insert(eventItem);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { EventDate = date }, JsonMediaTypeFormatter.DefaultMediaType);
+        }
+
+        [Route("api/event/after/{date}")]
+        [HttpPost]
+        public HttpResponseMessage After(string date)
+        {
+            IEnumerable<Event> events = _eventRepository.ListByDate(DateTime.Parse(date));
+
+            var dumpstore = _dumpstoreRepository.GetById(new Guid("B980E94C-4436-4966-B291-2B377080E6E3"));
+
+            var lastEvent = events.Last();
+
+            var endTime = lastEvent.TimeRange.End.Add(lastEvent.TimeRange.Duration);
+
+            var eventItem = Event.Create(dumpstore, lastEvent.TimeRange.End, endTime, lastEvent.MaximumNumberOfVisitors);
+            _eventRepository.Insert(eventItem);
+
+            return Request.CreateResponse(HttpStatusCode.OK, new { EventDate = date }, JsonMediaTypeFormatter.DefaultMediaType);
+        }
+
+        [Route("api/event/delete/{id}")]
+        [HttpPost]
+        public IHttpActionResult Delete(Guid id)
+        {
+            try
+            {
+                var eventItem = _eventRepository.GetById(id);
+
+                _eventRepository.Delete(id);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+
+            return Content(HttpStatusCode.NoContent, "Gebeurtenis is met succes verwijderd.");
         }
 
     }

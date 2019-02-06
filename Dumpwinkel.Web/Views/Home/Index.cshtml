@@ -10,8 +10,12 @@
     DateTime startDate = firstDayOfTheMonth.AddDays(-(int)firstDayOfTheMonth.DayOfWeek + 1);
 }
 
-<div class="container text-center">
-    <p style="color: @ViewBag.IntroTextColor; font-size: @(ViewBag.IntroTextSize + "px"); margin-bottom: 2rem;">@ViewBag.IntroText</p>
+<div class="container text-center mb-2">
+    <div class="row">
+        <div class="col" style="background-color: rgba(255,255,255, 0.5); color: @ViewBag.IntroTextColor; font-size: @(ViewBag.IntroTextSize + "px"); margin: 2rem 1rem 0 1rem; padding-top: 2rem;">
+            <p>@Html.Raw(ViewBag.IntroText)</p>
+        </div>
+    </div>
 </div>
 
 <div class="container">
@@ -119,8 +123,20 @@
                         });
                         var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
                         var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.Available + " plaatsen");
+                        var actions = $('<td />');
+                        if (event.Available <= 0) {
+                            maxPersons = $('<td />').addClass('maxPersons').text("Volgeboekt");
+                            row.unbind('click');
+                        } else {
+                            var button = $("<a />").addClass('btn btn-sm btn-primary').css('color', '#ffffff').text('Selecteer').click(function (e) {
+                                e.preventDefault();
+                            });
+                            actions.append(button);
+                        }
+
                         row.append(timeRange);
                         row.append(maxPersons);
+                        row.append(actions);
                         $('#events-table tbody').append(row);
 
                         $('#dlg-events').modal('show');

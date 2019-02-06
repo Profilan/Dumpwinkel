@@ -32,6 +32,10 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
             -ms-interpolation-mode: bicubic;
         }
 
+        a.calltoaction:visited {
+            color: #ffffff;
+        }
+
         /* RESET STYLES */
         img {
             border: 0;
@@ -101,10 +105,10 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr style="background-color: #00618b; color: #ffffff;">
                                     <td style="padding: 0 15px; font-size: 15px; font-family: Arial, Helvetica, sans-serif !important;">
-                                        DUMPWINKEL: bevestiging verzoek -> activeer jouw aanvraag
+                                        <b>DUMPWINKEL</b>: activeer jouw aanvraag
                                     </td>
                                     <td style="padding: 10px 15px;">
-                                        <img src="@Model.LogoUrl" alt="https://dumpwinkel.deeekhoorn.com" height="100" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
+                                        <img src="@(Model.LogoUrl + "/logo_eekhoorn_staand.png")" alt="https://dumpwinkel.deeekhoorn.com" height="100" style="display: block; width: 100px; max-width: 100px; min-width: 100px;">
                                     </td>
                                 </tr>
                             </table>
@@ -118,11 +122,11 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
                                         <p>
                                             Beste @Model.Name,<br /><br />
 
-                                            Bedankt voor je aanvraag voor het bezoeken van de dumpverkoop op:<br />
+                                            Bedankt voor je aanvraag voor het bezoeken van de dumpwinkel op:<br />
 
                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                 <tr>
-                                                    <td style="padding-left: 15px;">
+                                                    <td style="padding-left: 15px;" width="30%">
                                                         Datum
                                                     </td>
                                                     <td>
@@ -130,7 +134,7 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-left: 15px;">
+                                                    <td style="padding-left: 15px;" width="30%">
                                                         Tijdslot
                                                     </td>
                                                     <td>
@@ -138,7 +142,7 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-left: 15px;">
+                                                    <td style="padding-left: 15px;" width="30%">
                                                         Aantal personen
                                                     </td>
                                                     <td>
@@ -149,17 +153,16 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
 
                                             <br />
                                             Door op de onderstaande button te klikken bevestig jij jouw aanvraag en ontvang je je
-                                            toegangscode. Let op: zonder activatie wordt jouw aanvraag niet verder verwerkt en heb
+                                            toegangsbewijs. Let op: zonder activatie wordt jouw aanvraag niet verder verwerkt en heb
                                             je geen toegang.
                                             <br /><br />
                                             
-                                                <table border="0" cellpadding="0" cellspacing="0" width="66.6%">
-                                                    <tr>
-                                                        <td align="center" style="background-color: #00618b; color: #ffffff; padding: 5px 10px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 0 auto;">
+                                                     <tr>
+                                                        <td align="center" style="background-color: #00618b; color: #ffffff; padding: 5px 10px; border-radius: 4px; font-size: 16px;">
                                                             
-                                                            <a href="@Model.ActivationUrl" style="color: #ffffff; text-decoration: none;">
-                                                                KLIK HIER:<br />
-                                                                <span style="text-decoration: underline;">Activeer jouw aanvraag en ontvang jouw toegangscode</span>
+                                                            <a class="calltoaction" href="@Model.ActivationUrl" style="color: #ffffff; text-decoration: none; ">
+                                                                ACTIVEER JOUW AANVRAAG
                                                             </a>
                                                         </td>
                                                     </tr>
@@ -167,7 +170,7 @@ Subject: Activeer uw aanvraag bezoeken dumpwinkel
                                            
                                             <br />
                                             Met vriendelijke groet,<br />
-                                            <a href="https://dumpwinkel.deeekhoorn.com">dumpwinkel.deeekhoorn.com</a>
+                                            Team De Eekhoorn
                                         </p>
                                     </td>
                                 </tr>

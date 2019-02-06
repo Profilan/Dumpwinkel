@@ -1,16 +1,31 @@
 ﻿@model Dumpwinkel.Web.Models.RegistrationViewModel
 
 @{
-    ViewBag.Title = "Details";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Checkin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Checkin</h2>
 
 <div>
-    <h4>Registratie</h4>
+    <h4>RegistrationViewModel</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EventId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.Name)
@@ -45,11 +60,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.NumberOfVisitors)
+            @Html.DisplayNameFor(model => model.Confirmed)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.NumberOfVisitors)
+            @Html.DisplayFor(model => model.Confirmed)
         </dd>
 
         <dt>
@@ -60,9 +75,17 @@
             @Html.DisplayFor(model => model.Visited)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfVisitors)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfVisitors)
+        </dd>
+
     </dl>
 </div>
 <p>
-   
-    @Html.ActionLink("Terug naar de lijst", "Index")
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
 </p>
