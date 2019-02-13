@@ -37,6 +37,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 IntroText = settings.IntroText.Replace("<br />", System.Environment.NewLine),
                 IntroTextColor = settings.IntroTextColor,
                 IntroTextSize = settings.IntroTextSize,
+                InfoText = settings.InfoText,
+                EmailDisclaimer = settings.EmailDisclaimer,
                 BackgroundImageUrl = settings.BackgroundImageUrl,
                 MaxFileSize = 512,
                 AcceptFileTypes = @"/(\.|\/)(jpg)$/i",
@@ -48,6 +50,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Edit(FormCollection collection)
         {
             try
@@ -61,6 +64,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 settings.IntroTextColor = collection["IntrotextColor"];
                 settings.IntroTextSize = Convert.ToInt32(collection["IntroTextSize"]);
                 settings.BackgroundImageUrl = collection["ImageUrl"];
+                settings.InfoText = Server.UrlDecode(collection["InfoText"]);
+                settings.EmailDisclaimer = Server.UrlDecode(collection["EmailDisclaimer"]);
 
                 _settingRepository.Update(settings);
 

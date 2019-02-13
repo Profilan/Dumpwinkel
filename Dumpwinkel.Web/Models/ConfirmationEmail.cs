@@ -20,6 +20,7 @@ namespace Dumpwinkel.Web.Models
         public string TimeTill { get; set; }
         public int NumberOfVisitors { get; set; }
         public string RegistrationId { get; set; }
+        public string Disclaimer { get; set; }
 
         public void GeneratePDF(string path,
             string name,

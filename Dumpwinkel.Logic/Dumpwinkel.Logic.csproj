@@ -109,11 +109,13 @@
     <Compile Include="Mappings\DumpstoreMap.cs" />
     <Compile Include="Mappings\EventMap.cs" />
     <Compile Include="Mappings\RegistrationMap.cs" />
+    <Compile Include="Mappings\ScanMap.cs" />
     <Compile Include="Mappings\SettingMap.cs" />
     <Compile Include="Mappings\VisitorMap.cs" />
     <Compile Include="Models\Dumpstore.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Registration.cs" />
+    <Compile Include="Models\Scan.cs" />
     <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\Visitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,5 @@
-﻿using Dumpwinkel.Logic.Repositories;
+﻿using Dumpwinkel.Logic.Models;
+using Dumpwinkel.Logic.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,20 @@ namespace Dumpwinkel.Web.Controllers
     public class BaseController : Controller
     {
         private readonly SettingRepository _settingRepository = new SettingRepository();
+        protected Setting _settings;
 
         public BaseController()
         {
-            var settings = _settingRepository.GetById(1);
+            _settings = _settingRepository.GetById(1);
 
-            ViewBag.SiteTitle = settings.Title;
-            ViewBag.TitleColor = settings.TitleColor;
-            ViewBag.TitleSize = settings.TitleSize;
-            ViewBag.IntroText = settings.IntroText;
-            ViewBag.IntroTextColor = settings.IntroTextColor;
-            ViewBag.IntroTextSize = settings.IntroTextSize;
-            ViewBag.BackgroundImageUrl = settings.BackgroundImageUrl;
+            ViewBag.SiteTitle = _settings.Title;
+            ViewBag.TitleColor = _settings.TitleColor;
+            ViewBag.TitleSize = _settings.TitleSize;
+            ViewBag.IntroText = _settings.IntroText;
+            ViewBag.IntroTextColor = _settings.IntroTextColor;
+            ViewBag.IntroTextSize = _settings.IntroTextSize;
+            ViewBag.InfoText = _settings.InfoText;
+            ViewBag.BackgroundImageUrl = _settings.BackgroundImageUrl;
         }
     }
 }

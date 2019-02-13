@@ -10,7 +10,9 @@ namespace Dumpwinkel.Logic.Models
         public virtual string IntroText { get; set; }
         public virtual string IntroTextColor { get; set; }
         public virtual int IntroTextSize { get; set; }
+        public virtual string InfoText { get; set; }
         public virtual string BackgroundImageUrl { get; set; }
+        public virtual string EmailDisclaimer { get; set; }
 
         protected Setting()
         {

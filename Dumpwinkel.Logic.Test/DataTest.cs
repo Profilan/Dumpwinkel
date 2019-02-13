@@ -16,5 +16,13 @@ namespace Dumpwinkel.Logic.Test
 
             
         }
+
+        [TestMethod]
+        public void GetRegistration()
+        {
+            var rep = new RegistrationRepository();
+
+            var registration = rep.GetById(new Guid("5CC38093-DB62-4FCD-8562-0F013C51FA0A"));
+        }
     }
 }

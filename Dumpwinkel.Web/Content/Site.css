@@ -135,9 +135,10 @@ h6.modal-title {
         background: deepskyblue;
     }
 
-.booking-calendar tbody td.past {
-    background-color: lightgray;
-}
+    .booking-calendar tbody td.past,
+    .booking-calendar tbody td.full {
+        background-color: lightgray;
+    }
 
 .booking-calendar tbody td.today:after {
     content: '';

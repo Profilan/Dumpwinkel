@@ -40,5 +40,7 @@ namespace Dumpwinkel.Web.Models
         [Display(Name = "Aantal personen (max 3)")]
         [Range(1, 3, ErrorMessage = "Kies een aantal tussen de {1} en {2}")]
         public int NumberOfVisitors { get; set; }
+
+        public IList<ScanViewModel> Scans { get; set; }
     }
 }

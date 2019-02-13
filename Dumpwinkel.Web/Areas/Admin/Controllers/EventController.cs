@@ -15,6 +15,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
     {
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly DumpstoreRepository _dumpstoreRepository = new DumpstoreRepository();
+        private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
         protected string[] Months = { "Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December" };
 
         // GET: Event
@@ -65,8 +66,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                     Id = eventItem.Id,
                     StartTime = eventItem.TimeRange.Start.ToString("hh:mm"),
                     EndTime = eventItem.TimeRange.End.ToString("hh:mm"),
-                    MaxPersons = eventItem.MaximumNumberOfVisitors
-            
+                    MaxPersons = eventItem.MaximumNumberOfVisitors,
+                    Visited = _registrationRepository.GetVisitedCount(eventItem)
                 });
             }
 

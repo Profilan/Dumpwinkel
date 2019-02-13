@@ -16,7 +16,7 @@ namespace Dumpwinkel.Web.Areas.Admin
         {
             context.MapRoute(
                 "Admin_default",
-                "Admin/{controller}/{action}/{id}",
+                "cmseek/{controller}/{action}/{id}",
                 defaults: new { controller = "Dashboard", action = "Index", id = UrlParameter.Optional },
                 namespaces: new[] { "Dumpwinkel.Web.Areas.Admin.Controllers" }
             );

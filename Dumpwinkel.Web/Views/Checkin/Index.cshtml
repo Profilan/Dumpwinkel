@@ -25,9 +25,11 @@
 
                 </div>
 
+                <!--
                 <div class="form-group">
                     <input type="button" class="btn btn-dark mx-auto" value="Checkin" />
                 </div>
+                -->
 
                 <div class="card d-none" id="result">
                     <div class="card-header"></div>
@@ -83,6 +85,11 @@
     </div>
 </div>
 
+<!-- Sound effects -->
+<audio id="notify" src="~/Content/sounds/Windows Notify System Generic.wav"></audio>
+<audio id="alarm" src="~/Content/sounds/Windows Hardware Fail.wav"></audio>
+
+
 @section scripts
 {
     <script type="text/javascript">
@@ -99,7 +106,9 @@
                 e.preventDefault();
 
                 $.post('/api/registration/checkin/' + $('#RegistrationId').val(), function (result) {
-                    console.log(result);
+
+                    var audio = document.getElementById("notify");
+                    audio.play();
 
                     $('#accept-ticket').addClass('d-none');
                     $('#deny-ticket').addClass('d-none');
@@ -116,18 +125,32 @@
                 })
                     .fail(function (result) {
 
-                        $('#accept-ticket').removeClass('d-none');
-                        $('#deny-ticket').removeClass('d-none');
-                        $('#result .timeslot').text(result.responseJSON.data.timeslot);
-                        $('#result .name').text(result.responseJSON.data.name);
-                        $('#result .email').text(result.responseJSON.data.email);
-                        $('#result .city').text(result.responseJSON.data.city);
-                        $('#result .postcode').text(result.responseJSON.data.postcode);
-                        $('#result .number_of_visitors').text(result.responseJSON.data.number_of_visitors);
+                        var audio = document.getElementById("alarm");
+                        audio.play();
+
+                        var status = result.responseJSON.message.status;
+                        
+                        if (status == 600 || status == 601) {
+                            $('#accept-ticket').removeClass('d-none');
+                            $('#deny-ticket').removeClass('d-none');
+                            $('#result .timeslot').text(result.responseJSON.data.timeslot);
+                            $('#result .name').text(result.responseJSON.data.name);
+                            $('#result .email').text(result.responseJSON.data.email);
+                            $('#result .city').text(result.responseJSON.data.city);
+                            $('#result .postcode').text(result.responseJSON.data.postcode);
+                            $('#result .number_of_visitors').text(result.responseJSON.data.number_of_visitors);
+                            
+                        }
+                        if (status == 602) {
+
+                            $('#accept-ticket').addClass('d-none');
+                            $('#deny-ticket').addClass('d-none');
+                            $('#RegistrationId').val("").focus();
+                        }
                         $('#result .card-header').text(result.responseJSON.message.description);
+                        
                         $('#result').addClass('text-white bg-danger').removeClass('d-none bg-success');
 
-                        console.log(result.responseJSON);
                     });
             });
 
@@ -135,6 +158,10 @@
                 e.preventDefault();
 
                 $.post('/api/registration/accept/' + $('#RegistrationId').val(), function (result) {
+
+                    var audio = document.getElementById("notify");
+                    audio.play();
+
                     $('#accept-ticket').addClass('d-none');
                     $('#deny-ticket').addClass('d-none');
                     $('#result .timeslot').text(result.data.timeslot);

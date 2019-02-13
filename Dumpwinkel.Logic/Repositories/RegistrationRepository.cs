@@ -25,6 +25,7 @@ namespace Dumpwinkel.Logic.Repositories
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     var item = session.Get<Registration>(id);
+                    NHibernateUtil.Initialize(item.Scans);
 
                     return item;
                 }
@@ -126,6 +127,62 @@ namespace Dumpwinkel.Logic.Repositories
                 return query.ToPagedList(pageNumber, pageSize);
             }
         }
+        public IEnumerable<Registration> List(string sortOrder, string searchString, DateTime startDate, DateTime endDate, string eventId = null, string state = "all")
+        {
+
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = from r in session.Query<Registration>()
+                            select r;
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(r => r.Visitor.Name.Contains(searchString)
+                                           || r.Visitor.Postcode.Contains(searchString)
+                                           || r.Visitor.City.Contains(searchString)
+                                           || r.Visitor.Email.Contains(searchString));
+                }
+
+                query = query.Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate);
+                switch (state)
+                {
+                    case "visited":
+                        query = query.Where(r => r.Visited == true);
+                        break;
+                    case "confirmed":
+                        query = query.Where(r => r.Confirmed == true);
+                        break;
+                }
+
+                if (!String.IsNullOrEmpty(eventId))
+                {
+                    query = query.Where(r => r.Event.Id == new Guid(eventId));
+                }
+
+
+                switch (sortOrder)
+                {
+                    case "postcode":
+                        query = query.OrderByDescending(r => r.Visitor.Postcode);
+                        break;
+                    case "name":
+                        query = query.OrderBy(r => r.Visitor.Name);
+                        break;
+                    case "email":
+                        query = query.OrderBy(r => r.Visitor.Email);
+                        break;
+                    case "city":
+                        query = query.OrderBy(r => r.Visitor.City);
+                        break;
+                    case "timerange":
+                    default:
+                        query = query.OrderByDescending(r => r.Event.TimeRange.Start);
+                        break;
+                }
+
+                return query.ToList();
+            }
+        }
 
         public IEnumerable<Registration> List()
         {
@@ -180,6 +237,26 @@ namespace Dumpwinkel.Logic.Repositories
                 var total = session.QueryOver<Registration>(() => registration)
                     .Select(Projections.Sum<Registration>(x => x.NumberOfVisitors))
                     .Where(x => x.Confirmed == false)
+                    .Where(x => x.Event == eventItem)
+
+                    .UnderlyingCriteria.UniqueResult();
+
+                if (total != null)
+                {
+                    return (int)total;
+                }
+                return 0;
+            }
+        }
+
+        public int GetVisitedCount(Event eventItem)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                Registration registration = null;
+                var total = session.QueryOver<Registration>(() => registration)
+                    .Select(Projections.Sum<Registration>(x => x.NumberOfVisitors))
+                    .Where(x => x.Visited == true)
                     .Where(x => x.Event == eventItem)
 
                     .UnderlyingCriteria.UniqueResult();

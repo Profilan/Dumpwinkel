@@ -81,6 +81,9 @@
                     <th>
                         #Pending
                     </th>
+                    <th>
+                        #Bezocht
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -93,7 +96,12 @@
                     <td class="registered"></td>
                     <td class="available"></td>
                     <td class="pending"></td>
-                    <td class="actions"><a class="btn btn-sm btn-link" href="#">Wijzigen</a><a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Verwijderen</a></td>
+                    <td class="visited"></td>
+                    <td class="actions">
+                        <a class="btn btn-sm btn-link" href="#">Wijzigen</a>
+                        <a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Verwijderen</a>
+                        <a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Extra bevestiging</a>
+                    </td>
                 </tr>
 
             </tbody>
@@ -112,6 +120,24 @@
     </div>
 </div>
 
+<div id="messageModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bericht</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="deleteModal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -133,15 +159,79 @@
     </div>
 </div>
 
+<div id="extraModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Extra bevestiging: <span class="titleName"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="extraForm" class="needs-validation" novalidate>
+                    <input type="hidden" name="EventId" id="EventId" />
+                    <div class="form-group">
+                        <label for="Name">Naam</label>
+                        <input type="text" class="form-control" name="Name" id="Name" required />
+                        <div class="invalid-feedback">
+                            Naam is verplicht
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Postcode">Postcode</label>
+                        <input type="text" class="form-control" name="Postcode" id="Postcode" pattern="[1-9][0-9]{3}[a-zA-Z]{2}" required />
+                        <div class="invalid-feedback">
+                            Postcode is ongeldig (Formaat: 1234AA, zonder spatie)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="City">Plaats</label>
+                        <input type="text" class="form-control" name="City" id="City" required />
+                        <div class="invalid-feedback">
+                            Woonplaats is verplicht
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Email">E-mail</label>
+                        <input type="email" class="form-control" name="Email" id="Email" required />
+                        <div class="invalid-feedback">
+                            Ongeldig E-mail adres
+                        </div>
+                    </div>
+                    <div>
+                        <label for="NumberOfVisitors">Aantal personen (max 3)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="NumberOfVisitors" id="NumberOfVisitors1" value="1" checked>
+                        <label class="form-check-label" for="NumberOfVisitors1">1</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="NumberOfVisitors" id="NumberOfVisitors2" value="2">
+                        <label class="form-check-label" for="NumberOfVisitors2">2</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="NumberOfVisitors" id="NumberOfVisitors3" value="3">
+                        <label class="form-check-label" for="NumberOfVisitors3">3</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                <button id="extraBtn" type="button" class="btn btn-primary">Ja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section scripts
 {
     <script type="text/javascript" src="~/Scripts/moment.js"></script>
     <script type="text/javascript" src="~/Scripts/nl.js"></script>
     <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+
     <script type="text/javascript">
-
-
 
         function refreshSlots(date) {
 
@@ -168,6 +258,7 @@
                         }
 
                         var available = $('<td />').text(event.Available);
+                        var visited = $('<td />').addClass('visited').text(event.Visited);
                         var actions = $('<td />');
                         var deleteLink = $('<a />').addClass('btn btn-sm btn-link').attr('data-id', event.Id).attr('data-title', event.StartTime + ' - ' + event.EndTime).attr('href', '#').attr('data-toggle', 'modal').attr('data-target', '#deleteModal').text('Verwijderen');
                         if (event.Registered > 0) {
@@ -177,12 +268,16 @@
                         var editLink = $('<a />').addClass('btn btn-sm btn-link').attr('href', '/admin/event/edit/' + event.Id + '?returnurl=' + '/admin/event?date=' + '@Model.Date.ToString("yyyy-MM-dd")').text('Wijzigen');
                         actions.append(editLink);
 
+                        var extraLink = $('<a />').addClass('btn btn-sm btn-link').attr('data-id', event.Id).attr('data-title', event.StartTime + ' - ' + event.EndTime).attr('href', '#').attr('data-toggle', 'modal').attr('data-target', '#extraModal').text('Extra bevestiging');
+                        actions.append(extraLink);
+
                         row.append(startTime);
                         row.append(endTime);
                         row.append(maxPersons);
                         row.append(registered);
                         row.append(available);
                         row.append(pending);
+                        row.append(visited);
                         row.append(actions);
                         $('#events-table tbody').append(row);
                     });
@@ -225,9 +320,45 @@
                 var button = $(event.relatedTarget);
                 var title = button.data('title');
                 var id = button.data('id');
-                
+
                 $('#titleName').text(title);
                 $('#okBtn').attr('data-id', id);
+            });
+
+            $('#extraModal').on('show.bs.modal', function (event) {
+
+                $('#extraForm').removeClass('was-validated');
+                $('#extraForm').trigger("reset");
+                var button = $(event.relatedTarget);
+
+                var title = button.data('title');
+
+                var id = button.data('id');
+                $('input[name="EventId"]').val(id);
+
+                $('#extraModal .titleName').text(title);
+                $('#extraBtn').attr('data-id', id);
+            });
+
+
+            $('#extraBtn').click(function (event) {
+
+                var form = document.getElementById('extraForm');
+                if (form.checkValidity() == false) {
+                    console.log(false);
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    var data = $('#extraForm').serializeArray();
+
+                    $.post('/api/registration/create', data, function (response) {
+
+                        $('#extraModal').modal('hide');
+                        $('#messageModal .modal-body').text(response.message);
+                        $('#messageModal').modal('show');
+                    });
+                }
+                $('#extraForm').addClass('was-validated');
             });
 
 

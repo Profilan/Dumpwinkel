@@ -55,7 +55,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
            
 
 
-            var items = _registrationRepository.List(sortOrder, searchString, pageSize, pageNumber, start, end, eventId, state);
+            var items = _registrationRepository.List(sortOrder, searchString, start, end, eventId, state);
 
             var registrations = new List<RegistrationViewModel>();
             foreach (var registration in items)
@@ -89,6 +89,18 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             {
                 var item = _registrationRepository.GetById(id);
                 var visitor = _visitorRepository.GetById(item.Visitor.Id);
+
+                var scans = new List<ScanViewModel>();
+                foreach (var scan in item.Scans)
+                {
+                    scans.Add(new ScanViewModel()
+                    {
+                        Id = scan.Id,
+                        Timestamp = scan.Timestamp,
+                        Status = scan.Status
+                    });
+                }
+
                 var registrationViewModel = new RegistrationViewModel()
                 {
                     Id = item.Id,
@@ -98,8 +110,10 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                     Postcode = visitor.Postcode,
                     Visited = item.Visited,
                     Confirmed = item.Confirmed,
-                    NumberOfVisitors = item.NumberOfVisitors
+                    NumberOfVisitors = item.NumberOfVisitors,
+                    Scans = scans
                 };
+
 
                 return View(registrationViewModel);
             }

@@ -10,10 +10,14 @@
     DateTime startDate = firstDayOfTheMonth.AddDays(-(int)firstDayOfTheMonth.DayOfWeek + 1);
 }
 
-<div class="container text-center mb-2">
-    <div class="row">
-        <div class="col" style="background-color: rgba(255,255,255, 0.5); color: @ViewBag.IntroTextColor; font-size: @(ViewBag.IntroTextSize + "px"); margin: 2rem 1rem 0 1rem; padding-top: 2rem;">
-            <p>@Html.Raw(ViewBag.IntroText)</p>
+<div class="container mb-2">
+    <div class="ml-md-0 mr-md-0">
+        <div class="col-md-12" style="background-color: rgba(255,255,255, 0.9); color: @ViewBag.IntroTextColor; font-size: @(ViewBag.IntroTextSize + "px"); padding: 10px;">
+
+            <p class="text-center">@Html.Raw(ViewBag.IntroText)
+                <a href="/Info" class="float-right mb-3" style="color: #0c628a; font-size: 24px;" data-toggle="tooltip" data-placement="top" title="Informatie"><i class="fa fa-info-circle"></i></a>
+            </p>
+            
         </div>
     </div>
 </div>
@@ -45,23 +49,29 @@
                                 {
                                 @:</tr><tr>
                                 }
-                                if (month.CalendarDays[i].IsAvailable && !month.CalendarDays[i].IsPast && month.CalendarDays[i].IsVisible)
+                                if (month.CalendarDays[i].IsVisible)
                                 {
-                                    <td class="available"><a href="#" data-id="@month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</a></td>
-                                }
-                                else
-                                {
-                                    if (month.CalendarDays[i].IsAvailable && month.CalendarDays[i].IsPast)
+                                    if (month.CalendarDays[i].IsAvailable && !month.CalendarDays[i].IsPast)
                                     {
-                                        <td class="past">@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</td>
+                                        if (!month.CalendarDays[i].IsFull)
+                                        {
+                                            <td class="available"><a href="#" data-id="@month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@month.CalendarDays[i].Date.Day.ToString()</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td class="full" data-toggle="tooltip" data-placement="top" title="VOLGEBOEKT">@month.CalendarDays[i].Date.Day.ToString()</td>
+                                        }
                                     }
                                     else
                                     {
-                                        <td>@(month.CalendarDays[i].IsVisible ? month.CalendarDays[i].Date.Day.ToString() : " ")</td>
+                                            <td>@month.CalendarDays[i].Date.Day.ToString()</td>
                                     }
-
                                 }
-                            }
+                                else
+                                {
+                                    <td>&nbsp;</td>
+                                }
+                             }
                         </tr>
                     </tbody>
                 </table>
@@ -144,6 +154,8 @@
 
                 });
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 }

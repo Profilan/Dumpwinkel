@@ -18,16 +18,21 @@
 </head>
 <body class="top" style="background-image: url('@backgroundImageUrl') !important;">
 
-    <nav class="navbar navbar-eekhoorn">
-        <div class="container-fluid justify-content-center">
-            <a class="navbar-brand" href="#">
-                <img class="d-none d-sm-block" src="~/img/logo_eekhoorn_staand.png" height="175" />
-                <img class="d-block d-sm-none" src="~/img/logo_eekhoorn_staand.png" height="75" />
-            </a>
-            <span class="d-none d-sm-block" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px");">@ViewBag.SiteTitle</span>
-            <span class="d-block d-sm-none" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px");">@ViewBag.SiteTitle</span>
+    
+    <div class="container mt-md-5 mb-3">
+        <div class="ml-md-0 mr-md-0" style="background-color: #0c628a; padding: 15px;">
+            <nav class="navbar navbar-eekhoorn">
+                <a class="navbar-brand" href="#">
+                    <img class="d-none d-sm-block" src="~/img/Logo_De_Eekhoorn_homepageNW_2.png" height="60" />
+                    <img class="d-block d-sm-none" src="~/img/Logo_De_Eekhoorn_homepageNW_2.png" height="30" />
+                </a>
+                <span class="d-none d-sm-block navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px");">@ViewBag.SiteTitle</span>
+                <span class="d-block d-sm-none navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px");">@ViewBag.SiteTitle</span>
+            </nav>
+            
         </div>
-    </nav>
+    </div>
+    
 
     @RenderBody()
 

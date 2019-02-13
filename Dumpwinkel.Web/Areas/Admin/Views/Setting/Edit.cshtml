@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+
 }
 
 <h2>Instellingen</h2>
@@ -11,10 +13,10 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
 
     <p>
-        <input type="submit" value="Opslaan" class="btn btn-primary" />
+        <input id="saveBtn" type="submit" value="Opslaan" class="btn btn-primary" />
     </p>
 
     <hr />
@@ -26,6 +28,12 @@
         <li class="nav-item">
             <a class="nav-link" id="background-tab" data-toggle="tab" href="#background" role="tab" aria-controls="background" aria-selected="false">Achtergrond</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Informatie</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="email-tab" data-toggle="tab" href="#email" role="tab" aria-controls="email" aria-selected="false">E-mail</a>
+        </li>
     </ul>
     <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
@@ -34,5 +42,33 @@
         <div class="tab-pane fade show" id="background" role="tabpanel" aria-labelledby="background-tab">
             @{Html.RenderPartial("_BackgroundPartial", Model); }
         </div>
+        <div class="tab-pane fade show" id="info" role="tabpanel" aria-labelledby="info-tab">
+            @{Html.RenderPartial("_InfoPartial", Model); }
+        </div>
+        <div class="tab-pane fade show" id="email" role="tabpanel" aria-labelledby="email-tab">
+            @{Html.RenderPartial("_EmailPartial", Model); }
+        </div>
     </div>
 }
+
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+<script>
+    $(function () {
+        $('form').submit(function (e) {
+            var infoText = $('#InfoText').val();
+            $('#InfoText').val(encodeURIComponent(infoText));
+
+            var emailDisclaimer = $('#EmailDisclaimer').val();
+            $('#EmailDisclaimer').val(encodeURIComponent(emailDisclaimer));
+        });
+
+        tinymce.init({
+            selector: '.editor',
+            language: 'nl',
+            plugins: 'code link pagebreak anchor image table lists',
+            toolbar: 'bold italic underline strikethrough | alignleft aligncenter alignright | styleselect formatselect | cut copy paste | ' +
+                'bullist numlist | outdent indent | undo redo | link unlink anchor image | code | table | subscript superscript | readmore',
+            content_css: '/css/editor.css'
+        });
+    });
+</script>

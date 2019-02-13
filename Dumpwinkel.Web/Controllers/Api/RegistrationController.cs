@@ -1,11 +1,15 @@
-﻿using Dumpwinkel.Logic.Repositories;
+﻿using Dumpwinkel.Logic.Models;
+using Dumpwinkel.Logic.Repositories;
+using Dumpwinkel.Web.Models;
 using Dumpwinkel.Web.Models.Api;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+
 
 namespace Dumpwinkel.Web.Controllers.Api
 {
@@ -22,13 +26,34 @@ namespace Dumpwinkel.Web.Controllers.Api
             try
             {
                 var registration = _registrationRepository.GetById(id);
+                if (registration == null)
+                {
+                    var message = new CheckinMessage()
+                    {
+                        Status = 602,
+                        Description = "Onbekende ticket"
+                    };
+
+                    var response = new CheckinResponse()
+                    {
+                        Data = null,
+                        Message = message
+                    };
+                    return Content(HttpStatusCode.BadRequest, response);
+                }
+
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
                 var eventItem = _eventRepository.GetById(registration.Event.Id);
 
                 var currentDate = DateTime.Now;
 
+
                 if (registration.Visited)
                 {
+                    var scan = Scan.Create(DateTime.Now, "Ticket is al gebruikt", registration);
+                    registration.Scans.Add(scan);
+                    _registrationRepository.Update(registration);
+
                     var body = new CheckinBody()
                     {
                         Name = visitor.Name,
@@ -55,6 +80,9 @@ namespace Dumpwinkel.Web.Controllers.Api
 
                 if (currentDate >= eventItem.TimeRange.Start && currentDate <= eventItem.TimeRange.End)
                 {
+                    var scan = Scan.Create(DateTime.Now, "Geaccepteerd", registration);
+                    registration.Scans.Add(scan);
+
                     var body = new CheckinBody()
                     {
                         Name = visitor.Name,
@@ -84,6 +112,10 @@ namespace Dumpwinkel.Web.Controllers.Api
                 }
                 else
                 {
+                    var scan = Scan.Create(DateTime.Now, "Ticket valt buiten de toegestane timeslot", registration);
+                    registration.Scans.Add(scan);
+                    _registrationRepository.Update(registration);
+
                     var body = new CheckinBody()
                     {
                         Name = visitor.Name,
@@ -125,6 +157,9 @@ namespace Dumpwinkel.Web.Controllers.Api
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
                 var eventItem = _eventRepository.GetById(registration.Event.Id);
 
+                var scan = Scan.Create(DateTime.Now, "Alsnog geaccepteerd", registration);
+                registration.Scans.Add(scan);
+
                 var body = new CheckinBody()
                 {
                     Name = visitor.Name,
@@ -157,7 +192,54 @@ namespace Dumpwinkel.Web.Controllers.Api
 
                 throw;
             }
+        }
 
+        [HttpPost]
+        [Route("api/registration/create")]
+        public IHttpActionResult Create([FromBody]RegistrationViewModel data)
+        {
+            try
+            {
+                var eventItem = _eventRepository.GetById(data.EventId);
+
+                var visitor = _visitorRepository.GetByEmail(data.Email);
+                if (visitor == null)
+                {
+                    visitor = Visitor.Create(data.Name, data.City, data.Email, data.Postcode);
+                    _visitorRepository.Insert(visitor);
+                }
+
+                var numberOfVisitors = Convert.ToInt32(data.NumberOfVisitors);
+
+                var registration = Registration.Create(visitor, eventItem, numberOfVisitors, false);
+                registration.Confirmed = true;
+
+                _registrationRepository.Insert(registration);
+
+                var logoUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/img";
+                var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + Uri.EscapeUriString(registration.Id.ToString()) + @"&chs=200x200&cht=qr&chld=H%7C0";
+
+                ConfirmationEmail email = new ConfirmationEmail()
+                {
+                    To = visitor.Email,
+                    Name = visitor.Name,
+                    Date = eventItem.TimeRange.Start.ToString("dd-MM-yyyy"),
+                    TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
+                    TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
+                    NumberOfVisitors = registration.NumberOfVisitors,
+                    LogoUrl = logoUrl,
+                    BarcodeUrl = barcodeUrl,
+                    RegistrationId = registration.Id.ToString()
+                };
+                
+                email.Send();
+
+                return Ok(new { message = "Registratie is verzonden en bevestigd" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

@@ -60,6 +60,24 @@
             @Html.DisplayFor(model => model.Visited)
         </dd>
 
+        <dt>
+
+        </dt>
+
+        <dd>
+            <table class="table table-sm col-md-4">
+                <tbody>
+                    @foreach (var scan in Model.Scans)
+                    {
+                        <tr>
+                            <td>@scan.Timestamp.ToString("dd-MM-yyyy HH:mm:ss")</td>
+                            <td>@scan.Status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </dd>
+
     </dl>
 </div>
 <p>

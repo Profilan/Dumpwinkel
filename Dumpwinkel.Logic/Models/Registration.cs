@@ -19,6 +19,8 @@ namespace Dumpwinkel.Logic.Models
         public virtual bool Confirmed { get; set; }
         public virtual bool Visited { get; set; }
 
+        public virtual IList<Scan> Scans { get; set; }
+
         #region Not Persisted
         public virtual int CreatedBy { get; set; }
         public virtual int ModifiedBy { get; set; }

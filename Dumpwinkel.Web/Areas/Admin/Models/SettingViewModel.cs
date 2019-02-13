@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Areas.Admin.Models
 {
@@ -43,6 +44,15 @@ namespace Dumpwinkel.Web.Areas.Admin.Models
         public string AcceptFileTypes { get; set; }
         public string UploadUrl { get; set; }
         public IList<string> Images { get; set; }
+
+        [Display(Name = "Informatie tekst")]
+        [AllowHtml]
+        public string InfoText { get; set; }
+
+
+        [Display(Name = "Disclaimer")]
+        [AllowHtml]
+        public string EmailDisclaimer { get; set; }
 
         public SettingViewModel()
         {

@@ -17,7 +17,9 @@ namespace Dumpwinkel.Logic.Mappings
             Map(x => x.IntroText);
             Map(x => x.IntroTextColor);
             Map(x => x.IntroTextSize);
+            Map(x => x.InfoText);
             Map(x => x.BackgroundImageUrl);
+            Map(x => x.EmailDisclaimer);
         }
     }
 }

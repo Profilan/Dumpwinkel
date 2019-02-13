@@ -130,7 +130,8 @@ namespace Dumpwinkel.Web.Controllers
                     NumberOfVisitors = registration.NumberOfVisitors,
                     LogoUrl = logoUrl,
                     BarcodeUrl = barcodeUrl,
-                    RegistrationId = registration.Id.ToString()
+                    RegistrationId = registration.Id.ToString(),
+                    Disclaimer = _settings.EmailDisclaimer,
                 };
                 //email.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
                 //email.Attach(new Attachment(path));

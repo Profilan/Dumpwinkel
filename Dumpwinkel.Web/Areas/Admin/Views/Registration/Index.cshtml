@@ -69,19 +69,19 @@
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Datum-Timeslot", "Index", new { sortOrder = ViewBag.TimeRangeSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Datum-Timeslot", "Index", new { sortOrder = "timerange", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink("Naam", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Naam", "Index", new { sortOrder = "name", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink("E-mail", "Index", new { sortOrder = ViewBag.EmailSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("E-mail", "Index", new { sortOrder = "email", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink("Postcode", "Index", new { sortOrder = ViewBag.PostcoeSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Postcode", "Index", new { sortOrder = "postcode", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink("Plaats", "Index", new { sortOrder = ViewBag.CitySortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Plaats", "Index", new { sortOrder = "city", currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.NumberOfVisitors)

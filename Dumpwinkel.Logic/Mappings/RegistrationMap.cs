@@ -20,6 +20,11 @@ namespace Dumpwinkel.Logic.Mappings
             References(x => x.Event).Column("EventId").LazyLoad().Not.Cascade.SaveUpdate();
             References(x => x.Visitor).Column("VisitorId").Cascade.SaveUpdate();
 
+            HasMany(x => x.Scans)
+                .Cascade.SaveUpdate()
+                .KeyColumn("RegistrationId")
+                .LazyLoad().Not
+                .Inverse();
         }
     }
 }
