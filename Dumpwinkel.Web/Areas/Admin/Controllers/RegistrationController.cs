@@ -17,7 +17,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly VisitorRepository _visitorRepository = new VisitorRepository();
 
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, string startDate = null, string endDate = null, string eventId = null, string state = "all")
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, string startDate = null, string eventId = null, string state = "all")
         {
             ViewBag.CurrentSort = sortOrder;
             ViewBag.TimeRangeSortParm = String.IsNullOrEmpty(sortOrder) ? "timerange" : "";
@@ -38,22 +38,20 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
 
             DateTime start, end;
 
-            if (String.IsNullOrEmpty(startDate) || String.IsNullOrEmpty(endDate))
+            if (String.IsNullOrEmpty(startDate))
             {
-                var dateNow = DateTime.Now.AddMonths(-1);
-                start = DateTime.Now.AddMonths(-1).Date;
-                end = DateTime.Now.AddMonths(2).Date;
+                var currentDate = DateTime.Now;
+                start = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day);
+                end = start.AddHours(24);
             }
             else
             {
-                start = Convert.ToDateTime(startDate);
-                end = Convert.ToDateTime(endDate);
+                var currentDate = Convert.ToDateTime(startDate);
+                start = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day);
+                end = start.AddHours(24);
             }
 
             ViewBag.StartDate = start.ToString("yyyy-MM-dd");
-            ViewBag.EndDate = end.ToString("yyyy-MM-dd");
-           
-
 
             var items = _registrationRepository.List(sortOrder, searchString, start, end, eventId, state);
 
@@ -79,6 +77,9 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                     NumberOfVisitors = registration.NumberOfVisitors
                 });
             }
+
+            ViewBag.TotalRegistrations = _registrationRepository.GetRegistrationTotal(start, end);
+            ViewBag.TotalVisitors = _registrationRepository.GetVisitorTotal(start, end);
 
             return View(registrations.ToPagedList(pageNumber, pageSize));
         }

@@ -94,6 +94,8 @@
 {
     <script type="text/javascript">
 
+        var registrationId;
+
         function capitalize(s) {
             if (typeof s !== 'string') return '';
             return s.charAt(0).toUpperCase() + s.slice(1);
@@ -104,6 +106,8 @@
 
             $("form").submit(function (e) {
                 e.preventDefault();
+
+                registrationId = $('#RegistrationId').val();
 
                 $.post('/api/registration/checkin/' + $('#RegistrationId').val(), function (result) {
 
@@ -145,11 +149,13 @@
 
                             $('#accept-ticket').addClass('d-none');
                             $('#deny-ticket').addClass('d-none');
-                            $('#RegistrationId').val("").focus();
+                            
                         }
                         $('#result .card-header').text(result.responseJSON.message.description);
                         
                         $('#result').addClass('text-white bg-danger').removeClass('d-none bg-success');
+
+                        $('#RegistrationId').val("").focus();
 
                     });
             });
@@ -157,7 +163,7 @@
             $('#accept-ticket').click(function (e) {
                 e.preventDefault();
 
-                $.post('/api/registration/accept/' + $('#RegistrationId').val(), function (result) {
+                $.post('/api/registration/accept/' + registrationId, function (result) {
 
                     var audio = document.getElementById("notify");
                     audio.play();
@@ -174,17 +180,35 @@
                     $('#result').addClass('text-white bg-success').removeClass('d-none bg-danger');
 
                     $('#RegistrationId').val("").focus();
+
+                    // $('#result').addClass('d-none');
                 });
 
-                $('#result').addClass('d-none');
+                
             });
 
             $('#deny-ticket').click(function (e) {
                 e.preventDefault();
+                $.post('/api/registration/deny/' + registrationId, function (result) {
 
-                $('#result').addClass('d-none');
+                    var audio = document.getElementById("alarm");
+                    audio.play();
 
-                $('#RegistrationId').val("").focus();
+                    $('#accept-ticket').addClass('d-none');
+                    $('#deny-ticket').addClass('d-none');
+                    $('#result .timeslot').text(result.data.timeslot);
+                    $('#result .name').text(result.data.name);
+                    $('#result .email').text(result.data.email);
+                    $('#result .city').text(result.data.city);
+                    $('#result .postcode').text(result.data.postcode);
+                    $('#result .number_of_visitors').text(result.data.number_of_visitors);
+                    $('#result .card-header').text(result.message.description);
+                    $('#result').addClass('text-white bg-danger').removeClass('d-none bg-success');
+
+                    $('#RegistrationId').val("").focus();
+
+                    // $('#result').addClass('d-none');
+                });
             });
         });
 

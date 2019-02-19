@@ -26,7 +26,7 @@
     <title>@ViewBag.Title - Dumpwinkel Beheer</title>
     <link rel="shortcut icon" href="~/img/favicon.ico">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/Content/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
     @Styles.Render("~/Admin/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
@@ -59,19 +59,19 @@
                             @if (User.IsInRole("GRolDumpwinkelBeheerder"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link @(pageName == "Event" ? "active" : "")" href="/admin/event">
+                                    <a class="nav-link @(pageName == "Event" ? "active" : "")" href="/cmseek/event">
                                         <i class="fa fa-calendar"></i>
                                         Evenementen
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link @(pageName == "Registration" ? "active" : "")" href="/admin/registration">
+                                    <a class="nav-link @(pageName == "Registration" ? "active" : "")" href="/cmseek/registration">
                                         <i class="fa fa-edit"></i>
                                         Registraties
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link @(pageName == "Settings" ? "active" : "")" href="/admin/setting/edit/1">
+                                    <a class="nav-link @(pageName == "Settings" ? "active" : "")" href="/cmseek/setting/edit/1">
                                         <i class="fa fa-cog"></i>
                                         Instellingen
                                     </a>

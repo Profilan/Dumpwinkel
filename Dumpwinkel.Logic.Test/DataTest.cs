@@ -18,6 +18,18 @@ namespace Dumpwinkel.Logic.Test
         }
 
         [TestMethod]
+        public void GetRegistrationTotal()
+        {
+            var rep = new RegistrationRepository();
+
+            var currentDate = DateTime.Now;
+            var start = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day);
+            var end = start.AddHours(24);
+
+            // var total = rep.GetRegistrationTotal(start, end);
+        }
+
+        [TestMethod]
         public void GetRegistration()
         {
             var rep = new RegistrationRepository();

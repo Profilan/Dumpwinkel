@@ -18,6 +18,7 @@ namespace Dumpwinkel.Web.Controllers.Api
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
         private readonly VisitorRepository _visitorRepository = new VisitorRepository();
         private readonly EventRepository _eventRepository = new EventRepository();
+        private readonly SettingRepository _settingRepository = new SettingRepository();
 
         [HttpPost]
         [Route("api/registration/checkin/{id}")]
@@ -147,6 +148,7 @@ namespace Dumpwinkel.Web.Controllers.Api
             }
             
         }
+
         [HttpPost]
         [Route("api/registration/accept/{id}")]
         public IHttpActionResult Accept(Guid id)
@@ -195,6 +197,52 @@ namespace Dumpwinkel.Web.Controllers.Api
         }
 
         [HttpPost]
+        [Route("api/registration/deny/{id}")]
+        public IHttpActionResult Deny(Guid id)
+        {
+            try
+            {
+                var registration = _registrationRepository.GetById(id);
+                var visitor = _visitorRepository.GetById(registration.Visitor.Id);
+                var eventItem = _eventRepository.GetById(registration.Event.Id);
+
+                var scan = Scan.Create(DateTime.Now, "Geweigerd", registration);
+                registration.Scans.Add(scan);
+
+                var body = new CheckinBody()
+                {
+                    Name = visitor.Name,
+                    City = visitor.City,
+                    Email = visitor.Email,
+                    NumberOfVisitors = registration.NumberOfVisitors,
+                    Postcode = visitor.Postcode,
+                    TimeSlot = eventItem.TimeRange.ToString()
+                };
+
+                var message = new CheckinMessage()
+                {
+                    Status = 605,
+                    Description = "Geweigerd"
+                };
+
+                var response = new CheckinResponse()
+                {
+                    Data = body,
+                    Message = message
+                };
+
+                _registrationRepository.Update(registration);
+
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpPost]
         [Route("api/registration/create")]
         public IHttpActionResult Create([FromBody]RegistrationViewModel data)
         {
@@ -219,6 +267,8 @@ namespace Dumpwinkel.Web.Controllers.Api
                 var logoUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority) + "/img";
                 var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + Uri.EscapeUriString(registration.Id.ToString()) + @"&chs=200x200&cht=qr&chld=H%7C0";
 
+                var settings = _settingRepository.GetById(1);
+
                 ConfirmationEmail email = new ConfirmationEmail()
                 {
                     To = visitor.Email,
@@ -229,7 +279,8 @@ namespace Dumpwinkel.Web.Controllers.Api
                     NumberOfVisitors = registration.NumberOfVisitors,
                     LogoUrl = logoUrl,
                     BarcodeUrl = barcodeUrl,
-                    RegistrationId = registration.Id.ToString()
+                    RegistrationId = registration.Id.ToString(),
+                    Disclaimer = settings.EmailDisclaimer,
                 };
                 
                 email.Send();

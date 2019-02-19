@@ -18,7 +18,7 @@ namespace Dumpwinkel.Web
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = MyAuthentication.ApplicationCookie,
-                LoginPath = new PathString("/Admin/Account/Login"),
+                LoginPath = new PathString("/cmseek/Account/Login"),
                 Provider = new CookieAuthenticationProvider(),
                 CookieName = "Dumpwinkel",
                 CookieHttpOnly = true,

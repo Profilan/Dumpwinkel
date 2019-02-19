@@ -18,7 +18,7 @@
 <div class="row">
     <div class="col-md-3 order-md-2">
         <table class="booking-calendar">
-            <caption><a class="float-left ml-2" id="btn-prev-month" href="/Admin/Event?date=@Model.Date.AddMonths(-1).ToString("yyyy-MM-dd")" style="color: #fff; text-decoration: none;"><i class="fa fa-chevron-left"></i></a>@Model.Month.Title<a class="float-right mr-2" id="btn-next-month" href="/Admin/Event?date=@Model.Date.AddMonths(1).ToString("yyyy-MM-dd")" style="color: #fff; text-decoration: none;"><i class="fa fa-chevron-right"></i></a></caption>
+            <caption><a class="float-left ml-2" id="btn-prev-month" href="/cmseek/Event?date=@Model.Date.AddMonths(-1).ToString("yyyy-MM-dd")" style="color: #fff; text-decoration: none;"><i class="fa fa-chevron-left"></i></a>@Model.Month.Title<a class="float-right mr-2" id="btn-next-month" href="/cmseek/Event?date=@Model.Date.AddMonths(1).ToString("yyyy-MM-dd")" style="color: #fff; text-decoration: none;"><i class="fa fa-chevron-right"></i></a></caption>
             <thead>
                 <tr>
                     <th>MA</th>
@@ -42,11 +42,11 @@
                         {
                             if (Model.Month.CalendarDays[i].IsAvailable)
                             {
-                                <td class="available existing-event @(Model.Month.CalendarDays[i].IsToday ? "today" : "")"><a href="/Admin/Event?date=@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")" data-date="@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@Model.Month.CalendarDays[i].Date.Day.ToString()</a></td>
+                                <td class="available existing-event @(Model.Month.CalendarDays[i].IsToday ? "today" : "")"><a href="/cmseek/Event?date=@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")" data-date="@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@Model.Month.CalendarDays[i].Date.Day.ToString()</a></td>
                             }
                             else
                             {
-                                <td class="new-event @(Model.Month.CalendarDays[i].IsToday ? "today" : "")"><a href="/Admin/Event/Create?date=@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")" data-date="@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@Model.Month.CalendarDays[i].Date.Day.ToString()</a></td>
+                                <td class="new-event @(Model.Month.CalendarDays[i].IsToday ? "today" : "")"><a href="/cmseek/Event/Create?date=@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")" data-date="@Model.Month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@Model.Month.CalendarDays[i].Date.Day.ToString()</a></td>
                             }
                         }
                         else
@@ -250,7 +250,7 @@
                         var pending = $('<td />').text(event.Pending);
                         var registered = $('<td />')
                         if (event.Registered > 0) {
-                            var registrationsLink = $('<a />').attr('href', '/admin/registration?eventId=' + event.Id).text(event.Registered);
+                            var registrationsLink = $('<a />').attr('href', '/cmseek/registration?eventId=' + event.Id + '&startDate=' + '@Model.Date.ToString("yyyy-MM-dd")').text(event.Registered);
                             registered.append(registrationsLink);
 
                         } else {
@@ -265,7 +265,7 @@
                             deleteLink.addClass('disabled');
                         }
                         actions.append(deleteLink);
-                        var editLink = $('<a />').addClass('btn btn-sm btn-link').attr('href', '/admin/event/edit/' + event.Id + '?returnurl=' + '/admin/event?date=' + '@Model.Date.ToString("yyyy-MM-dd")').text('Wijzigen');
+                        var editLink = $('<a />').addClass('btn btn-sm btn-link').attr('href', '/cmseek/event/edit/' + event.Id + '?returnurl=' + '/cmseek/event?date=' + '@Model.Date.ToString("yyyy-MM-dd")').text('Wijzigen');
                         actions.append(editLink);
 
                         var extraLink = $('<a />').addClass('btn btn-sm btn-link').attr('data-id', event.Id).attr('data-title', event.StartTime + ' - ' + event.EndTime).attr('href', '#').attr('data-toggle', 'modal').attr('data-target', '#extraModal').text('Extra bevestiging');

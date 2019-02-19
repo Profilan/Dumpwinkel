@@ -25,7 +25,10 @@ namespace Dumpwinkel.Logic.Repositories
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     var item = session.Get<Registration>(id);
-                    NHibernateUtil.Initialize(item.Scans);
+                    if (item != null)
+                    {
+                        NHibernateUtil.Initialize(item.Scans);
+                    }
 
                     return item;
                 }
@@ -96,6 +99,9 @@ namespace Dumpwinkel.Logic.Repositories
                     case "confirmed":
                         query = query.Where(r => r.Confirmed == true);
                         break;
+                    case "registered":
+                        query = query.Where(r => r.Confirmed == false);
+                        break;
                 }
 
                 if (!String.IsNullOrEmpty(eventId))
@@ -151,6 +157,9 @@ namespace Dumpwinkel.Logic.Repositories
                         break;
                     case "confirmed":
                         query = query.Where(r => r.Confirmed == true);
+                        break;
+                    case "registered":
+                        query = query.Where(r => r.Confirmed == false);
                         break;
                 }
 
@@ -266,6 +275,29 @@ namespace Dumpwinkel.Logic.Repositories
                     return (int)total;
                 }
                 return 0;
+            }
+        }
+
+        public int GetRegistrationTotal(DateTime startDate, DateTime endDate)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+
+                var query = session.Query<Registration>()
+                    .Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate);
+
+                return query.ToList().Count();
+            }
+        }
+
+        public int GetVisitorTotal(DateTime startDate, DateTime endDate)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = session.Query<Registration>()
+                     .Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate);
+
+                return query.ToList().Sum(x => x.NumberOfVisitors);
             }
         }
     }

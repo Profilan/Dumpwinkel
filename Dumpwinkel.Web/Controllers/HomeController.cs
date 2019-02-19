@@ -22,8 +22,6 @@ namespace Dumpwinkel.Web.Controllers
         {
             var currentDate = DateTime.Now;
 
-            var closingTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day).AddHours(12);
-
             var months = new List<CalendarMonth>();
             for (int i = 0; i < 3; i++)
             {
@@ -37,6 +35,7 @@ namespace Dumpwinkel.Web.Controllers
                 for (int j = 0; j < 42; j++)
                 {
                     DateTime date = startDate.AddDays(j);
+                    var closingTime = new DateTime(date.Year, date.Month, date.Day).AddHours(12);
 
                     var maxPersons = _eventRepository.GetMaxPersonsByDate(date);
                     var registeredCount = GetRegisteredCount(date);
@@ -46,9 +45,10 @@ namespace Dumpwinkel.Web.Controllers
                         Date = date,
                         IsVisible = date < firstDayOfTheMonth || date > lastDayOfTheMonth ? false : true,
                         MaxPersons = maxPersons,
-                        IsAvailable = maxPersons > 0 && currentDate <= closingTime,
-                        IsPast = date < new DateTime(currentDate.Year, currentDate.Month, currentDate.Day),
-                        IsFull = registeredCount >= maxPersons
+                        IsAvailable = maxPersons > 0 ,
+                        IsPast = date < new DateTime(currentDate.Year, currentDate.Month, currentDate.Day) || currentDate >= closingTime,
+                        IsFull = registeredCount >= maxPersons,
+                        IsClosed = false,
                     });
 
                 }

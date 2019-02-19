@@ -28,18 +28,16 @@
         <div class="form-group">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="startDate" class="col-md-4 text-right">Startdatum</label>
+                    <label for="startDate" class="col-md-4 text-right">Datum</label>
                     <div class="col-md-8">
-                        <input type="date" class="form-control" id="startDate" name="startDate" value="@startDate" />
-                        <span class="field-validation-valid text-danger" data-valmsg-for="startDate" data-valmsg-replace="true"></span>
-                    </div>
-                </div>
+                        <div class="input-group date" id="startDate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" name="startDate" value="@startDate" data-target="#startDate" />
+                            <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
 
-                <div class="form-group">
-                    <label for="endDate" class="col-md-4 text-right">Einddatum</label>
-                    <div class="col-md-8">
-                        <input type="date" class="form-control" id="endDate" name="endDate" value="@endDate" />
-                        <span class="field-validation-valid text-danger" data-valmsg-for="endDate" data-valmsg-replace="true"></span>
+                        <span class="field-validation-valid text-danger" data-valmsg-for="startDate" data-valmsg-replace="true"></span>
                     </div>
                 </div>
 
@@ -48,6 +46,7 @@
                     <div class="col-md-8">
                         <select id="state" name="state" class="form-control">
                             <option value="all" @(Request.Params["state"] == "all" ? "selected" : "")>Alles</option>
+                            <option value="registered" @(Request.Params["state"] == "registered" ? "selected" : "")>Aangemeld</option>
                             <option value="confirmed" @(Request.Params["state"] == "confirmed" ? "selected" : "")>Bevestigd</option>
                             <option value="visited" @(Request.Params["state"] == "visited" ? "selected" : "")>Bezocht</option>
                         </select>
@@ -66,22 +65,26 @@
 
 <hr />
 
+<p>
+<b>Aanmeldingen:</b> <span class="mr-md-3">@ViewBag.TotalRegistrations</span> <b>Personen:</b> <span>@ViewBag.TotalVisitors</span>
+</p>
+
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Datum-Timeslot", "Index", new { sortOrder = "timerange", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Datum-Timeslot", "Index", new { sortOrder = "timerange", currentFilter = ViewBag.CurrentFilter, startDate = startDate })
         </th>
         <th>
-            @Html.ActionLink("Naam", "Index", new { sortOrder = "name", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Naam", "Index", new { sortOrder = "name", currentFilter = ViewBag.CurrentFilter, startDate = startDate })
         </th>
         <th>
-            @Html.ActionLink("E-mail", "Index", new { sortOrder = "email", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("E-mail", "Index", new { sortOrder = "email", currentFilter = ViewBag.CurrentFilter, startDate = startDate })
         </th>
         <th>
-            @Html.ActionLink("Postcode", "Index", new { sortOrder = "postcode", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Postcode", "Index", new { sortOrder = "postcode", currentFilter = ViewBag.CurrentFilter, startDate = startDate })
         </th>
         <th>
-            @Html.ActionLink("Plaats", "Index", new { sortOrder = "city", currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Plaats", "Index", new { sortOrder = "city", currentFilter = ViewBag.CurrentFilter, startDate = startDate })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.NumberOfVisitors)
@@ -97,35 +100,35 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Postcode)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.City)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberOfVisitors)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Confirmed)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Visited)
-        </td>
-        <td>
-            @Html.ActionLink("Details", "Details", new { id = item.Id })
-        </td>
-    </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Postcode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfVisitors)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Confirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Visited)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.Id })
+            </td>
+        </tr>
     }
 
 </table>
@@ -137,46 +140,28 @@
     sortOrder = ViewBag.CurrentSort,
     currentFilter = ViewBag.CurrentFilter,
     startDate = ViewBag.StartDate,
-    endDate = ViewBag.EndDate,
 }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
 
 
 @section scripts
 {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/nl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
     <script type="text/javascript">
-        function dateRangeValid() {
-            var startDate = new Date($("#startDate").val());
-            var endDate = new Date($("#endDate").val());
-
-            if (startDate >= endDate) {
-                return false;
-            } else {
-                return true;
-            }
-        }
 
         $(function () {
 
-            $("#startDate").change(function (e) {
-                if (dateRangeValid()) {
-                    $("form").submit();
-                } else {
-                    $("#startDate").val(currentStartDate);
-                    $("form").find("[data-valmsg-for='startDate']").text("Startdatum moet onder einddatum liggen");
-                }
+            $('#startDate').datetimepicker({
+                date: '@startDate',
+                locale: 'nl',
+                format: 'L'
             });
-
-            $("#endDate").change(function (e) {
-                if (dateRangeValid()) {
-                    $("form").submit();
-                } else {
-                    $("#endDate").val(currentEndDate);
-                    $("form").find("[data-valmsg-for='endDate']").text("Einddatum moet bove startdatum liggen");
-                }
+            $("#startDate").on("change.datetimepicker", function (e) {
+                $("form").submit();
             });
 
             $("#state").change(function (e) {
-                
                 $("form").submit();
             });
 
