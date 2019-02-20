@@ -1,8 +1,12 @@
-﻿using Profilan.SharedKernel;
+﻿using Dumpwinkel.Logic.Models;
+using Dumpwinkel.Web.Areas.Admin.Models;
+using Profilan.SharedKernel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Models
 {
@@ -16,6 +20,11 @@ namespace Dumpwinkel.Web.Models
         public int Visited { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+        public string ThemeTitle { get; set; }
+
+        [Display(Name = "Thema")]
+        public string ThemeId { get; set; }
+        public IList<SelectListItem> Themes { get; set; }
 
         public int Amount { get; set; }
         public Unit Unit { get; set; }

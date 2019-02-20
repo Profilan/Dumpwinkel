@@ -17,6 +17,7 @@ namespace Dumpwinkel.Web.Controllers.Api
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
         private readonly DumpstoreRepository _dumpstoreRepository = new DumpstoreRepository();
+        private readonly ThemeRepository _themeRepository = new ThemeRepository();
 
         [Route("api/event")]
         [HttpGet]
@@ -30,6 +31,13 @@ namespace Dumpwinkel.Web.Controllers.Api
                 int pendingCount = _registrationRepository.GetPendingCount(eventItem);
                 int registeredCount = _registrationRepository.GetRegisteredCount(eventItem);
                 int visitedCount = _registrationRepository.GetVisitedCount(eventItem);
+
+                string themeTitle = "";
+                if (eventItem.Theme != null)
+                {
+                    Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
+                    themeTitle = "[" + theme.Title.ToUpper() + "]";
+                }
                
                 events.Add(new EventViewModel()
                 {
@@ -41,6 +49,7 @@ namespace Dumpwinkel.Web.Controllers.Api
                     StartTime = eventItem.TimeRange.Start.ToShortTimeString(),
                     EndTime = eventItem.TimeRange.End.ToShortTimeString(),
                     Visited = visitedCount,
+                    ThemeTitle = themeTitle,
                 });
             }
 

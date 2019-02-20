@@ -69,12 +69,15 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
 
                 _settingRepository.Update(settings);
 
+                Request.Flash("success", "Instellingen zijn opgeslagen");
+
                 return RedirectToAction("Edit", new { id = 1 });
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Request.Flash("error", "Er is iets mis gegaan bij het opslaan");
 
-                throw;
+                return RedirectToAction("Edit", new { id = 1 });
             }
         }
     }

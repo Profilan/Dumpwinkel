@@ -1,5 +1,6 @@
 ﻿using Dumpwinkel.Logic.Models;
 using Dumpwinkel.Logic.Repositories;
+using Dumpwinkel.Web.Areas.Admin.Models;
 using Dumpwinkel.Web.Models;
 using Profilan.SharedKernel;
 using System;
@@ -16,6 +17,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly DumpstoreRepository _dumpstoreRepository = new DumpstoreRepository();
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
+        private readonly ThemeRepository _themeRepository = new ThemeRepository();
         protected string[] Months = { "Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December" };
 
         // GET: Event
@@ -85,12 +87,25 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         {
             var dateNow = DateTime.Parse(date);
 
+            var themeList = _themeRepository.List();
+            var themes = new List<SelectListItem>();
+            
+            foreach (var theme in themeList)
+            {
+                themes.Add(new SelectListItem()
+                {
+                    Value = theme.Id.ToString(),
+                    Text = theme.Title
+                });
+            }
+
             var viewModel = new EventViewModel()
             {
                 StartTime = dateNow.ToString("yyyy-MM-ddT08:30" ),
                 EndTime = dateNow.ToString("yyyy-MM-ddT17:00"),
                 Unit = Profilan.SharedKernel.Unit.Minutes,
-                Amount = 60
+                Amount = 60,
+                Themes = themes
             };
 
             return View(viewModel);
@@ -100,6 +115,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         public ActionResult Create(FormCollection collection)
         {
             var dumpstore = _dumpstoreRepository.GetById(new Guid("B980E94C-4436-4966-B291-2B377080E6E3"));
+            var theme = _themeRepository.GetById(new Guid(collection["ThemeId"]));
 
             var startDate = DateTime.Parse(collection["StartTime"]);
             var endDate = DateTime.Parse(collection["EndTime"]);
@@ -107,13 +123,14 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             var maxPersonsPerHour = Convert.ToInt32(collection["MaxPersons"]);
             var interval = new Interval(Convert.ToInt32(collection["Amount"]), (Unit)Enum.Parse(typeof(Unit), collection["Unit"]));
 
-            var events = Event.CreateRange(dumpstore, startDate, endDate, interval, maxPersonsPerHour);
+            var events = Event.CreateRange(dumpstore, startDate, endDate, interval, maxPersonsPerHour, theme);
 
             foreach (var newEvent in events)
             {
                 _eventRepository.Insert(newEvent);
             }
 
+            Request.Flash("success", "Evenementen zijn opgeslagen");
 
             return RedirectToAction("Index", new { date = startDate.ToString("yyyy-MM-dd") });
         }
@@ -122,12 +139,25 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         {
             var eventItem = _eventRepository.GetById(id);
 
+            var themeList = _themeRepository.List();
+            var themes = new List<SelectListItem>();
+            foreach (var theme in themeList)
+            {
+                themes.Add(new SelectListItem()
+                {
+                    Value = theme.Id.ToString(),
+                    Text = theme.Title
+                });
+            }
+
             var viewModel = new EventViewModel()
             {
                 Id = eventItem.Id,
                 MaxPersons = eventItem.MaximumNumberOfVisitors,
                 StartTime = eventItem.TimeRange.Start.ToString(),
                 EndTime = eventItem.TimeRange.End.ToString(),
+                ThemeId = eventItem.Theme != null ? eventItem.Theme.Id.ToString() : "",
+                Themes = themes
             };
 
             return View(viewModel);
@@ -136,20 +166,30 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(FormCollection collection)
         {
+            var eventItem = _eventRepository.GetById(new Guid(collection["Id"]));
+
             try
             {
-                var eventItem = _eventRepository.GetById(new Guid(collection["Id"]));
+                Theme theme = null;
+                if (!String.IsNullOrEmpty(collection["ThemeId"]))
+                {
+                    theme = _themeRepository.GetById(new Guid(collection["ThemeId"]));
+                }
+
+                eventItem.Theme = theme;
 
                 eventItem.UpdateMaximumNumberOfVisitors(Convert.ToInt32(collection["MaxPersons"]));
 
                 _eventRepository.Update(eventItem);
 
+                Request.Flash("success", "Evenement is gewijzigd");
+
                 return RedirectToAction("Index", "Event", new { date = eventItem.TimeRange.Start.ToString("yyyy-MM-dd") });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                Request.Flash("error", "Er is een ernstige fout opgetreden: " + e.Message);
+                return RedirectToAction("Index", "Event", new { date = eventItem.TimeRange.Start.ToString("yyyy-MM-dd") });
             }
         }
     }

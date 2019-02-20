@@ -59,6 +59,12 @@
                             @if (User.IsInRole("GRolDumpwinkelBeheerder"))
                             {
                                 <li class="nav-item">
+                                    <a class="nav-link @(pageName == "Theme" ? "active" : "")" href="/cmseek/theme">
+                                        <i class="fa fa-paint-brush"></i>
+                                        Thema's
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link @(pageName == "Event" ? "active" : "")" href="/cmseek/event">
                                         <i class="fa fa-calendar"></i>
                                         Evenementen
@@ -81,9 +87,18 @@
                     </div>
                 </nav>
             }
-            <main role="main" class="@mainClass">
-                @RenderBody()
-            </main>
+                <main role="main" class="@mainClass">
+                    <div class="mt-4">
+                    @foreach (var flash in Request.GetFlashMessages())
+                    {
+                        <div class="alert @(flash.Type == "success" ? "alert-success" : "alert-danger")" role="alert">
+                            @flash.Message
+                        </div>
+                    }
+                    </div>
+
+                    @RenderBody()
+                </main>
         </div>
     </div>
 

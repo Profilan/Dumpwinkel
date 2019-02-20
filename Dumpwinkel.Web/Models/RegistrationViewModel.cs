@@ -12,6 +12,8 @@ namespace Dumpwinkel.Web.Models
         public Guid Id { get; set; }
         public Guid EventId { get; set; }
         public string Title { get; set; }
+        public string ThemeTitle { get; set; }
+        public string ThemeDescription { get; set; }
 
         [Required(ErrorMessage = "Naam is verplicht")]
         [Display(Name = "Naam")]

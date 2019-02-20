@@ -1,4 +1,5 @@
-﻿using Dumpwinkel.Logic.Repositories;
+﻿using Dumpwinkel.Logic.Models;
+using Dumpwinkel.Logic.Repositories;
 using Dumpwinkel.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Dumpwinkel.Web.Controllers
 
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
+        private readonly ThemeRepository _themeRepository = new ThemeRepository();
 
         [AllowAnonymous]
         public ActionResult Index()
@@ -35,10 +37,18 @@ namespace Dumpwinkel.Web.Controllers
                 for (int j = 0; j < 42; j++)
                 {
                     DateTime date = startDate.AddDays(j);
+
+#if DEBUG
+                    var closingTime = new DateTime(date.Year, date.Month, date.Day).AddHours(24);
+#else
                     var closingTime = new DateTime(date.Year, date.Month, date.Day).AddHours(12);
+#endif
+
+                   
 
                     var maxPersons = _eventRepository.GetMaxPersonsByDate(date);
                     var registeredCount = GetRegisteredCount(date);
+                    var themeDescription = GetThemeDescription(date);
                     
                     days.Add(new Models.CalendarDay()
                     {
@@ -49,6 +59,7 @@ namespace Dumpwinkel.Web.Controllers
                         IsPast = date < new DateTime(currentDate.Year, currentDate.Month, currentDate.Day) || currentDate >= closingTime,
                         IsFull = registeredCount >= maxPersons,
                         IsClosed = false,
+                        ThemeDescription = themeDescription
                     });
 
                 }
@@ -80,6 +91,24 @@ namespace Dumpwinkel.Web.Controllers
             }
 
             return total;
+        }
+
+        private string GetThemeDescription(DateTime date)
+        {
+            var events = _eventRepository.ListByDate(date);
+
+            Theme theme = null;
+            if (events.Count() > 0)
+            {
+                if (events.LastOrDefault().Theme != null)
+                {
+                    theme = _themeRepository.GetById(events.LastOrDefault().Theme.Id);
+                    return "<h5>" + theme.Title.ToUpper() + "</h5><p>" + theme.Description + "</p>";
+                }
+                return "<h5>Alle thema's</h5>";
+            }
+
+            return "";
         }
     }
 }

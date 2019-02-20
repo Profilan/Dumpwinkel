@@ -17,6 +17,7 @@ namespace Dumpwinkel.Web.Controllers
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly VisitorRepository _visitorRepository = new VisitorRepository();
+        private readonly ThemeRepository _themeRepository = new ThemeRepository();
 
         [AllowAnonymous]
         public ActionResult Create(Guid id)
@@ -25,11 +26,21 @@ namespace Dumpwinkel.Web.Controllers
             {
                 var eventItem = _eventRepository.GetById(id);
 
+                var themeDescription = "";
+                var themeTitle = "";
+                if (eventItem.Theme != null)
+                {
+                    Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
+                    themeTitle = theme.Title.ToUpper();
+                    themeDescription = theme.Description;
+                }
+
                 var registrationViewModel = new RegistrationViewModel()
                 {
                     Title = eventItem.TimeRange.ToString(),
                     EventId = eventItem.Id,
-
+                    ThemeTitle = themeTitle,
+                    ThemeDescription = themeDescription
                 };
 
                 return View(registrationViewModel);
@@ -72,6 +83,13 @@ namespace Dumpwinkel.Web.Controllers
 
                 _registrationRepository.Insert(registration);
 
+                string themeTitle = "";
+                if (eventItem.Theme != null)
+                {
+                    Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
+                    themeTitle = "[" + theme.Title + "]"; 
+                }
+
                 var activationUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/confirm/" + registration.Id;
                 var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
                 ActivationEmail email = new ActivationEmail()
@@ -83,7 +101,8 @@ namespace Dumpwinkel.Web.Controllers
                     TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
                     TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
                     NumberOfVisitors = numberOfVisitors,
-                    LogoUrl = logoUrl
+                    LogoUrl = logoUrl,
+                    ThemeTitle = themeTitle,
                 };
                 email.Send();
 
@@ -111,6 +130,13 @@ namespace Dumpwinkel.Web.Controllers
 
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
 
+                string themeTitle = "";
+                if (eventItem.Theme != null)
+                {
+                    Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
+                    themeTitle = "[" + theme.Title + "]";
+                }
+
                 var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
                 //var barcodeUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/fonts/Code39.woff";
                 //var barcodeUrl = @"https://www.barcodesinc.com/generator/image.php?code=" + registration.Id.ToString().ToUpper() + "&style=197&type=C39&width=590&height=100&xres=1&font=4";
@@ -132,6 +158,7 @@ namespace Dumpwinkel.Web.Controllers
                     BarcodeUrl = barcodeUrl,
                     RegistrationId = registration.Id.ToString(),
                     Disclaimer = _settings.EmailDisclaimer,
+                    ThemeTitle = themeTitle
                 };
                 //email.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
                 //email.Attach(new Attachment(path));

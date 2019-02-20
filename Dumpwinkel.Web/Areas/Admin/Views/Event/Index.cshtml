@@ -70,10 +70,10 @@
                         Eind
                     </th>
                     <th>
-                        Maximum aantal
+                        #Maximum
                     </th>
                     <th>
-                        #Geregistreerd
+                        #Reg
                     </th>
                     <th>
                         #Beschikbaar
@@ -83,6 +83,9 @@
                     </th>
                     <th>
                         #Bezocht
+                    </th>
+                    <th>
+                        Thema
                     </th>
                     <th></th>
                 </tr>
@@ -97,6 +100,7 @@
                     <td class="available"></td>
                     <td class="pending"></td>
                     <td class="visited"></td>
+                    <td class="theme"></td>
                     <td class="actions">
                         <a class="btn btn-sm btn-link" href="#">Wijzigen</a>
                         <a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Verwijderen</a>
@@ -259,6 +263,7 @@
 
                         var available = $('<td />').text(event.Available);
                         var visited = $('<td />').addClass('visited').text(event.Visited);
+                        var theme = $('<td />').addClass('theme').text(event.ThemeTitle);
                         var actions = $('<td />');
                         var deleteLink = $('<a />').addClass('btn btn-sm btn-link').attr('data-id', event.Id).attr('data-title', event.StartTime + ' - ' + event.EndTime).attr('href', '#').attr('data-toggle', 'modal').attr('data-target', '#deleteModal').text('Verwijderen');
                         if (event.Registered > 0) {
@@ -278,6 +283,7 @@
                         row.append(available);
                         row.append(pending);
                         row.append(visited);
+                        row.append(theme);
                         row.append(actions);
                         $('#events-table tbody').append(row);
                     });

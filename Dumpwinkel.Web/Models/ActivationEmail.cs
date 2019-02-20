@@ -16,5 +16,6 @@ namespace Dumpwinkel.Web.Models
         public string TimeFrom { get; set; }
         public string TimeTill { get; set; }
         public int NumberOfVisitors { get; set; }
+        public string ThemeTitle { get; set; }
     }
 }

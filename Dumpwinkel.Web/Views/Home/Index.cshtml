@@ -55,7 +55,7 @@
                                     {
                                         if (!month.CalendarDays[i].IsFull)
                                         {
-                                            <td class="available"><a href="#" data-id="@month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@month.CalendarDays[i].Date.Day.ToString()</a></td>
+                                            <td class="available" data-toggle="tooltip" data-html="true" data-placement="top" title="@Html.Raw(month.CalendarDays[i].ThemeDescription)"><a href="#" data-id="@month.CalendarDays[i].Date.ToString("yyyy-MM-dd")">@month.CalendarDays[i].Date.Day.ToString()</a></td>
                                         }
                                         else
                                         {
@@ -133,6 +133,7 @@
                         });
                         var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
                         var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.Available + " plaatsen");
+                        var theme = $('<td />').addClass('theme').text(event.ThemeTitle);
                         var actions = $('<td />');
                         if (event.Available <= 0) {
                             maxPersons = $('<td />').addClass('maxPersons').text("Volgeboekt");
@@ -146,6 +147,7 @@
 
                         row.append(timeRange);
                         row.append(maxPersons);
+                        row.append(theme);
                         row.append(actions);
                         $('#events-table tbody').append(row);
 

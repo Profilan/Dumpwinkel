@@ -52,6 +52,9 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="Flash.Mvc5, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Flash.Mvc5.1.0.0\lib\net46\Flash.Mvc5.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
     </Reference>
@@ -217,9 +220,11 @@
     <Compile Include="Areas\Admin\Controllers\EventController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegistrationController.cs" />
     <Compile Include="Areas\Admin\Controllers\SettingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ThemeController.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHandler.cs" />
     <Compile Include="Areas\Admin\Models\ADAuthenticationService.cs" />
     <Compile Include="Areas\Admin\Models\SettingViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ThemeViewModel.cs" />
     <Compile Include="Controllers\Api\EventController.cs" />
     <Compile Include="Controllers\Api\RegistrationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -457,6 +462,9 @@
     <Content Include="Areas\Admin\Views\Event\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Setting\_InfoPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Setting\_EmailPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Theme\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Theme\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Theme\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\Produktie.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />

@@ -15,6 +15,7 @@ namespace Dumpwinkel.Web.Models
         public bool IsFull { get; set; }
         public bool IsClosed { get; set; }
         public int MaxPersons { get; set; }
+        public string ThemeDescription { get; set; }
 
         public CalendarDay()
         {

@@ -17,6 +17,8 @@
 
             <div class="form-horizontal">
                 <h5>@Model.Title</h5>
+                <h6>@Model.ThemeTitle</h6>
+                <p>@Model.ThemeDescription</p>
                 <hr />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
