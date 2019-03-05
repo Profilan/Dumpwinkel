@@ -31,8 +31,11 @@ namespace Dumpwinkel.Web.Controllers
                 if (eventItem.Theme != null)
                 {
                     Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
-                    themeTitle = theme.Title.ToUpper();
-                    themeDescription = theme.Description;
+                    if (theme != null)
+                    {
+                        themeTitle = theme.Title.ToUpper();
+                        themeDescription = theme.Description;
+                    }
                 }
 
                 var registrationViewModel = new RegistrationViewModel()

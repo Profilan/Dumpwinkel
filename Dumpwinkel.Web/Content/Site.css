@@ -99,6 +99,7 @@ h6.modal-title {
     border-left-color: #004766;
 }
 
+
 /*
  * Tables
  */
@@ -202,4 +203,11 @@ h6.modal-title {
 .booking-calendar tfoot tr td {
     border: 0;
     padding: 0;
+}
+
+@media (min-width: 576px) {
+
+    .modal-dialog {
+        max-width: 600px;
+    }
 }

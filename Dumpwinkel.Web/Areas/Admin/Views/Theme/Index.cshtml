@@ -28,8 +28,12 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                @if (item.Id != new Guid("e0614191-56e9-41e3-99be-dcb5b7fedd64"))
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                }
+
             </td>
         </tr>
     }

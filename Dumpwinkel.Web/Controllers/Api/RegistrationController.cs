@@ -292,5 +292,23 @@ namespace Dumpwinkel.Web.Controllers.Api
                 return BadRequest(e.Message);
             }
         }
+
+        [Route("api/Registration/Delete/{id}")]
+        [HttpPost]
+        public IHttpActionResult Delete(Guid id)
+        {
+            try
+            {
+                var notification = _registrationRepository.GetById(id);
+
+                _registrationRepository.Delete(id);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+
+            return Content(HttpStatusCode.NoContent, "Registratie is met succes verwijderd.");
+        }
     }
 }

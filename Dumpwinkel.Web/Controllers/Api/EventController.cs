@@ -36,7 +36,10 @@ namespace Dumpwinkel.Web.Controllers.Api
                 if (eventItem.Theme != null)
                 {
                     Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
-                    themeTitle = "[" + theme.Title.ToUpper() + "]";
+                    if (theme != null)
+                    {
+                        themeTitle = theme.Title.ToUpper();
+                    }
                 }
                
                 events.Add(new EventViewModel()

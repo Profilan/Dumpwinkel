@@ -66,7 +66,7 @@
 <hr />
 
 <p>
-<b>Aanmeldingen:</b> <span class="mr-md-3">@ViewBag.TotalRegistrations</span> <b>Personen:</b> <span>@ViewBag.TotalVisitors</span>
+    <b>Aanmeldingen:</b> <span class="mr-md-3">@ViewBag.TotalRegistrations</span> <b>Personen:</b> <span>@ViewBag.TotalVisitors</span>
 </p>
 
 <table class="table">
@@ -100,7 +100,7 @@
 
     @foreach (var item in Model)
     {
-        <tr>
+        <tr data-id="@item.Id">
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
@@ -126,6 +126,7 @@
                 @Html.DisplayFor(modelItem => item.Visited)
             </td>
             <td>
+                @Html.ActionLink("Verwijder", "Delete", new { id = item.Id }, new { data_toggle = "modal", data_target = "#deleteModal", data_id = item.Id, data_title = item.Name })
                 @Html.ActionLink("Details", "Details", new { id = item.Id })
             </td>
         </tr>
@@ -140,7 +141,30 @@
     sortOrder = ViewBag.CurrentSort,
     currentFilter = ViewBag.CurrentFilter,
     startDate = ViewBag.StartDate,
+    state = ViewBag.State
 }), Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+
+
+<div id="deleteModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Verwijder <span id="modalTitle"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Weet je het zeker?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                <button id="okBtn" type="button" class="btn btn-primary">Ja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @section scripts
@@ -172,6 +196,26 @@
                 $("#searchString").val("");
 
                 $("form").submit();
+            });
+
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var title = button.data('title');
+                var id = button.attr('data-id');
+
+                $('#modalTitle').text(title);
+                $('#okBtn').attr('data-id', id);
+            });
+
+            $('#okBtn').click(function (event) {
+                event.preventDefault();
+
+                var id = $(this).attr('data-id');
+                $.post('/api/Registration/Delete/' + id, function () {
+                    $('tr[data-id="' + id + '"]').remove();
+                    $('#deleteModal').modal('hide');
+                });
+
             });
         });
 

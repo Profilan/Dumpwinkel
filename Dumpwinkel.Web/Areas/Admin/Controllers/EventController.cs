@@ -101,11 +101,12 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
 
             var viewModel = new EventViewModel()
             {
-                StartTime = dateNow.ToString("yyyy-MM-ddT08:30" ),
-                EndTime = dateNow.ToString("yyyy-MM-ddT17:00"),
+                StartTime = dateNow.ToString("yyyy-MM-ddT10:00" ),
+                EndTime = dateNow.ToString("yyyy-MM-ddT12:00"),
                 Unit = Profilan.SharedKernel.Unit.Minutes,
-                Amount = 60,
-                Themes = themes
+                Amount = 120,
+                Themes = themes,
+                ThemeId = "e0614191-56e9-41e3-99be-dcb5b7fedd64"
             };
 
             return View(viewModel);

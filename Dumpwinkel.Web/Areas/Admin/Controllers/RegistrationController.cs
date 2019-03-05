@@ -80,6 +80,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
 
             ViewBag.TotalRegistrations = _registrationRepository.GetRegistrationTotal(start, end);
             ViewBag.TotalVisitors = _registrationRepository.GetVisitorTotal(start, end);
+            ViewBag.State = state;
 
             return View(registrations.ToPagedList(pageNumber, pageSize));
         }

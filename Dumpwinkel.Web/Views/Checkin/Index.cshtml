@@ -9,12 +9,10 @@
 }
 
 
-
-
 <div class="container">
     <div class="row">
-        <div class="mx-auto">
-            <h2 style="color: #333333; background-color: #ffffff;">Checkin @getDate.ToLongDateString()</h2>
+        <div class="col-md-6 offset-md-3">
+            <h5 style="color: #333333; background-color: rgba(255,255,255, 0.9); padding: 15px; text-align: center;">Checkin @getDate.ToLongDateString()</h5>
 
             @using (Html.BeginForm("Checkin", "Checkin", FormMethod.Post))
             {

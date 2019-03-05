@@ -103,7 +103,10 @@ namespace Dumpwinkel.Web.Controllers
                 if (events.LastOrDefault().Theme != null)
                 {
                     theme = _themeRepository.GetById(events.LastOrDefault().Theme.Id);
-                    return "<h5>" + theme.Title.ToUpper() + "</h5><p>" + theme.Description + "</p>";
+                    if (theme != null)
+                    {
+                        return "<h5>" + theme.Title.ToUpper() + "</h5><p>" + theme.Description + "</p>";
+                    }
                 }
                 return "<h5>Alle thema's</h5>";
             }

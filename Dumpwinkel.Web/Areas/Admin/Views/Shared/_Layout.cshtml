@@ -64,12 +64,18 @@
                                         Thema's
                                     </a>
                                 </li>
+                            }
+                            @if (User.IsInRole("GRolDumpwinkelBeheerder") || User.IsInRole("GRolDumpwinkelOrganisator"))
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link @(pageName == "Event" ? "active" : "")" href="/cmseek/event">
                                         <i class="fa fa-calendar"></i>
                                         Evenementen
                                     </a>
                                 </li>
+                            }
+                            @if (User.IsInRole("GRolDumpwinkelBeheerder"))
+                            { 
                                 <li class="nav-item">
                                     <a class="nav-link @(pageName == "Registration" ? "active" : "")" href="/cmseek/registration">
                                         <i class="fa fa-edit"></i>

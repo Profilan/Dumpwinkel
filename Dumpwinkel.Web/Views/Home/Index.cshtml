@@ -131,7 +131,7 @@
                         var row = $('<tr />').attr('data-id', event.Id).click(function (e) {
                             window.location.href = '/registration/Create/' + event.Id;
                         });
-                        var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + ' - ' + event.EndTime);
+                        var timeRange = $('<td />').addClass('timeRange').text(event.StartTime + '-' + event.EndTime);
                         var maxPersons = $('<td />').addClass('maxPersons').text("Nog " + event.Available + " plaatsen");
                         var theme = $('<td />').addClass('theme').text(event.ThemeTitle);
                         var actions = $('<td />');
@@ -139,7 +139,7 @@
                             maxPersons = $('<td />').addClass('maxPersons').text("Volgeboekt");
                             row.unbind('click');
                         } else {
-                            var button = $("<a />").addClass('btn btn-sm btn-primary').css('color', '#ffffff').text('Selecteer').click(function (e) {
+                            var button = $("<a />").addClass('btn btn-sm btn-primary d-none d-sm-block').css('color', '#ffffff').text('Selecteer').click(function (e) {
                                 e.preventDefault();
                             });
                             actions.append(button);
