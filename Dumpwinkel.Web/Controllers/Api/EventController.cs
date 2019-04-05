@@ -85,7 +85,7 @@ namespace Dumpwinkel.Web.Controllers.Api
 
             var startTime = firstEvent.TimeRange.Start.Subtract(firstEvent.TimeRange.Duration);
 
-            var eventItem = Event.Create(dumpstore, startTime, firstEvent.TimeRange.Start, firstEvent.MaximumNumberOfVisitors);
+            var eventItem = Event.Create(dumpstore, startTime, firstEvent.TimeRange.Start, firstEvent.MaximumNumberOfVisitors, DateTime.Now);
             _eventRepository.Insert(eventItem);
 
             return Request.CreateResponse(HttpStatusCode.OK, new { EventDate = date }, JsonMediaTypeFormatter.DefaultMediaType);
@@ -103,7 +103,7 @@ namespace Dumpwinkel.Web.Controllers.Api
 
             var endTime = lastEvent.TimeRange.End.Add(lastEvent.TimeRange.Duration);
 
-            var eventItem = Event.Create(dumpstore, lastEvent.TimeRange.End, endTime, lastEvent.MaximumNumberOfVisitors);
+            var eventItem = Event.Create(dumpstore, lastEvent.TimeRange.End, endTime, lastEvent.MaximumNumberOfVisitors, DateTime.Now);
             _eventRepository.Insert(eventItem);
 
             return Request.CreateResponse(HttpStatusCode.OK, new { EventDate = date }, JsonMediaTypeFormatter.DefaultMediaType);

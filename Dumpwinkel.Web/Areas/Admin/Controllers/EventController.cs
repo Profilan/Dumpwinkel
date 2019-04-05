@@ -103,6 +103,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             {
                 StartTime = dateNow.ToString("yyyy-MM-ddT10:00" ),
                 EndTime = dateNow.ToString("yyyy-MM-ddT12:00"),
+                PublishUp = dateNow.ToString("yyyy-MM-ddThh:mm"),
                 Unit = Profilan.SharedKernel.Unit.Minutes,
                 Amount = 120,
                 Themes = themes,
@@ -123,8 +124,9 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
 
             var maxPersonsPerHour = Convert.ToInt32(collection["MaxPersons"]);
             var interval = new Interval(Convert.ToInt32(collection["Amount"]), (Unit)Enum.Parse(typeof(Unit), collection["Unit"]));
+            var publishUp = DateTime.Parse(collection["PublishUp"]);
 
-            var events = Event.CreateRange(dumpstore, startDate, endDate, interval, maxPersonsPerHour, theme);
+            var events = Event.CreateRange(dumpstore, startDate, endDate, interval, maxPersonsPerHour, publishUp, theme);
 
             foreach (var newEvent in events)
             {
@@ -155,8 +157,9 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             {
                 Id = eventItem.Id,
                 MaxPersons = eventItem.MaximumNumberOfVisitors,
-                StartTime = eventItem.TimeRange.Start.ToString(),
-                EndTime = eventItem.TimeRange.End.ToString(),
+                StartTime = eventItem.TimeRange.Start.ToString("yyyy-MM-ddTHH:mm"),
+                EndTime = eventItem.TimeRange.End.ToString("yyyy-MM-ddTHH:mm"),
+                PublishUp = eventItem.PublishUp.ToString("yyyy-MM-ddTHH:mm"),
                 ThemeId = eventItem.Theme != null ? eventItem.Theme.Id.ToString() : "",
                 Themes = themes
             };
@@ -178,6 +181,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 }
 
                 eventItem.Theme = theme;
+                eventItem.PublishUp =  DateTime.Parse(collection["PublishUp"]);
 
                 eventItem.UpdateMaximumNumberOfVisitors(Convert.ToInt32(collection["MaxPersons"]));
 

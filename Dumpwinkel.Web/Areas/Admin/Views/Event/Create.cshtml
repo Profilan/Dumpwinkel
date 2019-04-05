@@ -33,6 +33,15 @@
         </div>
     </div>
     <div class="form-group">
+        <label>Start publiceren</label>
+        <div class="input-group date" id="PublishUp" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="PublishUp" data-target="#PublishUp" />
+            <div class="input-group-append" data-target="#PublishUp" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
         <label>Interval</label>
         @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
@@ -46,10 +55,10 @@
         @Html.EditorFor(model => model.MaxPersons, new { htmlAttributes = new { @class = "form-control" } })
     </div>
     <div class="form-group">
-            @Html.LabelFor(model => model.ThemeId, htmlAttributes: new { @class = "control-label" })
-            @Html.DropDownListFor(x => Model.ThemeId, Model.Themes, "- Kies een thema -", htmlAttributes: new { @class = "form-control" })
+        @Html.LabelFor(model => model.ThemeId, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(x => Model.ThemeId, Model.Themes, "- Kies een thema -", htmlAttributes: new { @class = "form-control" })
 
-            @Html.ValidationMessageFor(model => model.ThemeId, "", new { @class = "text-danger" })
+        @Html.ValidationMessageFor(model => model.ThemeId, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <button id="createButton" class="btn btn-primary" type="submit">Opslaan</button>
@@ -79,6 +88,12 @@
             $('#EndTime').datetimepicker({
                 locale: 'nl',
                 date: "@Model.EndTime",
+                stepping: 15,
+                keepOpen: false
+            });
+            $('#PublishUp').datetimepicker({
+                locale: 'nl',
+                date: "@Model.PublishUp",
                 stepping: 15,
                 keepOpen: false
             });

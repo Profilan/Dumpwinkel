@@ -20,6 +20,7 @@ namespace Dumpwinkel.Web.Models
         public int Visited { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+        public string PublishUp { get; set; }
         public string ThemeTitle { get; set; }
 
         [Display(Name = "Thema")]

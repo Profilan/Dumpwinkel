@@ -37,8 +37,48 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Dumpwinkel Beheer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                @if (User.IsInRole("GRolDumpwinkelBeheerder"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == "Theme" ? "active" : "")" href="/cmseek/theme">
+                            
+                            Thema's
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("GRolDumpwinkelBeheerder") || User.IsInRole("GRolDumpwinkelOrganisator"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == "Event" ? "active" : "")" href="/cmseek/event">
+                            
+                            Evenementen
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole("GRolDumpwinkelBeheerder"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == "Registration" ? "active" : "")" href="/cmseek/registration">
+                            
+                            Registraties
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(pageName == "Settings" ? "active" : "")" href="/cmseek/setting/edit/1">
+                            
+                            Instellingen
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
         @Html.Partial("_LoginPartial")
     </nav>
 

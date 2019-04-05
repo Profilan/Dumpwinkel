@@ -24,7 +24,7 @@
         <div class="form-group">
             @Html.TextBox("searchString", ViewBag.CurrentFilter as string, htmlAttributes: new { @class = "form-control" })
         </div>
-        <input type="submit" class="btn btn-primary" value="Zoeken" />
+        <a href="#" id="searchBtn" class="btn btn-primary">Zoeken</a>
         <div class="form-group">
             <div class="form-row">
                 <div class="form-group">
@@ -69,7 +69,7 @@
     <b>Aanmeldingen:</b> <span class="mr-md-3">@ViewBag.TotalRegistrations</span> <b>Personen:</b> <span>@ViewBag.TotalVisitors</span>
 </p>
 
-<table class="table">
+<table class="table table-responsive">
     <tr>
         <th>
             @Html.ActionLink("Datum-Timeslot", "Index", new { sortOrder = "timerange", currentFilter = ViewBag.CurrentFilter, startDate = startDate })
@@ -196,6 +196,13 @@
                 $("#searchString").val("");
 
                 $("form").submit();
+            });
+
+            $("#searchBtn").click(function (e) {
+                e.preventDefault();
+
+                $("form").submit();
+
             });
 
             $('#deleteModal').on('show.bs.modal', function (event) {

@@ -18,6 +18,7 @@ namespace Dumpwinkel.Logic.MappingsId
             });
 
             Map(x => x.MaximumNumberOfVisitors);
+            Map(x => x.PublishUp);
 
             References(x => x.Dumpstore).Column("DumpstoreId").Cascade.SaveUpdate();
             References(x => x.Theme).Column("ThemeId").Cascade.SaveUpdate();

@@ -124,14 +124,21 @@ namespace Dumpwinkel.Web.Controllers
             try
             {
                 var registration = _registrationRepository.GetById(id);
+                var eventItem = _eventRepository.GetById(registration.Event.Id);
+                var visitor = _visitorRepository.GetById(registration.Visitor.Id);
+
+                // Check if the visitor already registered on this day
+                var registrations = _registrationRepository.GetByVisitorAndEvent(visitor, eventItem);
+                if (registrations.Count() > 0)
+                {
+                    if (registrations.Last().Confirmed == true)
+                    {
+                        return RedirectToAction("AlreadyRegistered");
+                    }
+                }
+
                 registration.Confirmed = true;
                 _registrationRepository.Update(registration);
-
-                var eventItem = _eventRepository.GetById(registration.Event.Id);
-                //eventItem.UpdateMaximumNumberOfVisitors(eventItem.MaximumNumberOfVisitors - registration.NumberOfVisitors);
-                //_eventRepository.Update(eventItem);
-
-                var visitor = _visitorRepository.GetById(registration.Visitor.Id);
 
                 string themeTitle = "";
                 if (eventItem.Theme != null)

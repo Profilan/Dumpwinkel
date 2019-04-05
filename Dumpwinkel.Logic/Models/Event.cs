@@ -10,6 +10,7 @@ namespace Dumpwinkel.Logic.Models
         public virtual Dumpstore Dumpstore { get; protected set; }
         public virtual DateTimeRange TimeRange { get; protected set; }
         public virtual int MaximumNumberOfVisitors { get; protected set; }
+        public virtual DateTime PublishUp { get; set; }
 
         public virtual Theme Theme { get; set; }
 
@@ -27,6 +28,7 @@ namespace Dumpwinkel.Logic.Models
             DateTime startTime,
             DateTime endTime,
             int maximumNumberOfVisitors,
+            DateTime publishUp,
             Theme theme = null
             )
         {
@@ -35,11 +37,12 @@ namespace Dumpwinkel.Logic.Models
             newEvent.MaximumNumberOfVisitors = maximumNumberOfVisitors;
             newEvent.Dumpstore = dumpstore;
             newEvent.Theme = theme;
+            newEvent.PublishUp = publishUp;
 
             return newEvent;
         }
 
-        public static IList<Event> CreateRange(Dumpstore dumpstore, DateTime startDate, DateTime endDate, Interval interval, int maxPersons, Theme theme = null)
+        public static IList<Event> CreateRange(Dumpstore dumpstore, DateTime startDate, DateTime endDate, Interval interval, int maxPersons, DateTime publishUp, Theme theme = null)
         {
             var duration = (endDate - startDate).Duration();
 
@@ -48,7 +51,7 @@ namespace Dumpwinkel.Logic.Models
             var events = new List<Event>();
             for (int i = 0; i < numberOfEvents; i++)
             {
-                events.Add(Event.Create(dumpstore, startDate.AddMinutes(i * interval.Minutes), startDate.AddMinutes((i + 1) * interval.Minutes), maxPersons, theme));
+                events.Add(Event.Create(dumpstore, startDate.AddMinutes(i * interval.Minutes), startDate.AddMinutes((i + 1) * interval.Minutes), maxPersons, publishUp, theme));
             }
 
             return events;

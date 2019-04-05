@@ -166,8 +166,14 @@ h6.modal-title {
     }
 
     .booking-calendar tbody td.available {
-        background: deepskyblue;
+        background: #0c628a;
     }
+
+    .booking-calendar tbody td.unpublished {
+        background-color: lightgoldenrodyellow;
+        color: red;
+    }
+
 
     .booking-calendar tbody td.past,
     .booking-calendar tbody td.full {
@@ -191,7 +197,7 @@ h6.modal-title {
 }
 
 .booking-calendar tbody td a:hover {
-    background: #3299bb;
+    background: #004766;
     color: #fff;
 }
 

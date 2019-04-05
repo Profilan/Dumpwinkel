@@ -47,6 +47,15 @@ namespace Dumpwinkel.Web.Controllers
                    
 
                     var maxPersons = _eventRepository.GetMaxPersonsByDate(date);
+                    var published = false;
+                    if (maxPersons > 0)
+                    {
+                        var events = _eventRepository.ListByDate(date);
+                        if (events.LastOrDefault().PublishUp < DateTime.Now)
+                        {
+                            published = true;
+                        }
+                    }
                     var registeredCount = GetRegisteredCount(date);
                     var themeDescription = GetThemeDescription(date);
                     
@@ -55,10 +64,11 @@ namespace Dumpwinkel.Web.Controllers
                         Date = date,
                         IsVisible = date < firstDayOfTheMonth || date > lastDayOfTheMonth ? false : true,
                         MaxPersons = maxPersons,
-                        IsAvailable = maxPersons > 0 ,
+                        IsAvailable = maxPersons > 0,
                         IsPast = date < new DateTime(currentDate.Year, currentDate.Month, currentDate.Day) || currentDate >= closingTime,
                         IsFull = registeredCount >= maxPersons,
                         IsClosed = false,
+                        IsPublished = published,
                         ThemeDescription = themeDescription
                     });
 

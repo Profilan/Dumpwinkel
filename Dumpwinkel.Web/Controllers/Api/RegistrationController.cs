@@ -254,7 +254,7 @@ namespace Dumpwinkel.Web.Controllers.Api
                 if (visitor == null)
                 {
                     visitor = Visitor.Create(data.Name, data.City, data.Email, data.Postcode);
-                    _visitorRepository.Insert(visitor);
+                    _visitorRepository.Insert(visitor); 
                 }
 
                 var numberOfVisitors = Convert.ToInt32(data.NumberOfVisitors);

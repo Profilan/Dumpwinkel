@@ -33,7 +33,7 @@
         </div>
         <div class="form-group">
             <label>Introtekst</label>
-            @Html.TextAreaFor(model => model.IntroText, new { @class = "form-control", @rows = 6 })
+            @Html.TextAreaFor(model => model.IntroText, new { @class = "form-control editor", @rows = 6 })
             @Html.ValidationMessageFor(model => model.IntroText, "", new { @class = "text-danger" })
         </div>
     </div>
