@@ -10,7 +10,7 @@ using X.PagedList;
 
 namespace Dumpwinkel.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "GRolDumpwinkelBeheerder")]
+    [Authorize(Roles = "GRolDumpwinkelBeheerder,GRolDumpwinkelOrganisator")]
     public class RegistrationController : Controller
     {
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();

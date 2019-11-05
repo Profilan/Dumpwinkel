@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "GRolDumpwinkelBeheerder,GRolDumpwinkelOrganisator")]
     public class ThemeController : Controller
     {
         private readonly ThemeRepository _themeRepository = new ThemeRepository();

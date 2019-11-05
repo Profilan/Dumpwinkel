@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "GRolDumpwinkelBeheerder")]
+    [Authorize(Roles = "GRolDumpwinkelBeheerder,GRolDumpwinkelOrganisator")]
     public class EventController : Controller
     {
         private readonly EventRepository _eventRepository = new EventRepository();
