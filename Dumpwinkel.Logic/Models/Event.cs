@@ -67,5 +67,16 @@ namespace Dumpwinkel.Logic.Models
             DomainEvents.Raise(eventUpdatedEvent);
         }
 
+        public virtual void UpdateDateTimeRange(DateTime start, DateTime end)
+        {
+            if (end > start)
+            {
+                TimeRange = new DateTimeRange(start, end);
+
+                var eventUpdatedEvent = new EventUpdatedEvent(this);
+                DomainEvents.Raise(eventUpdatedEvent);
+            }
+        }
+
     }
 }

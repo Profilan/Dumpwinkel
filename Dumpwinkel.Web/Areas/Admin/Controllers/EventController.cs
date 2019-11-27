@@ -183,6 +183,10 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 eventItem.Theme = theme;
                 eventItem.PublishUp =  DateTime.Parse(collection["PublishUp"]);
 
+                var startDate = DateTime.Parse(collection["StartTime"]);
+                var endDate = DateTime.Parse(collection["EndTime"]);
+                eventItem.UpdateDateTimeRange(startDate, endDate);
+
                 eventItem.UpdateMaximumNumberOfVisitors(Convert.ToInt32(collection["MaxPersons"]));
 
                 _eventRepository.Update(eventItem);
