@@ -127,5 +127,21 @@ namespace Dumpwinkel.Web.Controllers.Api
             return Content(HttpStatusCode.NoContent, "Gebeurtenis is met succes verwijderd.");
         }
 
+        [Route("api/event/download/{id}")]
+        [HttpPost]
+        public IHttpActionResult Download(Guid id)
+        {
+            try
+            {
+                var eventItem = _eventRepository.GetById(id);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+
+            return Ok("Gebeurtenis is met succes gedownload.");
+        }
+
     }
 }

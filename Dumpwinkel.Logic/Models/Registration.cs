@@ -17,6 +17,7 @@ namespace Dumpwinkel.Logic.Models
         public virtual DateTime Modified { get; protected set; }
 
         public virtual bool Confirmed { get; set; }
+        public virtual DateTime ConfirmationDate { get; set; }
         public virtual bool Visited { get; set; }
 
         public virtual IList<Scan> Scans { get; set; }
@@ -53,6 +54,7 @@ namespace Dumpwinkel.Logic.Models
             registration.Created = DateTime.Now;
             registration.Modified = registration.Created;
             registration.Confirmed = confirmed;
+            registration.ConfirmationDate = registration.Created;
             registration.Visited = visited;
 
             return registration;

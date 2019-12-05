@@ -102,6 +102,7 @@
                     <td class="visited"></td>
                     <td class="theme"></td>
                     <td class="actions">
+                        <a class=""><i class="fa fa-download"></i></a>
                         <a class="btn btn-sm btn-link" href="#">Wijzigen</a>
                         <a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Verwijderen</a>
                         <a class="btn btn-sm btn-link" href="#" data-toggle="" data-target="">Extra bevestiging</a>
@@ -143,6 +144,26 @@
     </div>
 </div>
 
+<div id="downloadModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Download <span id="downloadTitleName"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Wilt u dit timeslot downloaden?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
+                <a id="downloadBtn" class="btn btn-primary">Ja</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="deleteModal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -153,7 +174,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Weet je het zeker?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleren</button>
@@ -265,6 +285,8 @@
                         var visited = $('<td />').addClass('visited').text(event.Visited);
                         var theme = $('<td />').addClass('theme').text(event.ThemeTitle);
                         var actions = $('<td />');
+                        var downloadLink = $('<a />').attr('href', '/cmseek/event/DownloadExcel/' + event.Id).append('<i class="fa fa-download"></i>');
+                        actions.append(downloadLink);
                         var deleteLink = $('<a />').addClass('btn btn-sm btn-link').attr('data-id', event.Id).attr('data-title', event.StartTime + ' - ' + event.EndTime).attr('href', '#').attr('data-toggle', 'modal').attr('data-target', '#deleteModal').text('Verwijderen');
                         if (event.Registered > 0) {
                             deleteLink.addClass('disabled');
@@ -344,8 +366,8 @@
 
                 $('#extraModal .titleName').text(title);
                 $('#extraBtn').attr('data-id', id);
-            });
 
+            });
 
             $('#extraBtn').click(function (event) {
 

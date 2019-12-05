@@ -15,6 +15,7 @@ namespace Dumpwinkel.Logic.Mappings
             Map(x => x.Modified);
             Map(x => x.NumberOfVisitors);
             Map(x => x.Confirmed);
+            Map(x => x.ConfirmationDate);
             Map(x => x.Visited);
 
             References(x => x.Event).Column("EventId").LazyLoad().Not.Cascade.SaveUpdate();

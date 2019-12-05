@@ -261,6 +261,7 @@ namespace Dumpwinkel.Web.Controllers.Api
 
                 var registration = Registration.Create(visitor, eventItem, numberOfVisitors, false);
                 registration.Confirmed = true;
+                registration.ConfirmationDate = DateTime.Now;
 
                 _registrationRepository.Insert(registration);
 

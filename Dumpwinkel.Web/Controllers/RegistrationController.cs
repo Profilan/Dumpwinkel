@@ -138,6 +138,7 @@ namespace Dumpwinkel.Web.Controllers
                 }
 
                 registration.Confirmed = true;
+                registration.ConfirmationDate = DateTime.Now;
                 _registrationRepository.Update(registration);
 
                 string themeTitle = "";

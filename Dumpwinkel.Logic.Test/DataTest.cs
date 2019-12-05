@@ -34,7 +34,15 @@ namespace Dumpwinkel.Logic.Test
         {
             var rep = new RegistrationRepository();
 
-            var registration = rep.GetById(new Guid("5CC38093-DB62-4FCD-8562-0F013C51FA0A"));
+            var registration = rep.GetById(new Guid("1B7FC4C9-ECBB-426A-9263-D59449958313"));
+        }
+
+        [TestMethod]
+        public void GetScansByRegistration()
+        {
+            var rep = new ScanRepository();
+
+            var scans = rep.ListByRegistration(new Guid("1B7FC4C9-ECBB-426A-9263-D59449958313"));
         }
     }
 }

@@ -2,6 +2,7 @@
 using Dumpwinkel.Logic.Repositories;
 using Dumpwinkel.Web.Areas.Admin.Models;
 using Dumpwinkel.Web.Models;
+using OfficeOpenXml;
 using Profilan.SharedKernel;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
         private readonly DumpstoreRepository _dumpstoreRepository = new DumpstoreRepository();
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
         private readonly ThemeRepository _themeRepository = new ThemeRepository();
+        private readonly VisitorRepository _visitorRepository = new VisitorRepository();
+
         protected string[] Months = { "Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December" };
 
         // GET: Event
@@ -200,6 +203,62 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 Request.Flash("error", "Er is een ernstige fout opgetreden: " + e.Message);
                 return RedirectToAction("Index", "Event", new { date = eventItem.TimeRange.Start.ToString("yyyy-MM-dd") });
             }
+        }
+
+        
+        public ActionResult DownloadExcel(Guid id)
+        {
+            ExcelPackage ep = new ExcelPackage();
+            ExcelWorksheet sheet = ep.Workbook.Worksheets.Add("Report");
+
+            sheet.Cells["A1:K1"].Style.Font.Bold = true;
+            sheet.Cells["A1"].Value = "Datum-Timeslot";
+            sheet.Cells["B1"].Value = "Naam";
+            sheet.Cells["C1"].Value = "E-mail";
+            sheet.Cells["D1"].Value = "Postcode";
+            sheet.Cells["E1"].Value = "Plaats";
+            sheet.Cells["F1"].Value = "Aantal personen (max 3)";
+            sheet.Cells["G1"].Value = "Bevestigd";
+            sheet.Cells["H1"].Value = "Bezocht";
+            sheet.Cells["I1"].Value = "Aanmelding";
+            sheet.Cells["J1"].Value = "Bevestiging";
+            sheet.Cells["K1"].Value = "Scanning";
+
+            var eventItem = _eventRepository.GetById(id);
+            var dateTime = eventItem.TimeRange.Start.ToString("yyyy-MM-dd") + " " + eventItem.TimeRange.Start.ToShortTimeString() + "-" + eventItem.TimeRange.End.ToShortTimeString();
+
+            var registrations = _registrationRepository.GetByEvent(eventItem);
+
+            int row = 2;
+            foreach (var item in registrations)
+            {
+                var registration = _registrationRepository.GetById(item.Id);
+                var visitor = _visitorRepository.GetById(item.Visitor.Id);
+                
+
+                sheet.Cells[string.Format("A{0}", row)].Value = dateTime;
+                sheet.Cells[string.Format("B{0}", row)].Value = visitor.Name;
+                sheet.Cells[string.Format("C{0}", row)].Value = visitor.Email;
+                sheet.Cells[string.Format("D{0}", row)].Value = visitor.Postcode;
+                sheet.Cells[string.Format("E{0}", row)].Value = visitor.City;
+                sheet.Cells[string.Format("F{0}", row)].Value = registration.NumberOfVisitors;
+                sheet.Cells[string.Format("G{0}", row)].Value = registration.Confirmed ? "Ja" : "Nee";
+                sheet.Cells[string.Format("H{0}", row)].Value = registration.Visited ? "Ja" : "Nee";
+                sheet.Cells[string.Format("I{0}", row)].Value = registration.Created.ToString("yyyy-MM-dd hh:mm:ss");
+                sheet.Cells[string.Format("J{0}", row)].Value = registration.ConfirmationDate > registration.Created ? registration.ConfirmationDate.ToString("yyyy-MM-dd hh:mm:ss") : "";
+                sheet.Cells[string.Format("K{0}", row)].Value = registration.Scans.Count > 0 ? registration.Scans.Last().Timestamp.ToString("yyyy-MM-dd hh:mm:ss") : "";
+                //sheet.Cells[string.Format("K{0}", row)].Value = "";
+                row++;
+            }
+
+            sheet.Cells["A:AZ"].AutoFitColumns();
+            Response.Clear();
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment; filename=" + "Report " + dateTime  + ".xlsx");
+            Response.BinaryWrite(ep.GetAsByteArray());
+            Response.End();
+
+            return RedirectToAction("Index", "Event", new { date = eventItem.TimeRange.Start.ToString("yyyy-MM-dd") });
         }
     }
 }

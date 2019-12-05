@@ -48,6 +48,7 @@ namespace Dumpwinkel.Web.Controllers
 
                     var maxPersons = _eventRepository.GetMaxPersonsByDate(date);
                     var published = false;
+                    var full = true;
                     if (maxPersons > 0)
                     {
                         var events = _eventRepository.ListByDate(date);
@@ -55,8 +56,20 @@ namespace Dumpwinkel.Web.Controllers
                         {
                             published = true;
                         }
+                        // check if the day is full by traversing all time slotes
+                        foreach (var eventItem in events)
+                        {
+                            var count = GetRegisteredCountByEvent(eventItem);
+                            if (count < eventItem.MaximumNumberOfVisitors)
+                            {
+                                full = false;
+                            }
+                        }
                     }
-                    var registeredCount = GetRegisteredCount(date);
+
+                    
+
+                    // var registeredCount = GetRegisteredCount(date);
                     var themeDescription = GetThemeDescription(date);
                     
                     days.Add(new Models.CalendarDay()
@@ -66,7 +79,8 @@ namespace Dumpwinkel.Web.Controllers
                         MaxPersons = maxPersons,
                         IsAvailable = maxPersons > 0,
                         IsPast = date < new DateTime(currentDate.Year, currentDate.Month, currentDate.Day) || currentDate >= closingTime,
-                        IsFull = registeredCount >= maxPersons,
+                        //IsFull = registeredCount >= maxPersons,
+                        IsFull = full,
                         IsClosed = false,
                         IsPublished = published,
                         ThemeDescription = themeDescription
@@ -101,6 +115,13 @@ namespace Dumpwinkel.Web.Controllers
             }
 
             return total;
+        }
+
+        private int GetRegisteredCountByEvent(Event eventItem)
+        {
+            int count = _registrationRepository.GetRegisteredCount(eventItem);
+
+            return count;
         }
 
         private string GetThemeDescription(DateTime date)
