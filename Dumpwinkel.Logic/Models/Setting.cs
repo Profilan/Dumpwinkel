@@ -13,6 +13,8 @@ namespace Dumpwinkel.Logic.Models
         public virtual string InfoText { get; set; }
         public virtual string BackgroundImageUrl { get; set; }
         public virtual string EmailDisclaimer { get; set; }
+        public virtual Period LegacyPeriod { get; set; }
+        public virtual string LegacyText { get; set; }
 
         protected Setting()
         {

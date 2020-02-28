@@ -65,7 +65,16 @@ namespace Dumpwinkel.Logic.Repositories
 
         public void Update(Visitor entity)
         {
-            throw new NotImplementedException();
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    session.SaveOrUpdate(entity);
+                    transaction.Commit();
+                }
+            }
         }
+
+
     }
 }

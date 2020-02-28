@@ -39,8 +39,8 @@ namespace Dumpwinkel.Web.Models
         public bool Visited { get; set; }
 
         [Required]
-        [Display(Name = "Aantal personen (max 3)")]
-        [Range(1, 3, ErrorMessage = "Kies een aantal tussen de {1} en {2}")]
+        [Display(Name = "Aantal personen (max 2)")]
+        [Range(1, 2, ErrorMessage = "Kies een aantal tussen de {1} en {2}")]
         public int NumberOfVisitors { get; set; }
 
         public IList<ScanViewModel> Scans { get; set; }

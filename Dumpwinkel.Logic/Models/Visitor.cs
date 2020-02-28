@@ -1,5 +1,8 @@
 ﻿using Profilan.SharedKernel;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dumpwinkel.Logic.Models
 {
@@ -9,15 +12,14 @@ namespace Dumpwinkel.Logic.Models
         public virtual string City { get; protected set; }
         public virtual string Email { get; protected set; }
         public virtual string Postcode { get; protected set; }
-
         protected Visitor()
         {
-
+            
         }
 
         public Visitor(Guid id) : base(id)
         {
-
+            
         }
 
         public static Visitor Create(string name,

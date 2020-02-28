@@ -19,6 +19,8 @@ namespace Dumpwinkel.Logic.Models
         public virtual bool Confirmed { get; set; }
         public virtual DateTime ConfirmationDate { get; set; }
         public virtual bool Visited { get; set; }
+        public virtual string RejectionReason { get; set; }
+        public virtual string IPAddress { get; set; }
 
         public virtual IList<Scan> Scans { get; set; }
 

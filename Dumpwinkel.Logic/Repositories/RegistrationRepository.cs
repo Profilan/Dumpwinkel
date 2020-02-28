@@ -55,12 +55,12 @@ namespace Dumpwinkel.Logic.Repositories
             }
         }
 
-        public IEnumerable<Registration> GetByVisitorAndEvent(Visitor visitor, Event eventItem)
+        public IEnumerable<Registration> GetByVisitorAndEvent(Guid visitorId, Event eventItem)
         {
             using (ISession session = SessionFactory.GetNewSession("default"))
             {
                 var query = session.Query<Registration>()
-                    .Where(x => x.Visitor == visitor && x.Event == eventItem);
+                    .Where(x => x.Visitor.Id == visitorId && x.Event == eventItem);
 
                 return query.ToList();
             }
@@ -142,6 +142,20 @@ namespace Dumpwinkel.Logic.Repositories
                 return query.ToPagedList(pageNumber, pageSize);
             }
         }
+
+        public IEnumerable<Registration> GetVisitedByVisitor(Guid visitorId)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = session.Query<Registration>()
+                    .Where(x => x.Visitor.Id == visitorId)
+                    .Where(x => x.Visited == true)
+                    .OrderBy(x => x.Event.TimeRange.Start);
+
+                return query.ToList();
+            }
+        }
+
         public IEnumerable<Registration> List(string sortOrder, string searchString, DateTime startDate, DateTime endDate, string eventId = null, string state = "all")
         {
 
@@ -202,6 +216,18 @@ namespace Dumpwinkel.Logic.Repositories
             }
         }
 
+        public IEnumerable<Registration> ListByEventAndIp(Guid eventId, string ipAddress)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = session.Query<Registration>()
+                    .Where(x => x.Event.Id == eventId && x.IPAddress == ipAddress)
+                    .OrderByDescending(x => x.Created);
+
+                return query.ToList();
+            }
+        }
+
         public IEnumerable<Registration> List()
         {
             using (ISession session = SessionFactory.GetNewSession("default"))
@@ -244,6 +270,28 @@ namespace Dumpwinkel.Logic.Repositories
                     return (int)total;
                 }
                 return 0;
+            }
+        }
+
+        public IEnumerable<Registration> GetByIpAndNotEvent(string ipAddress, Event eventItem)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = session.Query<Registration>()
+                    .Where(x => x.IPAddress == ipAddress && x.Event != eventItem);
+
+                return query.ToList();
+            }
+        }
+
+        public IEnumerable<Registration> GetByVisitorAndNotEvent(Guid visitorId, Event eventItem)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = session.Query<Registration>()
+                    .Where(x => x.Visitor.Id == visitorId && x.Event != eventItem);
+
+                return query.ToList();
             }
         }
 

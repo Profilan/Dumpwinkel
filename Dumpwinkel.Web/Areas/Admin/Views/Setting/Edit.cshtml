@@ -34,6 +34,9 @@
         <li class="nav-item">
             <a class="nav-link" id="email-tab" data-toggle="tab" href="#email" role="tab" aria-controls="email" aria-selected="false">E-mail</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="registrations-tab" data-toggle="tab" href="#registrations" role="tab" aria-controls="registrations" aria-selected="false">Registraties</a>
+        </li>
     </ul>
     <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
@@ -47,6 +50,9 @@
         </div>
         <div class="tab-pane fade show" id="email" role="tabpanel" aria-labelledby="email-tab">
             @{Html.RenderPartial("_EmailPartial", Model); }
+        </div>
+        <div class="tab-pane fade show" id="registrations" role="tabpanel" aria-labelledby="registrations-tab">
+            @{Html.RenderPartial("_RegistrationPartial", Model); }
         </div>
     </div>
 }

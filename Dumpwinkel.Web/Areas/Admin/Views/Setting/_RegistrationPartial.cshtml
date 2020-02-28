@@ -1,0 +1,26 @@
+﻿@model Dumpwinkel.Web.Areas.Admin.Models.SettingViewModel
+
+    <div class="form-group row">
+        <div class="col-lg-6 row">
+
+            <div class="col-lg-5">
+                <label>Legacy deadline</label>
+                @Html.EditorFor(model => model.LegacyAmount, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div class="col-lg-5">
+                <label>&nbsp;</label>
+                @Html.EnumDropDownListFor(model => model.LegacyUnit, "- Select unit -", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-lg-10">
+
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-lg-12">
+            <label>Introtekst</label>
+            @Html.TextAreaFor(model => model.LegacyText, new { @class = "form-control editor", @rows = 6 })
+            @Html.ValidationMessageFor(model => model.LegacyText, "", new { @class = "text-danger" })
+        </div>
+    </div>

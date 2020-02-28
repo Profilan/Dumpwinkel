@@ -1,5 +1,6 @@
 ﻿using Dumpwinkel.Logic.Models;
 using FluentNHibernate.Mapping;
+using Profilan.SharedKernel;
 
 namespace Dumpwinkel.Logic.Mappings
 {
@@ -20,6 +21,14 @@ namespace Dumpwinkel.Logic.Mappings
             Map(x => x.InfoText);
             Map(x => x.BackgroundImageUrl);
             Map(x => x.EmailDisclaimer);
+
+            Component(x => x.LegacyPeriod, m =>
+            {
+                m.Map(x => x.Amount).Column("LegacyAmount").Nullable();
+                m.Map(x => x.Unit).Column("LegacyUnit").CustomType(typeof(Unit)).Nullable();
+            });
+
+            Map(x => x.LegacyText);
         }
     }
 }

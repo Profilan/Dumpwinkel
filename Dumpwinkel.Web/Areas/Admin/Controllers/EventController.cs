@@ -211,18 +211,21 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             ExcelPackage ep = new ExcelPackage();
             ExcelWorksheet sheet = ep.Workbook.Worksheets.Add("Report");
 
-            sheet.Cells["A1:K1"].Style.Font.Bold = true;
+            sheet.Cells["A1:N1"].Style.Font.Bold = true;
             sheet.Cells["A1"].Value = "Datum-Timeslot";
             sheet.Cells["B1"].Value = "Naam";
             sheet.Cells["C1"].Value = "E-mail";
             sheet.Cells["D1"].Value = "Postcode";
             sheet.Cells["E1"].Value = "Plaats";
-            sheet.Cells["F1"].Value = "Aantal personen (max 3)";
+            sheet.Cells["F1"].Value = "Aantal personen";
             sheet.Cells["G1"].Value = "Bevestigd";
             sheet.Cells["H1"].Value = "Bezocht";
             sheet.Cells["I1"].Value = "Aanmelding";
             sheet.Cells["J1"].Value = "Bevestiging";
             sheet.Cells["K1"].Value = "Scanning";
+            sheet.Cells["L1"].Value = "IP Adres";
+            sheet.Cells["M1"].Value = "Registratie pogingen";
+            sheet.Cells["N1"].Value = "Reden afwijzing";
 
             var eventItem = _eventRepository.GetById(id);
             var dateTime = eventItem.TimeRange.Start.ToString("yyyy-MM-dd") + " " + eventItem.TimeRange.Start.ToShortTimeString() + "-" + eventItem.TimeRange.End.ToShortTimeString();
@@ -234,7 +237,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             {
                 var registration = _registrationRepository.GetById(item.Id);
                 var visitor = _visitorRepository.GetById(item.Visitor.Id);
-                
+                var registrationTries = _registrationRepository.GetByVisitorAndEvent(visitor.Id, eventItem).Count();
 
                 sheet.Cells[string.Format("A{0}", row)].Value = dateTime;
                 sheet.Cells[string.Format("B{0}", row)].Value = visitor.Name;
@@ -244,9 +247,13 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 sheet.Cells[string.Format("F{0}", row)].Value = registration.NumberOfVisitors;
                 sheet.Cells[string.Format("G{0}", row)].Value = registration.Confirmed ? "Ja" : "Nee";
                 sheet.Cells[string.Format("H{0}", row)].Value = registration.Visited ? "Ja" : "Nee";
-                sheet.Cells[string.Format("I{0}", row)].Value = registration.Created.ToString("yyyy-MM-dd hh:mm:ss");
-                sheet.Cells[string.Format("J{0}", row)].Value = registration.ConfirmationDate > registration.Created ? registration.ConfirmationDate.ToString("yyyy-MM-dd hh:mm:ss") : "";
-                sheet.Cells[string.Format("K{0}", row)].Value = registration.Scans.Count > 0 ? registration.Scans.Last().Timestamp.ToString("yyyy-MM-dd hh:mm:ss") : "";
+                sheet.Cells[string.Format("I{0}", row)].Value = registration.Created.ToString("yyyy-MM-dd HH:mm:ss");
+                sheet.Cells[string.Format("J{0}", row)].Value = registration.ConfirmationDate > registration.Created ? registration.ConfirmationDate.ToString("yyyy-MM-dd HH:mm:ss") : "";
+                sheet.Cells[string.Format("K{0}", row)].Value = registration.Scans.Count > 0 ? registration.Scans.Last().Timestamp.ToString("yyyy-MM-dd HH:mm:ss") : "";
+                sheet.Cells[string.Format("L{0}", row)].Value = registration.IPAddress;
+                sheet.Cells[string.Format("M{0}", row)].Value = registrationTries;
+                sheet.Cells[string.Format("N{0}", row)].Value = registration.RejectionReason;
+
                 //sheet.Cells[string.Format("K{0}", row)].Value = "";
                 row++;
             }

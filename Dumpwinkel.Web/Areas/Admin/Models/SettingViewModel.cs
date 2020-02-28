@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Profilan.SharedKernel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -53,6 +54,13 @@ namespace Dumpwinkel.Web.Areas.Admin.Models
         [Display(Name = "Disclaimer")]
         [AllowHtml]
         public string EmailDisclaimer { get; set; }
+
+        [Display(Name = "Legacy Period")]
+        public int LegacyAmount { get; set; }
+        public Unit LegacyUnit { get; set; }
+        [Display(Name = "Legacy Text")]
+        [AllowHtml]
+        public string LegacyText { get; set; }
 
         public SettingViewModel()
         {

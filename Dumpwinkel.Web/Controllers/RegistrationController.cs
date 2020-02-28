@@ -18,6 +18,7 @@ namespace Dumpwinkel.Web.Controllers
         private readonly EventRepository _eventRepository = new EventRepository();
         private readonly VisitorRepository _visitorRepository = new VisitorRepository();
         private readonly ThemeRepository _themeRepository = new ThemeRepository();
+        private readonly SettingRepository _settingRepository = new SettingRepository();
 
         [AllowAnonymous]
         public ActionResult Create(Guid id)
@@ -63,29 +64,74 @@ namespace Dumpwinkel.Web.Controllers
             {
                 var eventItem = _eventRepository.GetById(new Guid(collection["EventId"]));
 
+                var ipAddress = GetIPAddress();
+
                 var visitor = _visitorRepository.GetByEmail(collection["Email"]);
                 if (visitor == null)
                 {
                     visitor = Visitor.Create(collection["Name"], collection["City"], collection["Email"], collection["Postcode"]);
+                    
                     _visitorRepository.Insert(visitor);
                 }
 
-                // Check if the visitor already registered on this day
-                var registrations = _registrationRepository.GetByVisitorAndEvent(visitor, eventItem);
+                /*
+                // Check if the visitor already registered on this day or earlier than legacy deadline
+                var registrations = _registrationRepository.GetByVisitorAndEvent(visitor.Id, eventItem);
                 if (registrations.Count() > 0)
                 {
+                    DateTime legacyDate = eventItem.TimeRange.Start;
+                    switch (_settings.LegacyPeriod.Unit)
+                    {
+                        case Profilan.SharedKernel.Unit.Hours:
+                            legacyDate = eventItem.TimeRange.Start.AddHours(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Minutes:
+                            legacyDate = eventItem.TimeRange.Start.AddMinutes(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Seconds:
+                            legacyDate = eventItem.TimeRange.Start.AddSeconds(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Days:
+                            legacyDate = eventItem.TimeRange.Start.AddDays(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Months:
+                            legacyDate = eventItem.TimeRange.Start.AddMonths(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Years:
+                            legacyDate = eventItem.TimeRange.Start.AddYears(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // Haal de bezochte registraties op (bezocht of bevestigd?)
+                    var visitedRegistrations = _registrationRepository.GetVisitedByVisitor(visitor.Id);
+
+                    if (visitedRegistrations.Count() > 0)
+                    {
+                        var lastEvent = _eventRepository.GetById(visitedRegistrations.Last().Event.Id);
+                        if (lastEvent.TimeRange.Start >= legacyDate)
+                        {
+                            return RedirectToAction("EarlyRegistered");
+                        }
+                    }
+
+
                     if (registrations.Last().Confirmed == true)
                     {
                         return RedirectToAction("AlreadyRegistered");
                     }
                 }
+                */
 
+                // Voeg registratie toe
                 var numberOfVisitors = Convert.ToInt32(collection["NumberOfVisitors"]);
-
                 var registration = Registration.Create(visitor, eventItem, numberOfVisitors, false);
-
+                registration.IPAddress = ipAddress;
                 _registrationRepository.Insert(registration);
 
+
+                // Verstuur een activatie email
                 string themeTitle = "";
                 if (eventItem.Theme != null)
                 {
@@ -127,14 +173,113 @@ namespace Dumpwinkel.Web.Controllers
                 var eventItem = _eventRepository.GetById(registration.Event.Id);
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
 
-                // Check if the visitor already registered on this day
-                var registrations = _registrationRepository.GetByVisitorAndEvent(visitor, eventItem);
-                if (registrations.Count() > 0)
+                var ipAddress = GetIPAddress();
+
+                // Controleer of in dit event registraties zijn vanaf hetzelfde ip adres
+                bool alreadyRegistered = false;
+                var otherRegistrations = _registrationRepository.ListByEventAndIp(eventItem.Id, ipAddress);
+                if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe IP
                 {
-                    if (registrations.Last().Confirmed == true)
+                    foreach (var otherRegistration in otherRegistrations)
                     {
-                        return RedirectToAction("AlreadyRegistered");
+                        if (otherRegistration.Confirmed)
+                        {
+                            registration.RejectionReason = "Al geregistreerd (IP)";
+                            _registrationRepository.Update(registration);
+
+                            // Dit was dezelfde bezoeker, dus pas dit aan
+                            visitor = otherRegistration.Visitor;
+
+                            alreadyRegistered = true;
+                            break;
+                        }
                     }
+                }
+
+                if (!alreadyRegistered)
+                {
+                    // Controleer of in dit event registraties zijn vanaf hetzelde email adres
+                    otherRegistrations = _registrationRepository.GetByVisitorAndEvent(visitor.Id, eventItem);
+                    if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe E-mail adres
+                    {
+                        foreach (var otherRegistration in otherRegistrations)
+                        {
+                            if (otherRegistration.Confirmed)
+                            {
+                                registration.RejectionReason = "Al geregistreerd (Email)";
+                                _registrationRepository.Update(registration);
+
+                                // Dit was dezelfde bezoeker, dus pas dit aan
+                                visitor = otherRegistration.Visitor;
+
+                                alreadyRegistered = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Controleer of de registratie buiten het termijn valt
+                bool earlierRegistered = false;
+                if (!alreadyRegistered)
+                {
+                    var registrations = _registrationRepository.GetByVisitorAndNotEvent(visitor.Id, eventItem);
+                    if (registrations.Count() > 0)
+                    {
+                        DateTime legacyDate = eventItem.TimeRange.Start;
+                        switch (_settings.LegacyPeriod.Unit)
+                        {
+                            case Profilan.SharedKernel.Unit.Hours:
+                                legacyDate = eventItem.TimeRange.Start.AddHours(-1 * _settings.LegacyPeriod.Amount);
+                                break;
+                            case Profilan.SharedKernel.Unit.Minutes:
+                                legacyDate = eventItem.TimeRange.Start.AddMinutes(-1 * _settings.LegacyPeriod.Amount);
+                                break;
+                            case Profilan.SharedKernel.Unit.Seconds:
+                                legacyDate = eventItem.TimeRange.Start.AddSeconds(-1 * _settings.LegacyPeriod.Amount);
+                                break;
+                            case Profilan.SharedKernel.Unit.Days:
+                                legacyDate = eventItem.TimeRange.Start.AddDays(-1 * _settings.LegacyPeriod.Amount);
+                                break;
+                            case Profilan.SharedKernel.Unit.Months:
+                                legacyDate = eventItem.TimeRange.Start.AddMonths(-1 * _settings.LegacyPeriod.Amount);
+                                break;
+                            case Profilan.SharedKernel.Unit.Years:
+                                legacyDate = eventItem.TimeRange.Start.AddYears(-1 * _settings.LegacyPeriod.Amount);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        // Haal de bezochte registraties op (bezocht of bevestigd?)
+                        var visitedRegistrations = _registrationRepository.GetVisitedByVisitor(visitor.Id);
+                        
+
+                        if (visitedRegistrations.Count() > 0)
+                        {
+                            var lastVisitedRegistration = visitedRegistrations.Last();
+                            var lastEvent = _eventRepository.GetById(lastVisitedRegistration.Event.Id);
+                            if (lastEvent.TimeRange.Start >= legacyDate)
+                            {
+                                // Update de registratie met de reden van afwijzing
+                                lastVisitedRegistration.RejectionReason = "Eerder geregistreerd (E-mail)";
+                                _registrationRepository.Update(lastVisitedRegistration);
+
+                                earlierRegistered = true;
+                            }
+                        }
+                    }
+
+                }
+
+                if (earlierRegistered)
+                {
+                    return RedirectToAction("EarlyRegistered");
+                }
+
+                if (alreadyRegistered)
+                {
+                    return RedirectToAction("AlreadyRegistered");
                 }
 
                 registration.Confirmed = true;
@@ -197,9 +342,31 @@ namespace Dumpwinkel.Web.Controllers
         }
 
         [AllowAnonymous]
+        public ActionResult EarlyRegistered()
+        {
+            ViewBag.LegacyText = _settings.LegacyText;
+
+            return View();
+        }
+
+        [AllowAnonymous]
         public ActionResult Confirmed()
         {
             return View();
         }
+
+
+        private string GetIPAddress()
+        {
+            string ipList = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (!string.IsNullOrEmpty(ipList))
+            {
+                return ipList.Split(',')[0];
+            }
+
+            return Request.ServerVariables["REMOTE_ADDR"];
+        }
+
     }
 }

@@ -1,14 +1,14 @@
 ﻿
 @{
-    ViewBag.Title = "Al geregistreerd";
+    ViewBag.Title = "Eerder bezocht";
 }
 
 <div class="container">
     <div class="col-md-12" style="background-color: rgba(255,255,255, 0.9); padding: 15px;">
-        <h2>Al geregistreerd</h2>
+        <h2>Eerder bezocht</h2>
 
         <p>
-            Jouw E-mail adres staat al geregistreerd op dit timeslot. Er is slechts 1 registratie per E-mail adres mogelijk.
+            @Html.Raw(ViewBag.LegacyText)
         </p>
         <a href="/Home" class="btn btn-primary">Terug naar de homepage</a>
     </div>

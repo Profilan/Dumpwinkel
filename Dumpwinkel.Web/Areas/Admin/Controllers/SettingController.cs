@@ -1,5 +1,6 @@
 ﻿using Dumpwinkel.Logic.Repositories;
 using Dumpwinkel.Web.Areas.Admin.Models;
+using Profilan.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,7 +44,10 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 MaxFileSize = 512,
                 AcceptFileTypes = @"/(\.|\/)(jpg)$/i",
                 UploadUrl = "/api/upload/image",
-                Images = imageUrls
+                Images = imageUrls,
+                LegacyAmount = settings.LegacyPeriod.Amount,
+                LegacyUnit = settings.LegacyPeriod.Unit,
+                LegacyText = settings.LegacyText
             };
 
             return View(viewModel);
@@ -66,6 +70,9 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 settings.BackgroundImageUrl = collection["ImageUrl"];
                 settings.InfoText = Server.UrlDecode(collection["InfoText"]);
                 settings.EmailDisclaimer = Server.UrlDecode(collection["EmailDisclaimer"]);
+                settings.LegacyPeriod.Amount = Convert.ToInt32(collection["LegacyAmount"]);
+                settings.LegacyPeriod.Unit = (Unit)Enum.Parse(typeof(Unit), collection["LegacyUnit"]);
+                settings.LegacyText = collection["LegacyText"];
 
                 _settingRepository.Update(settings);
 
