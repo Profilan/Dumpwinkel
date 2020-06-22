@@ -359,6 +359,7 @@
     <Content Include="Content\sounds\Windows Hardware Remove.wav" />
     <Content Include="Content\sounds\Windows Notify System Generic.wav" />
     <Content Include="fonts\Code39.svg" />
+    <Content Include="img\Logo-DUMPwinkel.png" />
     <Content Include="img\favicon.ico" />
     <Content Include="img\icon-map.png" />
     <Content Include="img\logo_eekhoorn_staand.png" />
@@ -657,6 +658,7 @@
     <Content Include="Scripts\tinymce\skins\ui\oxide\fonts\tinymce-mobile.woff" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Registration\EarlyRegistered.cshtml" />
+    <Content Include="Views\Registration\NotAccepted.cshtml" />
     <None Include="Web.config.dist">
       <SubType>Designer</SubType>
     </None>

@@ -38,6 +38,14 @@ namespace Dumpwinkel.Logic.Test
         }
 
         [TestMethod]
+        public void getEvents()
+        {
+            var rep = new EventRepository();
+
+            var events = rep.ListByDate(new DateTime(2020, 6, 20));
+        }
+
+        [TestMethod]
         public void GetScansByRegistration()
         {
             var rep = new ScanRepository();

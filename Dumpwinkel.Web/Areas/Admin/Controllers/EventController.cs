@@ -110,7 +110,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 Unit = Profilan.SharedKernel.Unit.Minutes,
                 Amount = 120,
                 Themes = themes,
-                ThemeId = "e0614191-56e9-41e3-99be-dcb5b7fedd64"
+                ThemeId = "e0614191-56e9-41e3-99be-dcb5b7fedd64",
+                Tolerance = 15
             };
 
             return View(viewModel);
@@ -129,7 +130,9 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
             var interval = new Interval(Convert.ToInt32(collection["Amount"]), (Unit)Enum.Parse(typeof(Unit), collection["Unit"]));
             var publishUp = DateTime.Parse(collection["PublishUp"]);
 
-            var events = Event.CreateRange(dumpstore, startDate, endDate, interval, maxPersonsPerHour, publishUp, theme);
+            var tolerance = Convert.ToInt32(collection["Tolerance"]);
+
+            var events = Event.CreateRange(dumpstore, startDate, endDate, interval, maxPersonsPerHour, publishUp, theme, tolerance);
 
             foreach (var newEvent in events)
             {
@@ -163,6 +166,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 StartTime = eventItem.TimeRange.Start.ToString("yyyy-MM-ddTHH:mm"),
                 EndTime = eventItem.TimeRange.End.ToString("yyyy-MM-ddTHH:mm"),
                 PublishUp = eventItem.PublishUp.ToString("yyyy-MM-ddTHH:mm"),
+                Tolerance = eventItem.Tolerance,
                 ThemeId = eventItem.Theme != null ? eventItem.Theme.Id.ToString() : "",
                 Themes = themes
             };
@@ -191,6 +195,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 eventItem.UpdateDateTimeRange(startDate, endDate);
 
                 eventItem.UpdateMaximumNumberOfVisitors(Convert.ToInt32(collection["MaxPersons"]));
+
+                eventItem.Tolerance = Convert.ToInt32(collection["Tolerance"]);
 
                 _eventRepository.Update(eventItem);
 

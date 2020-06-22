@@ -18,21 +18,31 @@
 </head>
 <body class="top" style="background-image: url('@backgroundImageUrl') !important;">
 
-    
+
     <div class="container mt-md-5 mb-3">
-        <div class="ml-md-0 mr-md-0" style="background-color: #0c628a; padding: 15px;">
-            <nav class="navbar navbar-eekhoorn">
-                <a class="navbar-brand" href="/">
-                    <img class="d-none d-sm-block" src="~/img/Logo_De_Eekhoorn_homepageNW_2.png" height="60" />
-                    <img class="d-block d-sm-none" src="~/img/Logo_De_Eekhoorn_homepageNW_2.png" height="30" />
+        <div class="p-0 m-0" style="background-color: #0c628a;">
+            <nav class="navbar navbar-eekhoorn p-0">
+                <a class="navbar-brand p-0" href="/">
+                    <img class="d-none d-sm-block" src="~/img/Logo-DUMPwinkel.png" height="160" />
+                    <img class="d-block d-sm-none" src="~/img/Logo-DUMPwinkel.png" height="80" />
                 </a>
-                <span class="d-none d-sm-block navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px");">@ViewBag.SiteTitle</span>
-                <span class="d-block d-sm-none navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px");">@ViewBag.SiteTitle</span>
+                <span class="d-none d-sm-block navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px"); padding-right: 30px;">@ViewBag.SiteTitle</span>
+                <span class="d-block d-sm-none navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px"); padding-right: 15px;">@ViewBag.SiteTitle</span>
             </nav>
-            
+
         </div>
     </div>
-    
+
+    <div class="container">
+        <div class="col-md-12" style="background-color: rgba(255,255,255, 0.9); padding: 15px;">
+            @foreach (var flash in Request.GetFlashMessages())
+            {
+                <div class="alert @(flash.Type == "success" ? "alert-success" : "alert-warning")" role="alert">
+                    @Html.Raw(flash.Message)
+                </div>
+            }
+        </div>
+    </div>
 
     @RenderBody()
 

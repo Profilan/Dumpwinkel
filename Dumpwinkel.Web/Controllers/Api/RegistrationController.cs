@@ -79,7 +79,7 @@ namespace Dumpwinkel.Web.Controllers.Api
                     return Content(HttpStatusCode.BadRequest, response);
                 }
 
-                if (currentDate >= eventItem.TimeRange.Start && currentDate <= eventItem.TimeRange.End)
+                if (currentDate >= eventItem.TimeRange.Start.AddMinutes(-1 * eventItem.Tolerance) && currentDate <= eventItem.TimeRange.End)
                 {
                     var scan = Scan.Create(DateTime.Now, "Geaccepteerd", registration);
                     registration.Scans.Add(scan);

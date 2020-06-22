@@ -16,6 +16,8 @@ namespace Dumpwinkel.Logic.Models
         public virtual Period LegacyPeriod { get; set; }
         public virtual string LegacyText { get; set; }
 
+        public virtual string AlreadyText { get; set; }
+
         protected Setting()
         {
 

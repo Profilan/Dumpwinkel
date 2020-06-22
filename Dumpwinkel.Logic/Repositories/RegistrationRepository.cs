@@ -315,6 +315,18 @@ namespace Dumpwinkel.Logic.Repositories
             }
         }
 
+        public IEnumerable<Registration> ListByDateAndIp(DateTime date, string ipAddress)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = session.Query<Registration>()
+                    .Where(x => x.Event.TimeRange.Start.Date == date.Date && x.IPAddress == ipAddress)
+                    .OrderByDescending(x => x.Created);
+
+                return query.ToList();
+            }
+        }
+
         public int GetVisitedCount(Event eventItem)
         {
             using (ISession session = SessionFactory.GetNewSession("default"))

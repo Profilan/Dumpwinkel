@@ -29,6 +29,7 @@ namespace Dumpwinkel.Logic.Mappings
             });
 
             Map(x => x.LegacyText);
+            Map(x => x.AlreadyText);
         }
     }
 }

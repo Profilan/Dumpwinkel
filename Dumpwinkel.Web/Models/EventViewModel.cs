@@ -22,6 +22,8 @@ namespace Dumpwinkel.Web.Models
         public string EndTime { get; set; }
         public string PublishUp { get; set; }
         public string ThemeTitle { get; set; }
+        [Display(Name = "Eerder arriveren (minuten)")]
+        public int Tolerance { get; set; }
 
         [Display(Name = "Thema")]
         public string ThemeId { get; set; }

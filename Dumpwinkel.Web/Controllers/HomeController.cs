@@ -82,7 +82,7 @@ namespace Dumpwinkel.Web.Controllers
                         //IsFull = registeredCount >= maxPersons,
                         IsFull = full,
                         IsClosed = false,
-                        IsPublished = published,
+                        IsPublished = published, // change to published for production an true for testing
                         ThemeDescription = themeDescription
                     });
 

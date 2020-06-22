@@ -11,62 +11,67 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal col-md-4">
+<div class="form-horizontal col-md-4">
 
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            <label>Start</label>
-            <div class="input-group date" id="StartTime" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" name="StartTime" data-target="#StartTime" />
-                <div class="input-group-append" data-target="#StartTime" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Eind</label>
-            <div class="input-group date" id="EndTime" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" name="EndTime" data-target="#EndTime" />
-                <div class="input-group-append" data-target="#EndTime" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Start publiceren</label>
-            <div class="input-group date" id="PublishUp" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" name="PublishUp" data-target="#PublishUp" />
-                <div class="input-group-append" data-target="#PublishUp" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.MaxPersons, htmlAttributes: new { @class = "control-label" })
-
-            @Html.EditorFor(model => model.MaxPersons, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.MaxPersons, "", new { @class = "text-danger" })
-
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.ThemeId, htmlAttributes: new { @class = "control-label" })
-            @Html.DropDownListFor(x => Model.ThemeId, Model.Themes, "- Kies een thema -", htmlAttributes: new { @class = "form-control" })
-
-            @Html.ValidationMessageFor(model => model.ThemeId, "", new { @class = "text-danger" })
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
-
-                <a class="btn btn-link" href="@Request.Params["returnurl"]">Terug</a>
+    <div class="form-group">
+        <label>Start</label>
+        <div class="input-group date" id="StartTime" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="StartTime" data-target="#StartTime" />
+            <div class="input-group-append" data-target="#StartTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <label>Eind</label>
+        <div class="input-group date" id="EndTime" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="EndTime" data-target="#EndTime" />
+            <div class="input-group-append" data-target="#EndTime" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Start publiceren</label>
+        <div class="input-group date" id="PublishUp" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" name="PublishUp" data-target="#PublishUp" />
+            <div class="input-group-append" data-target="#PublishUp" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.MaxPersons, htmlAttributes: new { @class = "control-label" })
+
+        @Html.EditorFor(model => model.MaxPersons, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.MaxPersons, "", new { @class = "text-danger" })
+
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ThemeId, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(x => Model.ThemeId, Model.Themes, "- Kies een thema -", htmlAttributes: new { @class = "form-control" })
+
+        @Html.ValidationMessageFor(model => model.ThemeId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Tolerance, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.Tolerance, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-primary" />
+
+            <a class="btn btn-link" href="@Request.Params["returnurl"]">Terug</a>
+        </div>
+    </div>
+</div>
 }
 
 @section Scripts {

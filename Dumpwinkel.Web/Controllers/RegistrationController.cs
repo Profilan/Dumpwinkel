@@ -12,6 +12,27 @@ using System.Web.Mvc;
 
 namespace Dumpwinkel.Web.Controllers
 {
+
+    public enum RegistrationStatus
+    {
+        OK = 200,
+        Accepted = 202,
+        NotAcceptable = 406
+    }
+
+    public class RegistrationResponse
+    {
+        public RegistrationStatus Status { get; private set; }
+        public string Message { get; private set; }
+
+        public RegistrationResponse(RegistrationStatus status, string message)
+        {
+            Status = status;
+            Message = message;
+        }
+    }
+
+
     public class RegistrationController : BaseController
     {
         private readonly RegistrationRepository _registrationRepository = new RegistrationRepository();
@@ -173,18 +194,108 @@ namespace Dumpwinkel.Web.Controllers
                 var eventItem = _eventRepository.GetById(registration.Event.Id);
                 var visitor = _visitorRepository.GetById(registration.Visitor.Id);
 
-                var ipAddress = GetIPAddress();
+                RegistrationResponse response = CheckVisitor(visitor, registration);
+                
+                if (response.Status == RegistrationStatus.Accepted)
+                {
 
-                // Controleer of in dit event registraties zijn vanaf hetzelfde ip adres
-                bool alreadyRegistered = false;
-                var otherRegistrations = _registrationRepository.ListByEventAndIp(eventItem.Id, ipAddress);
-                if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe IP
+                    registration.Confirmed = true;
+                    registration.ConfirmationDate = DateTime.Now;
+                    _registrationRepository.Update(registration);
+
+                    string themeTitle = "";
+                    if (eventItem.Theme != null)
+                    {
+                        Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
+                        themeTitle = "[" + theme.Title + "]";
+                    }
+
+                    var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
+                    //var barcodeUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/fonts/Code39.woff";
+                    //var barcodeUrl = @"https://www.barcodesinc.com/generator/image.php?code=" + registration.Id.ToString().ToUpper() + "&style=197&type=C39&width=590&height=100&xres=1&font=4";
+                    var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + Uri.EscapeUriString(registration.Id.ToString()) + @"&chs=200x200&cht=qr&chld=H%7C0";
+
+                    var fileName = eventItem.Id + ".pdf";
+                    var temp = Path.GetTempPath();
+                    var path = Path.Combine(temp, fileName);
+
+                    ConfirmationEmail email = new ConfirmationEmail()
+                    {
+                        To = visitor.Email,
+                        Name = visitor.Name,
+                        Date = eventItem.TimeRange.Start.ToString("dd-MM-yyyy"),
+                        TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
+                        TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
+                        NumberOfVisitors = registration.NumberOfVisitors,
+                        LogoUrl = logoUrl,
+                        BarcodeUrl = barcodeUrl,
+                        RegistrationId = registration.Id.ToString(),
+                        Disclaimer = _settings.EmailDisclaimer,
+                        ThemeTitle = themeTitle
+                    };
+                    //email.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
+                    //email.Attach(new Attachment(path));
+                    email.Send();
+
+                    Request.Flash("success", response.Message);
+                    return RedirectToAction("Confirmed");
+                }
+
+                else
+                {
+                    Request.Flash("warning", response.Message);
+                    return RedirectToAction("NotAccepted");
+                }
+
+
+
+
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+        }
+
+        private RegistrationResponse CheckVisitor(Visitor visitor, Registration registration)
+        {
+            var eventItem = _eventRepository.GetById(registration.Event.Id);
+
+            var ipAddress = GetIPAddress();
+
+            bool alreadyRegistered = false;
+            // var otherRegistrations = _registrationRepository.ListByEventAndIp(eventItem.Id, ipAddress);
+            var otherRegistrations = _registrationRepository.ListByDateAndIp(eventItem.TimeRange.Start, ipAddress);
+            if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe IP
+            {
+                foreach (var otherRegistration in otherRegistrations)
+                {
+                    if (otherRegistration.Confirmed)
+                    {
+                        registration.RejectionReason = "Al geregistreerd (IP)";
+                        _registrationRepository.Update(registration);
+
+                        // Dit was dezelfde bezoeker, dus pas dit aan
+                        visitor = otherRegistration.Visitor;
+
+                        alreadyRegistered = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!alreadyRegistered)
+            {
+                // Controleer of in dit event registraties zijn vanaf hetzelde email adres
+                otherRegistrations = _registrationRepository.GetByVisitorAndEvent(visitor.Id, eventItem);
+                if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe E-mail adres
                 {
                     foreach (var otherRegistration in otherRegistrations)
                     {
                         if (otherRegistration.Confirmed)
                         {
-                            registration.RejectionReason = "Al geregistreerd (IP)";
+                            registration.RejectionReason = "Al geregistreerd (Email)";
                             _registrationRepository.Update(registration);
 
                             // Dit was dezelfde bezoeker, dus pas dit aan
@@ -195,138 +306,75 @@ namespace Dumpwinkel.Web.Controllers
                         }
                     }
                 }
-
-                if (!alreadyRegistered)
-                {
-                    // Controleer of in dit event registraties zijn vanaf hetzelde email adres
-                    otherRegistrations = _registrationRepository.GetByVisitorAndEvent(visitor.Id, eventItem);
-                    if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe E-mail adres
-                    {
-                        foreach (var otherRegistration in otherRegistrations)
-                        {
-                            if (otherRegistration.Confirmed)
-                            {
-                                registration.RejectionReason = "Al geregistreerd (Email)";
-                                _registrationRepository.Update(registration);
-
-                                // Dit was dezelfde bezoeker, dus pas dit aan
-                                visitor = otherRegistration.Visitor;
-
-                                alreadyRegistered = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // Controleer of de registratie buiten het termijn valt
-                bool earlierRegistered = false;
-                if (!alreadyRegistered)
-                {
-                    var registrations = _registrationRepository.GetByVisitorAndNotEvent(visitor.Id, eventItem);
-                    if (registrations.Count() > 0)
-                    {
-                        DateTime legacyDate = eventItem.TimeRange.Start;
-                        switch (_settings.LegacyPeriod.Unit)
-                        {
-                            case Profilan.SharedKernel.Unit.Hours:
-                                legacyDate = eventItem.TimeRange.Start.AddHours(-1 * _settings.LegacyPeriod.Amount);
-                                break;
-                            case Profilan.SharedKernel.Unit.Minutes:
-                                legacyDate = eventItem.TimeRange.Start.AddMinutes(-1 * _settings.LegacyPeriod.Amount);
-                                break;
-                            case Profilan.SharedKernel.Unit.Seconds:
-                                legacyDate = eventItem.TimeRange.Start.AddSeconds(-1 * _settings.LegacyPeriod.Amount);
-                                break;
-                            case Profilan.SharedKernel.Unit.Days:
-                                legacyDate = eventItem.TimeRange.Start.AddDays(-1 * _settings.LegacyPeriod.Amount);
-                                break;
-                            case Profilan.SharedKernel.Unit.Months:
-                                legacyDate = eventItem.TimeRange.Start.AddMonths(-1 * _settings.LegacyPeriod.Amount);
-                                break;
-                            case Profilan.SharedKernel.Unit.Years:
-                                legacyDate = eventItem.TimeRange.Start.AddYears(-1 * _settings.LegacyPeriod.Amount);
-                                break;
-                            default:
-                                break;
-                        }
-
-                        // Haal de bezochte registraties op (bezocht of bevestigd?)
-                        var visitedRegistrations = _registrationRepository.GetVisitedByVisitor(visitor.Id);
-                        
-
-                        if (visitedRegistrations.Count() > 0)
-                        {
-                            var lastVisitedRegistration = visitedRegistrations.Last();
-                            var lastEvent = _eventRepository.GetById(lastVisitedRegistration.Event.Id);
-                            if (lastEvent.TimeRange.Start >= legacyDate)
-                            {
-                                // Update de registratie met de reden van afwijzing
-                                lastVisitedRegistration.RejectionReason = "Eerder geregistreerd (E-mail)";
-                                _registrationRepository.Update(lastVisitedRegistration);
-
-                                earlierRegistered = true;
-                            }
-                        }
-                    }
-
-                }
-
-                if (earlierRegistered)
-                {
-                    return RedirectToAction("EarlyRegistered");
-                }
-
-                if (alreadyRegistered)
-                {
-                    return RedirectToAction("AlreadyRegistered");
-                }
-
-                registration.Confirmed = true;
-                registration.ConfirmationDate = DateTime.Now;
-                _registrationRepository.Update(registration);
-
-                string themeTitle = "";
-                if (eventItem.Theme != null)
-                {
-                    Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
-                    themeTitle = "[" + theme.Title + "]";
-                }
-
-                var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
-                //var barcodeUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/fonts/Code39.woff";
-                //var barcodeUrl = @"https://www.barcodesinc.com/generator/image.php?code=" + registration.Id.ToString().ToUpper() + "&style=197&type=C39&width=590&height=100&xres=1&font=4";
-                var barcodeUrl = @"https://chart.googleapis.com/chart?chl=" + Uri.EscapeUriString(registration.Id.ToString()) + @"&chs=200x200&cht=qr&chld=H%7C0";
-
-                var fileName = eventItem.Id + ".pdf";
-                var temp = Path.GetTempPath();
-                var path = Path.Combine(temp, fileName);
-
-                ConfirmationEmail email = new ConfirmationEmail()
-                {
-                    To = visitor.Email,
-                    Name = visitor.Name,
-                    Date = eventItem.TimeRange.Start.ToString("dd-MM-yyyy"),
-                    TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
-                    TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
-                    NumberOfVisitors = registration.NumberOfVisitors,
-                    LogoUrl = logoUrl,
-                    BarcodeUrl = barcodeUrl,
-                    RegistrationId = registration.Id.ToString(),
-                    Disclaimer = _settings.EmailDisclaimer,
-                    ThemeTitle = themeTitle
-                };
-                //email.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
-                //email.Attach(new Attachment(path));
-                email.Send();
-
-                return RedirectToAction("Confirmed");
             }
-            catch (Exception e)
+
+            // Controleer of de registratie buiten het termijn valt
+            bool earlierRegistered = false;
+            if (!alreadyRegistered)
             {
+                var registrations = _registrationRepository.GetByVisitorAndNotEvent(visitor.Id, eventItem);
+                if (registrations.Count() > 0)
+                {
+                    DateTime legacyDate = eventItem.TimeRange.Start;
+                    switch (_settings.LegacyPeriod.Unit)
+                    {
+                        case Profilan.SharedKernel.Unit.Hours:
+                            legacyDate = eventItem.TimeRange.Start.AddHours(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Minutes:
+                            legacyDate = eventItem.TimeRange.Start.AddMinutes(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Seconds:
+                            legacyDate = eventItem.TimeRange.Start.AddSeconds(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Days:
+                            legacyDate = eventItem.TimeRange.Start.AddDays(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Months:
+                            legacyDate = eventItem.TimeRange.Start.AddMonths(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        case Profilan.SharedKernel.Unit.Years:
+                            legacyDate = eventItem.TimeRange.Start.AddYears(-1 * _settings.LegacyPeriod.Amount);
+                            break;
+                        default:
+                            break;
+                    }
 
-                throw new Exception(e.Message);
+                    // Haal de bezochte registraties op (bezocht of bevestigd?)
+                    var visitedRegistrations = _registrationRepository.GetVisitedByVisitor(visitor.Id);
+
+
+                    if (visitedRegistrations.Count() > 0)
+                    {
+                        var lastVisitedRegistration = visitedRegistrations.Last();
+                        var lastEvent = _eventRepository.GetById(lastVisitedRegistration.Event.Id);
+                        if (lastEvent.TimeRange.Start >= legacyDate)
+                        {
+                            // Update de registratie met de reden van afwijzing
+                            lastVisitedRegistration.RejectionReason = "Eerder geregistreerd (E-mail)";
+                            _registrationRepository.Update(lastVisitedRegistration);
+
+                            earlierRegistered = true;
+                        }
+                    }
+                }
+
             }
+
+            if (earlierRegistered)
+            {
+                // return RedirectToAction("EarlyRegistered");
+                return new RegistrationResponse(RegistrationStatus.NotAcceptable, _settings.LegacyText);
+
+            }
+
+            if (alreadyRegistered)
+            {
+                // return RedirectToAction("AlreadyRegistered");
+                return new RegistrationResponse(RegistrationStatus.NotAcceptable, _settings.AlreadyText);
+            }
+
+            return new RegistrationResponse(RegistrationStatus.Accepted, @"<h2>Bedankt</h2><p>Dank je wel voor de registratie.Er is een bevestiging met toegangsbewijs gestuurd naar het door jou opgegeven email adres.</ p >");
         }
 
         [AllowAnonymous]
@@ -337,6 +385,12 @@ namespace Dumpwinkel.Web.Controllers
 
         [AllowAnonymous]
         public ActionResult AlreadyRegistered()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult NotAccepted()
         {
             return View();
         }

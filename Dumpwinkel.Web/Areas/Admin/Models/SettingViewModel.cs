@@ -58,9 +58,14 @@ namespace Dumpwinkel.Web.Areas.Admin.Models
         [Display(Name = "Legacy Period")]
         public int LegacyAmount { get; set; }
         public Unit LegacyUnit { get; set; }
+
         [Display(Name = "Legacy Text")]
         [AllowHtml]
         public string LegacyText { get; set; }
+
+        [Display(Name = "Legacy Text")]
+        [AllowHtml]
+        public string AlreadyText { get; set; }
 
         public SettingViewModel()
         {
