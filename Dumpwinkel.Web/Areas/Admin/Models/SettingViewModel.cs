@@ -67,6 +67,9 @@ namespace Dumpwinkel.Web.Areas.Admin.Models
         [AllowHtml]
         public string AlreadyText { get; set; }
 
+        [Display(Name = "Eerder arriveren (minuten)")]
+        public int Tolerance { get; set; }
+
         public SettingViewModel()
         {
             Images = new List<string>();

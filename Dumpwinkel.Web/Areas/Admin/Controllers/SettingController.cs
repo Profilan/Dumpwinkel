@@ -48,7 +48,8 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 LegacyAmount = settings.LegacyPeriod.Amount,
                 LegacyUnit = settings.LegacyPeriod.Unit,
                 LegacyText = settings.LegacyText,
-                AlreadyText = settings.AlreadyText
+                AlreadyText = settings.AlreadyText,
+                Tolerance = settings.Tolerance
             };
 
             return View(viewModel);
@@ -75,6 +76,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                 settings.LegacyPeriod.Unit = (Unit)Enum.Parse(typeof(Unit), collection["LegacyUnit"]);
                 settings.LegacyText = collection["LegacyText"];
                 settings.AlreadyText = collection["AlreadyText"];
+                settings.Tolerance = Convert.ToInt32(collection["Tolerance"]);
 
                 _settingRepository.Update(settings);
 

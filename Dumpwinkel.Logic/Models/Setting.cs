@@ -15,6 +15,7 @@ namespace Dumpwinkel.Logic.Models
         public virtual string EmailDisclaimer { get; set; }
         public virtual Period LegacyPeriod { get; set; }
         public virtual string LegacyText { get; set; }
+        public virtual int Tolerance { get; set; }
 
         public virtual string AlreadyText { get; set; }
 

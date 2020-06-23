@@ -3,16 +3,26 @@
 <div class="form-group row">
     <div class="col-lg-6 row">
 
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <label>Legacy deadline</label>
             @Html.EditorFor(model => model.LegacyAmount, new { htmlAttributes = new { @class = "form-control" } })
         </div>
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <label>&nbsp;</label>
             @Html.EnumDropDownListFor(model => model.LegacyUnit, "- Select unit -", new { @class = "form-control" })
         </div>
     </div>
-    <div class="col-lg-10">
+    <div class="col-lg-6">
+
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-lg-2">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tolerance, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Tolerance, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
 
     </div>
 </div>

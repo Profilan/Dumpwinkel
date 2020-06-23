@@ -26,6 +26,8 @@ namespace Dumpwinkel.Web.Controllers.Api
         {
             try
             {
+                var setting = _settingRepository.GetById(1);
+
                 var registration = _registrationRepository.GetById(id);
                 if (registration == null)
                 {
@@ -79,7 +81,7 @@ namespace Dumpwinkel.Web.Controllers.Api
                     return Content(HttpStatusCode.BadRequest, response);
                 }
 
-                if (currentDate >= eventItem.TimeRange.Start.AddMinutes(-1 * eventItem.Tolerance) && currentDate <= eventItem.TimeRange.End)
+                if (currentDate >= eventItem.TimeRange.Start.AddMinutes(-1 * setting.Tolerance) && currentDate <= eventItem.TimeRange.End)
                 {
                     var scan = Scan.Create(DateTime.Now, "Geaccepteerd", registration);
                     registration.Scans.Add(scan);

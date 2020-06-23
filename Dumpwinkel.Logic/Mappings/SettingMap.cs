@@ -21,6 +21,7 @@ namespace Dumpwinkel.Logic.Mappings
             Map(x => x.InfoText);
             Map(x => x.BackgroundImageUrl);
             Map(x => x.EmailDisclaimer);
+            Map(x => x.Tolerance);
 
             Component(x => x.LegacyPeriod, m =>
             {
