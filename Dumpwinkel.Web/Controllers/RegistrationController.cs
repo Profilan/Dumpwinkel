@@ -95,55 +95,6 @@ namespace Dumpwinkel.Web.Controllers
                     _visitorRepository.Insert(visitor);
                 }
 
-                /*
-                // Check if the visitor already registered on this day or earlier than legacy deadline
-                var registrations = _registrationRepository.GetByVisitorAndEvent(visitor.Id, eventItem);
-                if (registrations.Count() > 0)
-                {
-                    DateTime legacyDate = eventItem.TimeRange.Start;
-                    switch (_settings.LegacyPeriod.Unit)
-                    {
-                        case Profilan.SharedKernel.Unit.Hours:
-                            legacyDate = eventItem.TimeRange.Start.AddHours(-1 * _settings.LegacyPeriod.Amount);
-                            break;
-                        case Profilan.SharedKernel.Unit.Minutes:
-                            legacyDate = eventItem.TimeRange.Start.AddMinutes(-1 * _settings.LegacyPeriod.Amount);
-                            break;
-                        case Profilan.SharedKernel.Unit.Seconds:
-                            legacyDate = eventItem.TimeRange.Start.AddSeconds(-1 * _settings.LegacyPeriod.Amount);
-                            break;
-                        case Profilan.SharedKernel.Unit.Days:
-                            legacyDate = eventItem.TimeRange.Start.AddDays(-1 * _settings.LegacyPeriod.Amount);
-                            break;
-                        case Profilan.SharedKernel.Unit.Months:
-                            legacyDate = eventItem.TimeRange.Start.AddMonths(-1 * _settings.LegacyPeriod.Amount);
-                            break;
-                        case Profilan.SharedKernel.Unit.Years:
-                            legacyDate = eventItem.TimeRange.Start.AddYears(-1 * _settings.LegacyPeriod.Amount);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // Haal de bezochte registraties op (bezocht of bevestigd?)
-                    var visitedRegistrations = _registrationRepository.GetVisitedByVisitor(visitor.Id);
-
-                    if (visitedRegistrations.Count() > 0)
-                    {
-                        var lastEvent = _eventRepository.GetById(visitedRegistrations.Last().Event.Id);
-                        if (lastEvent.TimeRange.Start >= legacyDate)
-                        {
-                            return RedirectToAction("EarlyRegistered");
-                        }
-                    }
-
-
-                    if (registrations.Last().Confirmed == true)
-                    {
-                        return RedirectToAction("AlreadyRegistered");
-                    }
-                }
-                */
 
                 // Voeg registratie toe
                 var numberOfVisitors = Convert.ToInt32(collection["NumberOfVisitors"]);
@@ -219,6 +170,9 @@ namespace Dumpwinkel.Web.Controllers
                     var temp = Path.GetTempPath();
                     var path = Path.Combine(temp, fileName);
 
+                    // Added possibility to cancel a registration (1-10-2021 R.A. Soffner)
+                    var cancelUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/registration/cancel/" + registration.Id;
+
                     ConfirmationEmail email = new ConfirmationEmail()
                     {
                         To = visitor.Email,
@@ -231,7 +185,8 @@ namespace Dumpwinkel.Web.Controllers
                         BarcodeUrl = barcodeUrl,
                         RegistrationId = registration.Id.ToString(),
                         Disclaimer = _settings.EmailDisclaimer,
-                        ThemeTitle = themeTitle
+                        ThemeTitle = themeTitle,
+                        CancelUrl = cancelUrl
                     };
                     //email.GeneratePDF(path, visitor.Name, eventItem.TimeRange, registration.NumberOfVisitors);
                     //email.Attach(new Attachment(path));
@@ -258,6 +213,63 @@ namespace Dumpwinkel.Web.Controllers
             }
         }
 
+        // Added possibility to cancel a registration (1-10-2021 R.A. Soffner)
+        [AllowAnonymous]
+        public ActionResult Cancel(Guid id)
+        {
+            try
+            {
+                var registration = _registrationRepository.GetById(id);
+                var eventItem = _eventRepository.GetById(registration.Event.Id);
+                var visitor = _visitorRepository.GetById(registration.Visitor.Id);
+
+                if (registration.Cancelled == false)
+                {
+                    registration.Cancelled = true;
+                    registration.Visited = false;
+                    registration.Confirmed = false;
+
+                    _registrationRepository.Update(registration);
+
+                    string themeTitle = "";
+                    if (eventItem.Theme != null)
+                    {
+                        Theme theme = _themeRepository.GetById(eventItem.Theme.Id);
+                        themeTitle = "[" + theme.Title + "]";
+                    }
+
+                    var logoUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/img";
+
+                    CancellationEmail email = new CancellationEmail()
+                    {
+                        To = visitor.Email,
+                        Name = visitor.Name,
+                        Date = eventItem.TimeRange.Start.ToString("dd-MM-yyyy"),
+                        TimeFrom = eventItem.TimeRange.Start.ToShortTimeString(),
+                        TimeTill = eventItem.TimeRange.End.ToShortTimeString(),
+                        NumberOfVisitors = registration.NumberOfVisitors,
+                        LogoUrl = logoUrl,
+                        RegistrationId = registration.Id.ToString(),
+                        Disclaimer = _settings.EmailDisclaimer,
+                        ThemeTitle = themeTitle,
+                    };
+                    email.Send();
+
+                    Request.Flash("success", "De registratie is geannuleerd. Dank je wel voor het doorgeven.");
+                    return RedirectToAction("Confirmed");
+                }
+                else
+                {
+                    Request.Flash("warning", "Deze registratie is al geannuleerd. Je hoeft niets meer te doen.");
+                    return RedirectToAction("Confirmed");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private RegistrationResponse CheckVisitor(Visitor visitor, Registration registration)
         {
             var eventItem = _eventRepository.GetById(registration.Event.Id);
@@ -265,7 +277,7 @@ namespace Dumpwinkel.Web.Controllers
             var ipAddress = GetIPAddress();
 
             bool alreadyRegistered = false;
-            // var otherRegistrations = _registrationRepository.ListByEventAndIp(eventItem.Id, ipAddress);
+            
             var otherRegistrations = _registrationRepository.ListByDateAndIp(eventItem.TimeRange.Start, ipAddress);
             if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe IP
             {

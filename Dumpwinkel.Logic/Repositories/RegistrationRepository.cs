@@ -83,6 +83,20 @@ namespace Dumpwinkel.Logic.Repositories
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Registration> ListByDate(DateTime startDate, DateTime endDate)
+        {
+
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                var query = from r in session.Query<Registration>()
+                            select r;
+
+                query = query.Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate);
+
+                return query.ToList();
+            }
+        }
+
         public IEnumerable<Registration> List(string sortOrder, string searchString, int pageSize, int pageNumber, DateTime startDate, DateTime endDate, string eventId = null, string state = "all")
         {
 
@@ -183,6 +197,9 @@ namespace Dumpwinkel.Logic.Repositories
                         break;
                     case "registered":
                         query = query.Where(r => r.Confirmed == false);
+                        break;
+                    case "cancelled":
+                        query = query.Where(r => r.Cancelled == true);
                         break;
                 }
 

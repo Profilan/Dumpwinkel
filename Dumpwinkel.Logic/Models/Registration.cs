@@ -22,6 +22,9 @@ namespace Dumpwinkel.Logic.Models
         public virtual string RejectionReason { get; set; }
         public virtual string IPAddress { get; set; }
 
+        // Added for cancellation possibility (1-10-2021 R.A. Soffner)
+        public virtual bool Cancelled { get; set; }
+
         public virtual IList<Scan> Scans { get; set; }
 
         #region Not Persisted
@@ -40,11 +43,13 @@ namespace Dumpwinkel.Logic.Models
 
         }
 
+        // Added possibility to cancel a registration (1-10-2021 R.A. Soffner)
         public static Registration Create(Visitor visitor,
             Event eventItem,
             int numberOfVisitors,
             bool confirmed = false,
-            bool visited = false)
+            bool visited = false,
+            bool cancelled = false)
         {
             Guard.ForNull(visitor, "visitor");
             Guard.ForNull(eventItem, "eventItem");
@@ -58,6 +63,7 @@ namespace Dumpwinkel.Logic.Models
             registration.Confirmed = confirmed;
             registration.ConfirmationDate = registration.Created;
             registration.Visited = visited;
+            registration.Cancelled = cancelled;
 
             return registration;
         }

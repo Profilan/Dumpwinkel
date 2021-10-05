@@ -1,4 +1,5 @@
-﻿
+﻿@model Dumpwinkel.Web.Areas.Admin.Models.DashboardViewModel
+
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -6,5 +7,74 @@
 
 <h2>Dashboard</h2>
 
+@using (Html.BeginForm("Index", "Dashboard", FormMethod.Post))
+{
+    <div class="form-group row col-md-3">
+        <label for="startDate" class="col-md-4 col-form-label">Datum</label>
+        <div class="col-md-8">
+            <div class="input-group date" id="startDate" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" name="startDate" value="@Model.StartDate" data-target="#startDate" />
+                <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h3 class="text-center">Registraties</h3>
+            <canvas id="registrationsChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+    
+}
 
+@section scripts
+{
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/nl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/Scripts/Chart.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            $('#startDate').datetimepicker({
+                date: '@Model.StartDate',
+                locale: 'nl',
+                format: 'L'
+            });
+            $("#startDate").on("change.datetimepicker", function (e) {
+                $("form").submit();
+            });
+
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById('registrationsChart').getContext('2d');
+        var registrationsChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Bevestigd', 'Bezocht', 'Geannuleerd'],
+                datasets: [{
+                    label: 'Registraties',
+                    data: [@Model.ConfirmationCount, @Model.VisitCount, @Model.CancellationCount],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            }
+        });
+
+    </script>
+}
 

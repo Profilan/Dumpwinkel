@@ -38,6 +38,10 @@ namespace Dumpwinkel.Web.Models
         [Display(Name = "Bezocht")]
         public bool Visited { get; set; }
 
+        // Added for cancellation possibility (1-10-2021 R.A. Soffner)
+        [Display(Name = "Geannuleerd")]
+        public bool Cancelled { get; set; }
+
         [Required]
         [Display(Name = "Aantal personen (max 2)")]
         [Range(1, 2, ErrorMessage = "Kies een aantal tussen de {1} en {2}")]

@@ -73,6 +73,7 @@ namespace Dumpwinkel.Web.Areas.Admin.Controllers
                     EventId = eventItem.Id,
                     Visited = registration.Visited,
                     Confirmed = registration.Confirmed,
+                    Cancelled = registration.Cancelled, // Added for cancellation possibility (1-10-2021 R.A. Soffner)
                     Title = date + " " + timeFrom + "-" + timeTill ,
                     NumberOfVisitors = registration.NumberOfVisitors
                 });

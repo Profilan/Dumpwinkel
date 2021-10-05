@@ -19,6 +19,8 @@ namespace Dumpwinkel.Logic.Mappings
             Map(x => x.Visited);
             Map(x => x.RejectionReason).Nullable();
             Map(x => x.IPAddress).Nullable();
+            // Added for cancellation possibility (1-10-2021 R.A. Soffner)
+            Map(x => x.Cancelled).Nullable();
 
             References(x => x.Event).Column("EventId").LazyLoad().Not.Cascade.SaveUpdate();
             References(x => x.Visitor).Column("VisitorId").Cascade.SaveUpdate();

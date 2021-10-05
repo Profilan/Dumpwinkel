@@ -49,6 +49,7 @@
                             <option value="registered" @(Request.Params["state"] == "registered" ? "selected" : "")>Aangemeld</option>
                             <option value="confirmed" @(Request.Params["state"] == "confirmed" ? "selected" : "")>Bevestigd</option>
                             <option value="visited" @(Request.Params["state"] == "visited" ? "selected" : "")>Bezocht</option>
+                            <option value="cancelled" @(Request.Params["state"] == "cancelled" ? "selected" : "")>Geannuleerd</option>
                         </select>
                     </div>
                 </div>
@@ -95,41 +96,47 @@
         <th>
             Bezocht
         </th>
+        <th>
+            Geannuleerd
+        </th>
         <th></th>
     </tr>
 
     @foreach (var item in Model)
     {
-        <tr data-id="@item.Id">
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Postcode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfVisitors)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Confirmed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Visited)
-            </td>
-            <td>
-                @Html.ActionLink("Verwijder", "Delete", new { id = item.Id }, new { data_toggle = "modal", data_target = "#deleteModal", data_id = item.Id, data_title = item.Name })
-                @Html.ActionLink("Details", "Details", new { id = item.Id })
-            </td>
-        </tr>
+<tr data-id="@item.Id">
+    <td>
+        @Html.DisplayFor(modelItem => item.Title)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Email)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Postcode)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.City)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.NumberOfVisitors)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Confirmed)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Visited)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Cancelled)
+    </td>
+    <td>
+        @Html.ActionLink("Verwijder", "Delete", new { id = item.Id }, new { data_toggle = "modal", data_target = "#deleteModal", data_id = item.Id, data_title = item.Name })
+        @Html.ActionLink("Details", "Details", new { id = item.Id })
+    </td>
+</tr>
     }
 
 </table>

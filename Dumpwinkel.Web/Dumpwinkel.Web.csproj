@@ -228,6 +228,7 @@
     <Compile Include="Areas\Admin\Controllers\ThemeController.cs" />
     <Compile Include="Areas\Admin\Helpers\FileHandler.cs" />
     <Compile Include="Areas\Admin\Models\ADAuthenticationService.cs" />
+    <Compile Include="Areas\Admin\Models\DashboardViewModel.cs" />
     <Compile Include="Areas\Admin\Models\SettingViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ThemeViewModel.cs" />
     <Compile Include="Controllers\Api\EventController.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Models\Api\CheckinResponse.cs" />
     <Compile Include="Models\BaseViewModel.cs" />
     <Compile Include="Models\CheckinViewModel.cs" />
+    <Compile Include="Models\CancellationEmail.cs" />
     <Compile Include="Models\ConfirmationEmail.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\EventListViewModel.cs" />
@@ -348,6 +350,8 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Chart.css" />
+    <Content Include="Content\Chart.min.css" />
     <Content Include="Content\farbtastic.css" />
     <Content Include="Content\favicon.ico" />
     <Content Include="Content\font-awesome.css" />
@@ -423,6 +427,8 @@
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -659,6 +665,7 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Registration\EarlyRegistered.cshtml" />
     <Content Include="Views\Registration\NotAccepted.cshtml" />
+    <Content Include="Views\Emails\Cancellation.cshtml" />
     <None Include="Web.config.dist">
       <SubType>Designer</SubType>
     </None>
