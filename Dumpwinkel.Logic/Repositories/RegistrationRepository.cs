@@ -320,6 +320,27 @@ namespace Dumpwinkel.Logic.Repositories
                 var total = session.QueryOver<Registration>(() => registration)
                     .Select(Projections.Sum<Registration>(x => x.NumberOfVisitors))
                     .Where(x => x.Confirmed == false)
+                    .Where(x => x.Cancelled == false)
+                    .Where(x => x.Event == eventItem)
+
+                    .UnderlyingCriteria.UniqueResult();
+
+                if (total != null)
+                {
+                    return (int)total;
+                }
+                return 0;
+            }
+        }
+
+        public int GetCancellationCount(Event eventItem)
+        {
+            using (ISession session = SessionFactory.GetNewSession("default"))
+            {
+                Registration registration = null;
+                var total = session.QueryOver<Registration>(() => registration)
+                    .Select(Projections.Sum<Registration>(x => x.NumberOfVisitors))
+                    .Where(x => x.Cancelled == true)
                     .Where(x => x.Event == eventItem)
 
                     .UnderlyingCriteria.UniqueResult();
@@ -381,7 +402,8 @@ namespace Dumpwinkel.Logic.Repositories
             using (ISession session = SessionFactory.GetNewSession("default"))
             {
                 var query = session.Query<Registration>()
-                     .Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate);
+                     .Where(r => r.Event.TimeRange.Start >= startDate && r.Event.TimeRange.Start <= endDate)
+                     .Where(r => r.Cancelled == false);
 
                 return query.ToList().Sum(x => x.NumberOfVisitors);
             }

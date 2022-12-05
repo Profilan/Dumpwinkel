@@ -31,6 +31,7 @@ namespace Dumpwinkel.Web.Controllers.Api
                 int pendingCount = _registrationRepository.GetPendingCount(eventItem);
                 int registeredCount = _registrationRepository.GetRegisteredCount(eventItem);
                 int visitedCount = _registrationRepository.GetVisitedCount(eventItem);
+                int cancellationCount = _registrationRepository.GetCancellationCount(eventItem);
 
                 string themeTitle = "";
                 if (eventItem.Theme != null)
@@ -52,25 +53,12 @@ namespace Dumpwinkel.Web.Controllers.Api
                     StartTime = eventItem.TimeRange.Start.ToShortTimeString(),
                     EndTime = eventItem.TimeRange.End.ToShortTimeString(),
                     Visited = visitedCount,
+                    Cancelled = cancellationCount,
                     ThemeTitle = themeTitle,
                 });
             }
 
             return Ok(events);
-        }
-
-        private int GetRegistered(Event eventItem)
-        {
-            var registrations = _registrationRepository.GetByEvent(eventItem).Where(x => x.Confirmed = true);
-
-            return registrations.Count();
-        }
-
-        private int GetPending(Event eventItem)
-        {
-            var registrations = _registrationRepository.GetByEvent(eventItem).Where(x => x.Confirmed = false);
-
-            return registrations.Count();
         }
 
         [Route("api/event/before/{date}")]

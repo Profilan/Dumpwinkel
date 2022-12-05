@@ -18,6 +18,7 @@ namespace Dumpwinkel.Web.Models
         public int Available { get; set; }
         public int Pending { get; set; }
         public int Visited { get; set; }
+        public int Cancelled { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public string PublishUp { get; set; }

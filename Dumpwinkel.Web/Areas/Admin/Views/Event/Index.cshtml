@@ -85,6 +85,9 @@
                         #Bezocht
                     </th>
                     <th>
+                        #Geannuleerd
+                    </th>
+                    <th>
                         Thema
                     </th>
                     <th></th>
@@ -100,6 +103,7 @@
                     <td class="available"></td>
                     <td class="pending"></td>
                     <td class="visited"></td>
+                    <td class="cancelled"></td>
                     <td class="theme"></td>
                     <td class="actions">
                         <a class=""><i class="fa fa-download"></i></a>
@@ -279,6 +283,7 @@
 
                         var available = $('<td />').text(event.Available);
                         var visited = $('<td />').addClass('visited').text(event.Visited);
+                        var cancelled = $('<td />').addClass('cancelled').text(event.Cancelled);
                         var theme = $('<td />').addClass('theme').text(event.ThemeTitle);
                         var actions = $('<td />');
                         var downloadLink = $('<a />').attr('href', '/cmseek/event/DownloadExcel/' + event.Id).append('<i class="fa fa-download"></i>');
@@ -301,6 +306,7 @@
                         row.append(available);
                         row.append(pending);
                         row.append(visited);
+                        row.append(cancelled);
                         row.append(theme);
                         row.append(actions);
                         $('#events-table tbody').append(row);
