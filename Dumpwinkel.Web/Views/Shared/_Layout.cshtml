@@ -15,20 +15,21 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/bootstrap")
+    <link rel="stylesheet" href="https://use.typekit.net/saw0kyu.css">
 
 </head>
 <body class="top" style="background-image: url('@backgroundImageUrl') !important;">
 
 
     <div class="container mt-md-5 mb-3">
-        <div class="p-0 m-0" style="background-color: #0c628a;">
+        <div class="p-0 m-0" style="background-color: #525d57;">
             <nav class="navbar navbar-eekhoorn p-0">
                 <a class="navbar-brand p-0" href="/">
-                    <img class="d-none d-sm-block" src="~/img/Logo-DUMPwinkel.png" height="160" />
-                    <img class="d-block d-sm-none" src="~/img/Logo-DUMPwinkel.png" height="80" />
+                    <img class="d-none d-sm-block" src="~/img/logo-dump.png" style="height: 80px; margin: 25px 40px;" />
+                    <img class="d-block d-sm-none" src="~/img/logo-dump.png" style="height: 40px; margin: 10px;" />
                 </a>
-                <span class="d-none d-sm-block navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px"); padding-right: 30px;">@ViewBag.SiteTitle</span>
-                <span class="d-block d-sm-none navbar-text" style="font-family: 'Prime-Regular', Arial, sans-serif; font-weight: normal; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px"); padding-right: 15px;">@ViewBag.SiteTitle</span>
+                <span class="d-none d-sm-block navbar-text" style="font-family: 'korolev-rounded', sans-serif; font-weight: 500; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize + "px"); padding-right: 30px;">@ViewBag.SiteTitle</span>
+                <span class="d-block d-sm-none navbar-text" style="font-family: 'korolev-rounded', sans-serif; font-weight: 500; color: @ViewBag.TitleColor; font-size: @(ViewBag.TitleSize / 2.5 + "px"); padding-right: 15px;">@ViewBag.SiteTitle</span>
             </nav>
 
         </div>

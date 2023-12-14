@@ -278,6 +278,8 @@ namespace Dumpwinkel.Web.Controllers
 
             bool alreadyRegistered = false;
             
+
+            // Controleer of op dezelfde dag vanaf hetzelfde IP al is geregistreerd.
             var otherRegistrations = _registrationRepository.ListByDateAndIp(eventItem.TimeRange.Start, ipAddress);
             if (otherRegistrations.Count() > 0) // Er zijn registraties vanaf hetzelfe IP
             {

@@ -405,6 +405,7 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\Code39.svg" />
     <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="img\logo-dump.png" />
     <Content Include="img\Logo-DUMPwinkel.png" />
     <Content Include="img\favicon.ico" />
     <Content Include="img\icon-map.png" />
