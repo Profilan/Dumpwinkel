@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dumpwinkel.Web", "Dumpwinkel.Web\Dumpwinkel.Web.csproj", "{DA7FBB9E-34F2-40E9-9DA5-69A0B0ECC1E8}"
 EndProject
@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dumpwinkel.Logic", "Dumpwin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dumpwinkel.Logic.Test", "Dumpwinkel.Logic.Test\Dumpwinkel.Logic.Test.csproj", "{0E239FDA-8A1F-4FF3-9CCE-485E31A5341B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profilan.SharedKernel", "..\Profilan\Profilan.SharedKernel\Profilan.SharedKernel.csproj", "{A6E7C407-33AE-42C3-857E-F7C763758CC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profilan.SharedKernel", "Profilan.SharedKernel\Profilan.SharedKernel.csproj", "{A6E7C407-33AE-42C3-857E-F7C763758CC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

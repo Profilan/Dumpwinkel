@@ -689,13 +689,13 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Profilan\Profilan.SharedKernel\Profilan.SharedKernel.csproj">
-      <Project>{a6e7c407-33ae-42c3-857e-f7c763758cc9}</Project>
-      <Name>Profilan.SharedKernel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Dumpwinkel.Logic\Dumpwinkel.Logic.csproj">
       <Project>{27d05723-ec4b-4c84-917d-f36ffcc68007}</Project>
       <Name>Dumpwinkel.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Profilan.SharedKernel\Profilan.SharedKernel.csproj">
+      <Project>{a6e7c407-33ae-42c3-857e-f7c763758cc9}</Project>
+      <Name>Profilan.SharedKernel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

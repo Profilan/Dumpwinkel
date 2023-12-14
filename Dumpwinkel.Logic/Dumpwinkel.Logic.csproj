@@ -145,11 +145,10 @@
     <None Include="Views\Emails\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Profilan\Profilan.SharedKernel\Profilan.SharedKernel.csproj">
+    <ProjectReference Include="..\Profilan.SharedKernel\Profilan.SharedKernel.csproj">
       <Project>{a6e7c407-33ae-42c3-857e-f7c763758cc9}</Project>
       <Name>Profilan.SharedKernel</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
